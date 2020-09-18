@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:model="clr-namespace:MyPlayer.ViewModels"
+             mc:Ignorable="d"
+             x:Class="MyPlayer.Views.QueuePage"
+             Title="Playlist"
+             BackgroundColor="Black"
+             >
+    <!--
+         <ContentPage.BindingContext>
+         <model:PlaylistViewModel />
+         </ContentPage.BindingContext>
+    -->
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding AddToQueueCommand}" IconImageSource="baseline_add_black_36dp.png"/>
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+        <StackLayout
+            Orientation="Vertical">
+            <ListView
+                ItemsSource="{Binding Artists}"
+                Margin="6"
+                IsGroupingEnabled="True"
+                GroupDisplayBinding="{Binding Name}"
+                GroupShortNameBinding="{Binding Name}"
+                >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout
+                                Orientation="Horizontal"
+                                MinimumHeightRequest="80"
+                                >
+                                
+                                <Label
+                                    Text="{Binding Index}"                                 
+                                    FontSize="Small"
+                                    TextColor="White"
+                                    MinimumWidthRequest="60"
+                                    VerticalOptions="Center"
+                                    HorizontalOptions="Center"
+                                    HorizontalTextAlignment="Center"
+                                    VerticalTextAlignment="Center"
+                                    />
+                                <StackLayout
+                                    Orientation="Vertical"
+                                    MinimumHeightRequest="80"
+                                    Margin="2,2,2,8"
+                                    >
+                                    <Label
+                                        Text="{Binding Name}"
+                                        FontSize="Small"
+                                        TextColor="White"
+                                        MinimumHeightRequest="40"
+                                        />
+                                    <StackLayout
+                                        Orientation="Horizontal"
+                                        MinimumHeightRequest="26"
+                                        >
+                                    
+                                        <Label
+                                            Text="{Binding MediaInfo.Artist}"
+                                            FontSize="Micro"
+                                            TextColor="White"
+                                            MinimumWidthRequest="160"
+                                            MinimumHeightRequest="26"
+                                            />
+                                        <Label
+                                            Text="{Binding MediaInfo.Year}"
+                                            FontSize="Micro"
+                                            TextColor="White"
+                                            MinimumHeightRequest="26"
+                                            />
+
+                                        <Label
+                                            Text="{Binding MediaInfo.AlbumName}"
+                                            FontSize="Micro"
+                                            TextColor="White"
+                                            MinimumHeightRequest="26"
+                                            />
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>                
+            </ListView>
+
+            <StackLayout
+                Orientation="Horizontal"
+                Margin="6"
+                >
+                <Editor 
+                    Placeholder="Text to search"
+                    PlaceholderColor="LightGray"
+                    Text="{Binding SearchText, Mode=TwoWay}"
+                    TextColor="White"
+                    HorizontalOptions="StartAndExpand"
+                    />
+                <Button
+                    ImageSource="baseline_clear_black_36dp.png"
+                    Style="{StaticResource ImageButtonStyle}"
+                    Command="{Binding ClearSearchTextCommand}"
+                    WidthRequest="30"
+                    HeightRequest="30"                    
+                    />
+                <Image
+                    Source="baseline_search_black_36dp.png"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

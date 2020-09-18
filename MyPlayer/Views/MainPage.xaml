@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:model="clr-namespace:MyPlayer.ViewModels"
+             mc:Ignorable="d" 
+             x:Class="MyPlayer.MainPage"
+             Title="My player"
+             BackgroundColor="Black"
+             >
+
+    <ContentPage.BindingContext>
+        <model:MainWindowViewModel />
+    </ContentPage.BindingContext>
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding ShowQueueCommand}" IconImageSource="baseline_playlist_play_black_36dp.png"/>
+        <ToolbarItem Command="{Binding ShowSettingsCommand}" IconImageSource="baseline_settings_black_36dp.png"/>
+    </ContentPage.ToolbarItems>
+    
+    <StackLayout
+        Orientation="Vertical">
+        
+        <StackLayout
+            x:Name="UpperLayout"
+            Orientation="Horizontal"
+            VerticalOptions="Start"
+            HeightRequest="40"
+            >
+        </StackLayout>
+
+
+        <StackLayout
+            x:Name="PictureLayout"
+            VerticalOptions="FillAndExpand"
+            HorizontalOptions="FillAndExpand"
+            >
+            <Image
+                Source="{Binding Current.MediaInfo.Cover.FullPath}"
+                Aspect="AspectFit"
+                VerticalOptions="FillAndExpand"
+                HorizontalOptions="FillAndExpand"
+                />
+        </StackLayout>
+
+        <StackLayout
+            x:Name="InfoLayout"
+            VerticalOptions="End"
+            Orientation="Vertical"
+            Margin="2,2,2,8"
+            >
+            <Label
+                Text="{Binding Current.Name}"
+                FontSize="Medium"
+                TextColor="White"
+                MinimumHeightRequest="50"
+                VerticalTextAlignment="Center"
+                VerticalOptions="Start"
+                />
+            <StackLayout
+                Orientation="Horizontal"
+                MinimumHeightRequest="26"
+                >
+
+                <Label
+                    Text="{Binding Current.MediaInfo.Artist}"
+                    FontSize="Small"
+                    TextColor="White"
+                    MinimumWidthRequest="160"
+                    MinimumHeightRequest="26"
+                    />
+                <Label
+                    Text="{Binding Current.MediaInfo.Year}"
+                    FontSize="Small"
+                    TextColor="White"
+                    MinimumHeightRequest="26"
+                    />
+
+                <Label
+                    Text="{Binding Current.MediaInfo.AlbumName}"
+                    FontSize="Small"
+                    TextColor="White"
+                    MinimumHeightRequest="26"
+                    />
+            </StackLayout>
+
+        </StackLayout>
+
+        <StackLayout
+            x:Name="ButtonsLayout"
+            Orientation="Horizontal"
+            VerticalOptions="End"
+            HeightRequest="40"
+            >
+
+            <Button
+                Command="{Binding LoopCommand}"
+                Style="{StaticResource ImageButtonStyle}"
+                >
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding Queue.LoopType}" Value="None">
+                        <Setter Property="ImageSource" Value="baseline_keyboard_backspace_black_36dp.png"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" Binding="{Binding Queue.LoopType}" Value="All">
+                        <Setter Property="ImageSource" Value="baseline_repeat_black_36dp.png"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" Binding="{Binding Queue.LoopType}" Value="One">
+                        <Setter Property="ImageSource" Value="baseline_repeat_one_black_36dp.png"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+            <Button 
+                Command="{Binding PrevCommand}"
+                ImageSource="baseline_skip_previous_black_36dp.png"
+                Style="{StaticResource ImageButtonStyle}"
+                />
+
+            <Button
+                x:Name="PlayButton"
+                Command="{Binding PlayCommand}"
+                ImageSource="baseline_play_arrow_black_36dp.png"
+                Style="{StaticResource ImageButtonStyle}"
+                >
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsPlaying}" Value="true">
+                        <Setter Property="ImageSource" Value="baseline_pause_black_36dp.png"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+            <!--
+                 <Button
+                 ImageSource="baseline_stop_black_36dp.png"
+                 Style="{StaticResource ImageButtonStyle}"
+                 />
+            -->
+            <Button
+                Command="{Binding NextCommand}"
+                ImageSource="baseline_skip_next_black_36dp.png"
+                Style="{StaticResource ImageButtonStyle}"
+                />
+            <Button
+                ImageSource="baseline_delete_black_36dp.png"
+                Style="{StaticResource ImageButtonStyle}"
+                />
+
+            <StackLayout
+                x:Name="TimeLayout"
+                VerticalOptions="End"
+                >
+            </StackLayout>
+        </StackLayout>
+    </StackLayout>
+
+</ContentPage>
