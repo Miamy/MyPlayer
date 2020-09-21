@@ -21,76 +21,140 @@
 
     <ContentPage.Content>
         <StackLayout
-            Orientation="Vertical">
-            <ListView
+            Orientation="Vertical"
+            VerticalOptions="FillAndExpand"
+            MinimumHeightRequest="400"
+            >
+            <CollectionView 
                 ItemsSource="{Binding Artists}"
-                Margin="6"
-                IsGroupingEnabled="True"
-                GroupDisplayBinding="{Binding Name}"
-                GroupShortNameBinding="{Binding Name}"
+                VerticalOptions="FillAndExpand"
+                MinimumHeightRequest="400"
+                IsGrouped="True"
                 >
-                <ListView.ItemTemplate>
+                <CollectionView.GroupHeaderTemplate>
                     <DataTemplate>
-                        <ViewCell>
-                            <StackLayout
-                                Orientation="Horizontal"
-                                MinimumHeightRequest="80"
-                                >
-                                
-                                <Label
-                                    Text="{Binding Index}"                                 
-                                    FontSize="Small"
-                                    TextColor="White"
-                                    MinimumWidthRequest="60"
-                                    VerticalOptions="Center"
-                                    HorizontalOptions="Center"
-                                    HorizontalTextAlignment="Center"
-                                    VerticalTextAlignment="Center"
-                                    />
-                                <StackLayout
-                                    Orientation="Vertical"
-                                    MinimumHeightRequest="80"
-                                    Margin="2,2,2,8"
-                                    >
-                                    <Label
-                                        Text="{Binding Name}"
-                                        FontSize="Small"
-                                        TextColor="White"
-                                        MinimumHeightRequest="40"
-                                        />
-                                    <StackLayout
-                                        Orientation="Horizontal"
-                                        MinimumHeightRequest="26"
-                                        >
-                                    
-                                        <Label
-                                            Text="{Binding MediaInfo.Artist}"
-                                            FontSize="Micro"
-                                            TextColor="White"
-                                            MinimumWidthRequest="160"
-                                            MinimumHeightRequest="26"
-                                            />
-                                        <Label
-                                            Text="{Binding MediaInfo.Year}"
-                                            FontSize="Micro"
-                                            TextColor="White"
-                                            MinimumHeightRequest="26"
-                                            />
-
-                                        <Label
-                                            Text="{Binding MediaInfo.AlbumName}"
-                                            FontSize="Micro"
-                                            TextColor="White"
-                                            MinimumHeightRequest="26"
-                                            />
-                                    </StackLayout>
-                                </StackLayout>
-                            </StackLayout>
-                        </ViewCell>
+                        <Label Text="{Binding Name}"
+                   BackgroundColor="LightGray"
+                   FontSize="Large"
+                   FontAttributes="Bold" />
                     </DataTemplate>
-                </ListView.ItemTemplate>                
-            </ListView>
+                </CollectionView.GroupHeaderTemplate>
+                
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                            <StackLayout
+                                Orientation="Vertical"
+                                VerticalOptions="FillAndExpand"
+                                MinimumHeightRequest="400"
+                                >
+                                <Label
+                                    Text="{Binding Name}"
+                                    TextColor="White"
+                                    FontSize="Large"
+                                    />
 
+                                <ListView 
+                                    Margin="4"
+                                    ItemsSource="{Binding Albums}" 
+                                    VerticalOptions="FillAndExpand"
+                                    MinimumHeightRequest="400"
+                                    >
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <ViewCell
+                                                >
+                                                <StackLayout 
+                                                    Orientation="Vertical"
+                                                    VerticalOptions="FillAndExpand"
+                                                    MinimumHeightRequest="400"
+                                                    >
+                                                    <Label 
+                                                        Text="{Binding Name}"
+                                                        TextColor="White"
+                                                        FontSize="Medium"
+                                                        />
+
+                                                    <ListView
+                                                        ItemsSource="{Binding Songs}"
+                                                        Margin="6"
+                                                        VerticalOptions="FillAndExpand"
+                                                        MinimumHeightRequest="480"
+                                                        >
+                                                        <ListView.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <ViewCell>
+                                                                    <StackLayout
+                                                                        Orientation="Horizontal"
+                                                                        VerticalOptions="FillAndExpand"
+                                                                        MinimumHeightRequest="400"
+                                                                        >
+
+                                                                        <Label
+                                                                            Text="{Binding Name}"                                 
+                                                                            FontSize="Small"
+                                                                            TextColor="White"
+                                                                            MinimumWidthRequest="60"
+                                                                            VerticalOptions="Center"
+                                                                            HorizontalOptions="Center"
+                                                                            HorizontalTextAlignment="Center"
+                                                                            VerticalTextAlignment="Center"
+                                                                            />
+                                                                        <StackLayout
+                                                                            Orientation="Vertical"
+                                                                            VerticalOptions="FillAndExpand"
+                                                                            Margin="2,2,2,8"
+                                                                            MinimumHeightRequest="400"
+                                                                            >
+                                                                            <Label
+                                                                                Text="{Binding Name}"
+                                                                                FontSize="Small"
+                                                                                TextColor="White"
+                                                                                MinimumHeightRequest="40"
+                                                                                />
+                                                                            <StackLayout
+                                                                                Orientation="Horizontal"
+                                                                                MinimumHeightRequest="26"
+                                                                                >
+
+                                                                                <Label
+                                                                                    Text="{Binding MediaInfo.Artist}"
+                                                                                    FontSize="Micro"
+                                                                                    TextColor="White"
+                                                                                    MinimumWidthRequest="160"
+                                                                                    MinimumHeightRequest="26"
+                                                                                    />
+                                                                                <Label
+                                                                                    Text="{Binding MediaInfo.Year}"
+                                                                                    FontSize="Micro"
+                                                                                    TextColor="White"
+                                                                                    MinimumHeightRequest="26"
+                                                                                    />
+
+                                                                                <Label
+                                                                                    Text="{Binding MediaInfo.AlbumName}"
+                                                                                    FontSize="Micro"
+                                                                                    TextColor="White"
+                                                                                    MinimumHeightRequest="26"
+                                                                                    />
+                                                                            </StackLayout>
+                                                                        </StackLayout>
+                                                                    </StackLayout>
+                                                                </ViewCell>
+                                                            </DataTemplate>
+                                                        </ListView.ItemTemplate>
+                                                    </ListView>
+                                                    
+                                                </StackLayout>
+                                            </ViewCell>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                
+                            </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            
             <StackLayout
                 Orientation="Horizontal"
                 Margin="6"
@@ -100,7 +164,7 @@
                     PlaceholderColor="LightGray"
                     Text="{Binding SearchText, Mode=TwoWay}"
                     TextColor="White"
-                    HorizontalOptions="StartAndExpand"
+                    HorizontalOptions="FillAndExpand"
                     />
                 <Button
                     ImageSource="baseline_clear_black_36dp.png"
@@ -113,5 +177,6 @@
                     Source="baseline_search_black_36dp.png"/>
             </StackLayout>
         </StackLayout>
+
     </ContentPage.Content>
 </ContentPage>

@@ -25,5 +25,10 @@ namespace MyPlayer.Models.Classes
             }
             Albums.Add(album);
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

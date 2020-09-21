@@ -30,7 +30,7 @@ namespace MyPlayer.Models.Classes
 
         public TimeSpan OffcetInContainer { get; set; }
 
-        public Song(IMusicFile file) : this(file, TimeSpan.FromSeconds(0))
+        public Song(IMusicFile file) : this(file, Consts.ZeroTimeSpan)
         {
         }
 
@@ -38,7 +38,7 @@ namespace MyPlayer.Models.Classes
         {
             Container = file;
             Name = Path.GetFileNameWithoutExtension(file.Name);
-            Duration = TimeSpan.FromMinutes(1);
+            Duration = Consts.ZeroTimeSpan;
             OffcetInContainer = offcet;
 
             MediaInfo.Setup(file.FullPath);
@@ -46,7 +46,12 @@ namespace MyPlayer.Models.Classes
 
         public override string ToString()
         {
-            return Name;
+            var result = Name;
+            if (Album != null)
+            {
+                result = Album.ToString() + " / " + result;
+            }
+            return result;
         }
     }
 }

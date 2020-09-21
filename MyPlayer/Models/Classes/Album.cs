@@ -8,7 +8,26 @@ namespace MyPlayer.Models.Classes
 {
     public class Album : MediaBase, IAlbum
     {
-        public string Name { get; set; }
+        private string _name;
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                if (_name.Length < 4)
+                {
+                    return;
+                }
+                var year = _name.Substring(0, 4);
+                if (int.TryParse(year, out int test))
+                {
+                    Year = test;
+                    _name = _name.Substring(6, _name.Length - 6);
+                }
+            }
+        }
 
         private IPathElement _container;
 
@@ -37,6 +56,8 @@ namespace MyPlayer.Models.Classes
             }
         }
 
+        public int Year { get; set; }
+
         public Album(string name)
         {
             Name = name;
@@ -47,7 +68,7 @@ namespace MyPlayer.Models.Classes
         private void Clear()
         {
             MediaInfo.Clear();
-            Duration = TimeSpan.FromSeconds(0);
+            Duration = Consts.ZeroTimeSpan;
         }
 
         public void AddSong(ISong song)
@@ -61,5 +82,18 @@ namespace MyPlayer.Models.Classes
 
         }
 
+        public override string ToString()
+        {
+            var result = Name;
+            if (Year != 0)
+            {
+                result = Year + " - " + result;
+            }
+            if (Artist != null)
+            {
+                result = Artist.ToString() + " / " + result;
+            }
+            return result;
+        }
     }
 }

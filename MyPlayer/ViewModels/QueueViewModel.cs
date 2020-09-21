@@ -14,10 +14,20 @@ namespace MyPlayer.ViewModels
     {
         public IQueue Queue { get; set; }
 
-        public List<IndexedSong> Songs => Queue.Songs.Select(p => new IndexedSong(Queue.Songs.IndexOf(p) + 1, p)).ToList();
+        public List<SongModel> Songs => Queue.Songs.Select(song => new SongModel(Queue.Songs.IndexOf(song) + 1, song)).ToList();
+        //public List<ISong> Songs => Queue.Songs.ToList();
 
-        public List<IAlbum> Albums => Queue.Albums.ToList();
-        public List<IArtist> Artists => Queue.Artists.ToList();
+        public List<AlbumModel> Albums => /*new List<IAlbum>()
+        {
+            new Album("1"),
+            new Album("2"),
+            new Album("3"),
+        };*/
+            //Queue.Albums.ToList();
+            Queue.Albums.Select(album => new AlbumModel(album.Name, album.Songs)).ToList();
+
+        //public List<IArtist> Artists => Queue.Artists.ToList();
+        public List<ArtistModel> Artists => Queue.Artists.Select(artist => new ArtistModel(artist.Name, artist.Albums)).ToList();
 
 
         public ICommand AddToQueueCommand { get; set; }

@@ -12,6 +12,8 @@ namespace MyPlayer.Models.Interfaces
 
         IList<ISong> Songs { get; set; }
 
+        int Year { get; set; }
+
         //MusicFileType Type { get; set; }
 
         void AddSong(ISong song);

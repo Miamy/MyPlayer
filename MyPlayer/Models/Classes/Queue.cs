@@ -18,7 +18,7 @@ namespace MyPlayer.Models.Classes
         private LoopType _loopType = LoopType.All;
         public LoopType LoopType
         {
-            get => _loopType;
+            get => _loopType;  
             set
             {
                 _loopType = value;
@@ -44,7 +44,7 @@ namespace MyPlayer.Models.Classes
                 if (album == null)
                 {
                     album = new Album(albumName);
-                    album.MediaInfo.Year = song.MediaInfo.Year;
+                    album.Year = album.MediaInfo.Year = song.MediaInfo.Year;
                     album.MediaInfo.Cover = song.MediaInfo.Cover;
                     Albums.Add(album);
                 }
@@ -81,7 +81,7 @@ namespace MyPlayer.Models.Classes
                     {
                         if (song != null)
                         {
-                            Songs.Add(song);
+                            AddSong(song);
                         }
                         song = new Song(item);
                     }
@@ -102,11 +102,11 @@ namespace MyPlayer.Models.Classes
                         {
                             try
                             {
-                                song.OffcetInContainer = new TimeSpan(0, 0, int.Parse(parts[0]), int.Parse(parts[1]), int.Parse(parts[2]) * 10);
+                                song.OffcetInContainer = new TimeSpan(0, 0, int.Parse(parts[0]), int.Parse(parts[1]), (int)(float.Parse(parts[2]) / 75 * 1000));
                             }
                             catch
                             {
-                                song.OffcetInContainer = TimeSpan.FromSeconds(0);
+                                song.OffcetInContainer = Consts.ZeroTimeSpan;
                             }
                         }
                     }
@@ -114,6 +114,14 @@ namespace MyPlayer.Models.Classes
                 if (song != null)
                 {
                     AddSong(song);
+                }
+
+                for (var i = 0; i < Songs.Count - 2; i++)
+                {
+                    if (Songs[i + 1].OffcetInContainer > Consts.ZeroTimeSpan)
+                    {
+                        Songs[i].Duration = Songs[i + 1].OffcetInContainer - Songs[i].OffcetInContainer;
+                    }
                 }
             }
             else
