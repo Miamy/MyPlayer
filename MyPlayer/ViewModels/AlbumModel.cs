@@ -7,11 +7,11 @@ namespace MyPlayer.ViewModels
 {
     public class AlbumModel : List<ISong>
     {
-        public string Name { get; private set; }
+        public IAlbum Album { get; private set; }
 
-        public AlbumModel(string name, IList<ISong> songs) : base(songs)
+        public AlbumModel(IAlbum album, IList<ISong> songs) : base(songs)
         {
-            Name = name;
+            Album = album;
         }
     }
 }

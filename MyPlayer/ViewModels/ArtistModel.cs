@@ -8,11 +8,11 @@ namespace MyPlayer.ViewModels
 
     public class ArtistModel : List<IAlbum>
     {
-        public string Name { get; private set; }
+        public IArtist Artist { get; private set; }
 
-        public ArtistModel(string name, IList<IAlbum> albums) : base(albums)
+        public ArtistModel(IArtist artist, IList<IAlbum> albums) : base(albums)
         {
-            Name = name;
+            Artist = artist;
         }
     }
 }

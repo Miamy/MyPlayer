@@ -22,14 +22,13 @@
     <ContentPage.Content>
         <StackLayout
             Orientation="Vertical"
-            VerticalOptions="FillAndExpand"
-            MinimumHeightRequest="400"
+            VerticalOptions="StartAndExpand"
             >
             <CollectionView 
                 ItemsSource="{Binding Songs}"
-                VerticalOptions="FillAndExpand"
+                VerticalOptions="StartAndExpand"
                 IsGrouped="True"
-                ItemSizingStrategy="MeasureAllItems"
+                ItemSizingStrategy="MeasureFirstItem"
                 SelectionMode="Single"
                 >
                 <CollectionView.GroupHeaderTemplate>
@@ -45,32 +44,56 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout
-                            Orientation="Horizontal"
-                            VerticalOptions="FillAndExpand"
+                            Orientation="Vertical"
+                            VerticalOptions="StartAndExpand"
+                            Margin="6,0,0,0"
                             >
-                            <Label
-                                Text="{Binding Key.Year}"
-                                TextColor="White"
-                                FontSize="Medium"
-                                />
-
-                            <Label
-                                Text="{Binding Key.Name}"
-                                TextColor="White"
-                                FontSize="Medium"
-                                />
-
                             <StackLayout
-                                Orientation="Vertical"
-                                VerticalOptions="FillAndExpand"
+                                Orientation="Horizontal"
+                                VerticalOptions="StartAndExpand"
                                 >
-                              
+                                <Label
+                                    Text="{Binding Key.Year}"
+                                    TextColor="White"
+                                    FontSize="Medium"
+                                    />
+
+                                <Label
+                                    Text="{Binding Key.Name}"
+                                    TextColor="White"
+                                    FontSize="Medium"
+                                    />
                             </StackLayout>
+
+                            <ListView 
+                                ItemsSource="{Binding }"
+                                VerticalOptions="StartAndExpand"
+                                SelectionMode="Single"
+                                >
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <StackLayout
+                                                Orientation="Vertical"
+                                                VerticalOptions="StartAndExpand"
+                                                >
+                                                <Label
+                                                    Text="{Binding Name}"
+                                                    TextColor="White"
+                                                    FontSize="Small"
+                                                    />
+
+                                            </StackLayout>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
 
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
             
             <StackLayout
                 Orientation="Horizontal"
@@ -81,7 +104,7 @@
                     PlaceholderColor="LightGray"
                     Text="{Binding SearchText, Mode=TwoWay}"
                     TextColor="White"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="StartAndExpand"
                     />
                 <Button
                     ImageSource="baseline_clear_black_36dp.png"
