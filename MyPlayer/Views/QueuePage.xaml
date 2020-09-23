@@ -28,7 +28,7 @@
                 ItemsSource="{Binding Songs}"
                 VerticalOptions="StartAndExpand"
                 IsGrouped="True"
-                ItemSizingStrategy="MeasureFirstItem"
+                ItemSizingStrategy="MeasureAllItems"
                 SelectionMode="Single"
                 >
                 <CollectionView.GroupHeaderTemplate>
@@ -45,12 +45,12 @@
                     <DataTemplate>
                         <StackLayout
                             Orientation="Vertical"
-                            VerticalOptions="StartAndExpand"
-                            Margin="6,0,0,0"
+                            VerticalOptions="Start"
                             >
                             <StackLayout
                                 Orientation="Horizontal"
-                                VerticalOptions="StartAndExpand"
+                                VerticalOptions="Start"
+                                Margin="16,0,0,0"
                                 >
                                 <Label
                                     Text="{Binding Key.Year}"
@@ -59,37 +59,47 @@
                                     />
 
                                 <Label
+                                    Text=" - "
+                                    TextColor="White"
+                                    FontSize="Medium"
+                                    />
+                                
+                                <Label
                                     Text="{Binding Key.Name}"
                                     TextColor="White"
                                     FontSize="Medium"
                                     />
                             </StackLayout>
 
-                            <ListView 
-                                ItemsSource="{Binding }"
-                                VerticalOptions="StartAndExpand"
-                                SelectionMode="Single"
-                                >
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <ViewCell>
+                                <CollectionView 
+                                    ItemsSource="{Binding }"
+                                    SelectionMode="Single"
+                                    ItemSizingStrategy="MeasureFirstItem"
+                                    Margin="16,0,0,0"
+                                    VerticalOptions="Start"
+                                    >
+                                    
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
                                             <StackLayout
                                                 Orientation="Vertical"
-                                                VerticalOptions="StartAndExpand"
+                                                
+                                                HeightRequest="30"
                                                 >
                                                 <Label
                                                     Text="{Binding Name}"
                                                     TextColor="White"
                                                     FontSize="Small"
+                                                    VerticalTextAlignment="Center"                                                    
+                                                    Margin="16,0,0,0"
                                                     />
 
                                             </StackLayout>
-                                        </ViewCell>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </StackLayout>
 
-                        </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

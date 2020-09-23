@@ -10,6 +10,7 @@ using Android.OS;
 using Android;
 using Android.Support.V4.App;
 using Android.Support.V4.Content;
+using LibVLCSharp.Forms.Shared;
 
 namespace MyPlayer.Droid
 {
@@ -28,6 +29,7 @@ namespace MyPlayer.Droid
 
             SetPermissions();
 
+            LibVLCSharpFormsRenderer.Init();
 
             LoadApplication(new App());
         }
