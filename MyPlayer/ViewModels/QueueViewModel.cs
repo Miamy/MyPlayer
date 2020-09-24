@@ -14,16 +14,16 @@ namespace MyPlayer.ViewModels
 {
     public class AlbumModel
     {
-        public IAlbum Key { get; set; }
-        public int Count { get; set; }
+        public IAlbum Album { get; set; }
+        public int Count => Songs.Count;
         public List<ISong> Songs { get; set; }
     }
 
     public class ArtistModel
     {
-        public IArtist Key { get; set; }
-        public int Count { get; set; }
-        //public List<IGrouping<IAlbum, ISong>> Songs { get; set; }
+        public IArtist Artist { get; set; }
+        public int Count => Albums.Sum(album => album.Songs.Count);
+
         public List<IAlbum> Albums { get; set; }
     }
 
@@ -32,13 +32,13 @@ namespace MyPlayer.ViewModels
 
         public IQueue Queue { get; set; }
 
-        //public List<ArtistModel> Songs => Queue.Songs
-        //    .GroupBy(song => song.Album).Select(a => new AlbumModel { Key = a.Key, Count = a.Count(), Songs = a.ToList() }).ToList()
-        //    .GroupBy(album => album.Key.Artist).Select(a => new ArtistModel { Key = a.Key, Count = a.Count(), Albums = a.Key.Albums.ToList() }).ToList()
-        //    ;
-        public List<IGrouping<IArtist, IGrouping<IAlbum, ISong>>> Songs => Queue.Songs
-                .GroupBy(song => song.Album)
-                .GroupBy(album => album.Key.Artist).ToList();
+        public List<ArtistModel> Songs => Queue.Songs
+            .GroupBy(song => song.Album).Select(a => new AlbumModel { Album = a.Key, Songs = a.ToList() }).ToList()
+            .GroupBy(album => album.Album.Artist).Select(a => new ArtistModel { Artist = a.Key, Albums = a.Key.Albums.ToList() }).ToList()
+            ;
+        //public List<IGrouping<IArtist, IGrouping<IAlbum, ISong>>> Songs => Queue.Songs
+        //        .GroupBy(song => song.Album)
+        //        .GroupBy(album => album.Key.Artist).ToList();
 
         //public int BlockHeight { get; set; } = 300;
 

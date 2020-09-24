@@ -47,7 +47,7 @@
                 <CollectionView.GroupHeaderTemplate>
                     <DataTemplate>
                         <Label 
-                            Text="{Binding Key.Name}"
+                            Text="{Binding Artist.Name}"
                             TextColor="White"
                             FontSize="Large"
                             />
