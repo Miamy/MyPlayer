@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:model="clr-namespace:MyPlayer.ViewModels"
+             xmlns:model="clr-namespace:MyPlayer.Models"
+             xmlns:viewmodel="clr-namespace:MyPlayer.ViewModels"
+             xmlns:interfaces="clr-namespace:MyPlayer.Models.Interfaces"
              mc:Ignorable="d"
              x:Class="MyPlayer.Views.QueuePage"
              Title="Playlist"
@@ -14,6 +16,11 @@
          <model:PlaylistViewModel />
          </ContentPage.BindingContext>
     -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <model:ArtistToHeightConverter x:Key="artistToHeightConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding AddToQueueCommand}" IconImageSource="baseline_add_black_36dp.png"/>
@@ -22,15 +29,21 @@
     <ContentPage.Content>
         <StackLayout
             Orientation="Vertical"
-            VerticalOptions="StartAndExpand"
             >
+
             <CollectionView 
+                x:Name="OuterView"
                 ItemsSource="{Binding Songs}"
-                VerticalOptions="StartAndExpand"
                 IsGrouped="True"
                 ItemSizingStrategy="MeasureAllItems"
-                SelectionMode="Single"
+                SelectionMode="Single" 
+                
                 >
+
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" />
+                </CollectionView.ItemsLayout>
+
                 <CollectionView.GroupHeaderTemplate>
                     <DataTemplate>
                         <Label 
@@ -40,16 +53,17 @@
                             />
                     </DataTemplate>
                 </CollectionView.GroupHeaderTemplate>
-                
-                <CollectionView.ItemTemplate>
+
+                <CollectionView.ItemTemplate >
                     <DataTemplate>
-                        <StackLayout
+
+                        <StackLayout 
                             Orientation="Vertical"
-                            VerticalOptions="Start"
+                            HeightRequest="{Binding Key.Key.Count}"
                             >
+
                             <StackLayout
                                 Orientation="Horizontal"
-                                VerticalOptions="Start"
                                 Margin="16,0,0,0"
                                 >
                                 <Label
@@ -63,7 +77,7 @@
                                     TextColor="White"
                                     FontSize="Medium"
                                     />
-                                
+
                                 <Label
                                     Text="{Binding Key.Name}"
                                     TextColor="White"
@@ -71,40 +85,46 @@
                                     />
                             </StackLayout>
 
-                                <CollectionView 
-                                    ItemsSource="{Binding }"
-                                    SelectionMode="Single"
-                                    ItemSizingStrategy="MeasureFirstItem"
-                                    Margin="16,0,0,0"
-                                    VerticalOptions="Start"
-                                    >
-                                    
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackLayout
-                                                Orientation="Vertical"
-                                                
-                                                HeightRequest="30"
-                                                >
-                                                <Label
-                                                    Text="{Binding Name}"
-                                                    TextColor="White"
-                                                    FontSize="Small"
-                                                    VerticalTextAlignment="Center"                                                    
-                                                    Margin="16,0,0,0"
-                                                    />
+ 
+                            <CollectionView 
+                                x:Name="InnerView"
+                                ItemsSource="{Binding }"
+                                SelectionMode="Single"
+                                ItemSizingStrategy="MeasureAllItems"
+                                BindingContextChanged="InnerView_BindingContextChanged" 
+                                Margin="16,0,0,0"
+                               
+                                >
 
-                                            </StackLayout>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
-                            </StackLayout>
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Vertical" />
+                                </CollectionView.ItemsLayout>
+                          
+
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackLayout
+                                            Orientation="Vertical"
+                                            >
+                                            <Label
+                                                Text="{Binding Name}"
+                                                TextColor="White"
+                                                FontSize="Small"
+                                                VerticalTextAlignment="Center"                                                    
+                                                Margin="16,0,0,0"
+                                                />
+
+                                        </StackLayout>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+ 
+                        </StackLayout>
 
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            
             <StackLayout
                 Orientation="Horizontal"
                 Margin="6"

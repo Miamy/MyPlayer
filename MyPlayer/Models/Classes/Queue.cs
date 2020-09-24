@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace MyPlayer.Models.Classes
@@ -22,7 +23,7 @@ namespace MyPlayer.Models.Classes
             set
             {
                 _loopType = value;
-                RaisePropertyChanged("LoopType");
+                RaisePropertyChanged();
             }
         }
 
@@ -65,6 +66,8 @@ namespace MyPlayer.Models.Classes
                     song.Album.Artist = artist;
                 }
             }
+
+            //RaisePropertyChanged("Songs");
         }
 
         public void Add(IMusicFile item)
@@ -228,7 +231,7 @@ namespace MyPlayer.Models.Classes
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void RaisePropertyChanged(string aName)
+        protected virtual void RaisePropertyChanged([CallerMemberName] string aName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(aName));
         }
