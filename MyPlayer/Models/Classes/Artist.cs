@@ -1,6 +1,7 @@
 ﻿using MyPlayer.Models.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace MyPlayer.Models.Classes
@@ -10,6 +11,7 @@ namespace MyPlayer.Models.Classes
         public string Name { get; set; }
         public IList<IAlbum> Albums { get; set; }
 
+        public int Count => Albums.Sum(album => album.Count);
         public Artist(string name)
         {
             Name = name;

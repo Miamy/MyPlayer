@@ -8,7 +8,7 @@ namespace MyPlayer.Models.Interfaces
     {
         string Name { get; set; }
         IList<IAlbum> Albums { get; set; }
-
+        int Count { get; }
         void AddAlbum(IAlbum album);
     }
 }

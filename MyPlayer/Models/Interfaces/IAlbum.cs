@@ -16,6 +16,7 @@ namespace MyPlayer.Models.Interfaces
 
         //MusicFileType Type { get; set; }
 
+        int Count { get; }
         void AddSong(ISong song);
     }
 }
