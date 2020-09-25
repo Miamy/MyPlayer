@@ -1,5 +1,6 @@
 ﻿using MyPlayer.Models.Classes;
 using MyPlayer.Models.Interfaces;
+using MyPlayer.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,42 +8,28 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace MyPlayer.ViewModels
 {
-    public class AlbumModel
-    {
-        public IAlbum Album { get; set; }
-        public int Count => Songs.Count;
-        public List<ISong> Songs { get; set; }
-    }
 
-    public class ArtistModel
-    {
-        public IArtist Artist { get; set; }
-        public int Count => Albums.Sum(album => album.Songs.Count);
-
-        public List<IAlbum> Albums { get; set; }
-    }
-
-    public class QueueViewModel : INotifyPropertyChanged
+    public class QueueViewModel : BaseViewModel
     {
 
         public IQueue Queue { get; set; }
 
-        public List<ArtistModel> Songs => Queue.Songs
-            .GroupBy(song => song.Album).Select(a => new AlbumModel { Album = a.Key, Songs = a.ToList() }).ToList()
-            .GroupBy(album => album.Album.Artist).Select(a => new ArtistModel { Artist = a.Key, Albums = a.Key.Albums.ToList() }).ToList()
-            ;
-        //public List<IGrouping<IArtist, IGrouping<IAlbum, ISong>>> Songs => Queue.Songs
-        //        .GroupBy(song => song.Album)
-        //        .GroupBy(album => album.Key.Artist).ToList();
+        //public List<ArtistModel> Songs => Queue.Songs
+        //    .GroupBy(song => song.Album).Select(a => new AlbumModel { Album = a.Key, Songs = a.ToList() }).ToList()
+        //    .GroupBy(album => album.Album.Artist).Select(a => new ArtistModel { Artist = a.Key, Albums = a.Key.Albums.ToList() }).ToList()
+        //    ;
+        public List<IGrouping<IArtist, AlbumModel>> Songs => Queue.Songs
+                .GroupBy(song => song.Album).Select(a => new AlbumModel { Album = a.Key, Songs = a.ToList() }).ToList()
+                .GroupBy(album => album.Album.Artist).ToList();
 
-        //public int BlockHeight { get; set; } = 300;
 
-        public ICommand AddToQueueCommand { get; set; }
+        public ICommand BrowseFilesCommand { get; set; }
         public ICommand ClearSearchTextCommand { get; set; }
 
         private string _searchText;
@@ -50,11 +37,7 @@ namespace MyPlayer.ViewModels
         public string SearchText
         {
             get => _searchText;
-            set
-            {
-                _searchText = value;
-                RaisePropertyChanged();
-            }
+            set => Set(nameof(SearchText), ref _searchText, value);
         }
 
         public QueueViewModel(IQueue queue)
@@ -67,18 +50,20 @@ namespace MyPlayer.ViewModels
         #region Commands
         private void CreateCommands()
         {
-            AddToQueueCommand = new Command(AddToQueueAction, CanAddToQueue);
+            BrowseFilesCommand = new Command(BrowseFilesAction, CanBrowseFiles);
             ClearSearchTextCommand = new Command(ClearSearchTextAction/*, CanClearSearchText*/);
         }
 
 
-        private bool CanAddToQueue(object arg)
+        private bool CanBrowseFiles(object arg)
         {
             return true;
         }
 
-        private void AddToQueueAction(object obj)
+        private async void BrowseFilesAction(object obj)
         {
+            var page = new BrowsePage();
+            await Application.Current.MainPage.Navigation.PushAsync(page, false);
         }
 
         private bool CanClearSearchText(object arg)
@@ -94,11 +79,7 @@ namespace MyPlayer.ViewModels
 
 
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void RaisePropertyChanged([CallerMemberName] string aName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(aName));
-        }
+      
 
     }
 }

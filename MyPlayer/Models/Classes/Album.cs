@@ -64,7 +64,7 @@ namespace MyPlayer.Models.Classes
             Songs = new List<ISong>();
         }
 
-        public int Count => Songs.Count;
+        public int Count => Songs.Count* 30 + 30;
         private void Clear()
         {
             MediaInfo.Clear();

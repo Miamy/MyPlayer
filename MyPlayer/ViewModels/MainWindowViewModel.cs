@@ -14,17 +14,13 @@ using Xamarin.Forms;
 
 namespace MyPlayer.ViewModels
 {
-    public class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : BaseViewModel
     {
         private ISong _current;
         public ISong Current
         { 
             get => _current;
-            set
-            {
-                _current = value;
-                RaisePropertyChanged("Current");
-            }
+            set => Set(nameof(Current), ref _current, value);
         }
         public ICommand ShowQueueCommand { get; set; }
         public ICommand ShowSettingsCommand { get; set; }
@@ -52,11 +48,7 @@ namespace MyPlayer.ViewModels
         public bool IsPlaying
         {
             get => _isPlaying;
-            set
-            {
-                _isPlaying = value;
-                RaisePropertyChanged("IsPlaying");
-            }
+            set => Set(nameof(IsPlaying), ref _isPlaying, value);
         }
 
         public MainWindowViewModel()
@@ -64,16 +56,20 @@ namespace MyPlayer.ViewModels
             CreateCommands();
 
             Queue = new Queue();
-            Queue.PropertyChanged += PropertyChanged;
+            //Queue.PropertyChanged += PropertyChanged;
 
             try
             {
-                var files = PathScanner.ProceedRoot(@"/storage/emulated/0/Music/");
+                //var files = PathScanner.ProceedRoot(@"/storage/emulated/0/Music/");
+                var files = PathScanner.ProceedRoot(@"/storage/2743-1D07/Music/");
                 Queue.AddRange2(files);
             }
             catch (UnauthorizedAccessException)
             {
-
+                //throw;
+            }
+            catch (FileNotFoundException)
+            {
                 //throw;
             }
 
@@ -183,22 +179,6 @@ namespace MyPlayer.ViewModels
             {
                 Media = new Media(LibVLC, new Uri("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
             };
-        }
-
-        private void Set<T>(string propertyName, ref T field, T value)
-        {
-            if (field == null && value != null || field != null && !field.Equals(value))
-            {
-                field = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void RaisePropertyChanged(string aName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(aName));
-        }
+        }      
     }
 }

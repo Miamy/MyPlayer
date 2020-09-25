@@ -13,7 +13,13 @@
     <ContentPage.BindingContext>
         <model:MainWindowViewModel />
     </ContentPage.BindingContext>
-    
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Button" BasedOn="{StaticResource ImageButtonStyle}"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding ShowQueueCommand}" IconImageSource="baseline_playlist_play_black_36dp.png"/>
         <ToolbarItem Command="{Binding ShowSettingsCommand}" IconImageSource="baseline_settings_black_36dp.png"/>
@@ -96,7 +102,6 @@
 
             <Button
                 Command="{Binding LoopCommand}"
-                Style="{StaticResource ImageButtonStyle}"
                 >
                 <Button.Triggers>
                     <DataTrigger TargetType="Button" Binding="{Binding Queue.LoopType}" Value="None">
@@ -110,17 +115,16 @@
                     </DataTrigger>
                 </Button.Triggers>
             </Button>
+
             <Button 
                 Command="{Binding PrevCommand}"
                 ImageSource="baseline_skip_previous_black_36dp.png"
-                Style="{StaticResource ImageButtonStyle}"
                 />
 
             <Button
                 x:Name="PlayButton"
                 Command="{Binding PlayCommand}"
                 ImageSource="baseline_play_arrow_black_36dp.png"
-                Style="{StaticResource ImageButtonStyle}"
                 >
                 <Button.Triggers>
                     <DataTrigger TargetType="Button" Binding="{Binding IsPlaying}" Value="true">
@@ -137,11 +141,9 @@
             <Button
                 Command="{Binding NextCommand}"
                 ImageSource="baseline_skip_next_black_36dp.png"
-                Style="{StaticResource ImageButtonStyle}"
                 />
             <Button
                 ImageSource="baseline_delete_black_36dp.png"
-                Style="{StaticResource ImageButtonStyle}"
                 />
 
             <StackLayout

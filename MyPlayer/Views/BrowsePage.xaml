@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:model="clr-namespace:MyPlayer.ViewModels"
+             mc:Ignorable="d"
+             x:Class="MyPlayer.Views.BrowsePage"
+             Title="Add files"
+             BackgroundColor="Black"
+             >
+
+    <ContentPage.BindingContext>
+        <model:BrowseViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Button" BasedOn="{StaticResource ImageButtonStyle}"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+
+    <ContentPage.Content>
+        <StackLayout
+            Orientation="Vertical"
+            >
+
+            <!--Title-->
+            <StackLayout
+                Orientation="Horizontal"
+                >
+                <Label 
+                    Text="{Binding Current}"
+                    VerticalOptions="Start" 
+                    HorizontalOptions="CenterAndExpand" 
+                    FontSize="Small"
+                    />
+                <Button
+                    Text="Play all"
+                    />
+                <Button
+                    Text="Play selected"/>
+            </StackLayout>
+
+            <!--Toolbar-->
+            <StackLayout
+                Orientation="Horizontal"
+                Margin="4,6,4,12"
+                >
+                <Button
+                    ImageSource="baseline_subdirectory_arrow_left_black_36dp.png"
+                    />
+                <Button
+                    ImageSource="baseline_home_black_36dp.png"
+                    />
+                <Button
+                    ImageSource="baseline_refresh_black_36dp.png"
+                    />
+            </StackLayout>
+
+            <!--Root-->
+            <StackLayout
+                x:Name="RootContainer"
+                Orientation="Vertical"
+                >
+                <ListView
+                    ItemsSource="{Binding RootFolders}"
+                    SeparatorVisibility="Default"
+                    SeparatorColor="LightGray"
+                    >
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout
+                                    Orientation="Horizontal"
+                                    VerticalOptions="Center"
+                                    >
+                                    <Image
+                                        Source="baseline_sd_storage_black_36dp.png"
+                                        MinimumWidthRequest="60"
+                                        WidthRequest="60"
+                                        />
+                                    
+                                    <Label
+                                        Text="{Binding Name}"
+                                        TextColor="White"
+                                        FontSize="Medium"
+                                        MinimumWidthRequest="200"
+                                        WidthRequest="200"
+                                        VerticalTextAlignment="Center"
+                                        />
+                                    <Label
+                                        Text="{Binding Path}"
+                                        TextColor="White"
+                                        FontSize="Small"
+                                        MinimumWidthRequest="140"
+                                        VerticalTextAlignment="End"
+                                        />
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

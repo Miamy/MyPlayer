@@ -10,6 +10,7 @@
         <ResourceDictionary>
             <Style x:Key="ImageButtonStyle" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="Black"/>
+                <Setter Property="TextColor" Value="White"/>
                 <Setter Property="HorizontalOptions" Value="CenterAndExpand"/>
                 <Setter Property="VerticalOptions" Value="Center"/>
                 <Setter Property="HeightRequest">

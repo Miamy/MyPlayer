@@ -16,14 +16,9 @@
          <model:PlaylistViewModel />
          </ContentPage.BindingContext>
     -->
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <model:ArtistToHeightConverter x:Key="artistToHeightConverter" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
-
+ 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding AddToQueueCommand}" IconImageSource="baseline_add_black_36dp.png"/>
+        <ToolbarItem Command="{Binding BrowseFilesCommand}" IconImageSource="baseline_add_black_36dp.png"/>
     </ContentPage.ToolbarItems>
 
     <ContentPage.Content>
@@ -37,7 +32,6 @@
                 IsGrouped="True"
                 ItemSizingStrategy="MeasureAllItems"
                 SelectionMode="Single" 
-                
                 >
 
                 <CollectionView.ItemsLayout>
@@ -47,9 +41,12 @@
                 <CollectionView.GroupHeaderTemplate>
                     <DataTemplate>
                         <Label 
-                            Text="{Binding Artist.Name}"
+                            Text="{Binding Key.Name}"
                             TextColor="White"
                             FontSize="Large"
+                            VerticalTextAlignment="Center"
+                            HeightRequest="44"
+                            VerticalOptions="Center"
                             />
                     </DataTemplate>
                 </CollectionView.GroupHeaderTemplate>
@@ -59,17 +56,20 @@
 
                         <StackLayout 
                             Orientation="Vertical"
-                            HeightRequest="{Binding Key.Key.Count}"
+                            HeightRequest="{Binding Height}"
                             >
 
                             <StackLayout
                                 Orientation="Horizontal"
                                 Margin="16,0,0,0"
+                                HeightRequest="{Binding HeaderHeight}"
+                                
                                 >
                                 <Label
-                                    Text="{Binding Key.Year}"
+                                    Text="{Binding Album.Year}"
                                     TextColor="White"
                                     FontSize="Medium"
+                                    WidthRequest="46"
                                     />
 
                                 <Label
@@ -79,20 +79,25 @@
                                     />
 
                                 <Label
-                                    Text="{Binding Key.Name}"
+                                    Text="{Binding Album.Name}"
                                     TextColor="White"
                                     FontSize="Medium"
+                                    LineBreakMode="TailTruncation"
                                     />
                             </StackLayout>
+                            <Label 
+                                x:Name="HeightLabel"
+                                IsVisible="False"
+                                HeightRequest="{Binding ItemHeight}"
+                                />
 
- 
                             <CollectionView 
                                 x:Name="InnerView"
-                                ItemsSource="{Binding }"
+                                ItemsSource="{Binding Songs}"
                                 SelectionMode="Single"
                                 ItemSizingStrategy="MeasureAllItems"
                                 BindingContextChanged="InnerView_BindingContextChanged" 
-                                Margin="16,0,0,0"
+                                Margin="16,4,0,4"
                                
                                 >
 
@@ -105,6 +110,7 @@
                                     <DataTemplate>
                                         <StackLayout
                                             Orientation="Vertical"
+                                            HeightRequest="{Binding Path=HeightRequest, Source={x:Reference HeightLabel}}"
                                             >
                                             <Label
                                                 Text="{Binding Name}"
@@ -112,6 +118,8 @@
                                                 FontSize="Small"
                                                 VerticalTextAlignment="Center"                                                    
                                                 Margin="16,0,0,0"
+                                                LineBreakMode="TailTruncation"
+                                                VerticalOptions="Center"
                                                 />
 
                                         </StackLayout>
