@@ -22,9 +22,5 @@ namespace MyPlayer.Views
             BindingContext = _model;
         }
 
-        private void InnerView_BindingContextChanged(object sender, EventArgs e)
-        {
-            //OuterView.Layout(OuterView.Bounds);
-        }
     }
 }

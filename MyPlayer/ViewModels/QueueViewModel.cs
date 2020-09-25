@@ -24,9 +24,9 @@ namespace MyPlayer.ViewModels
         //    .GroupBy(song => song.Album).Select(a => new AlbumModel { Album = a.Key, Songs = a.ToList() }).ToList()
         //    .GroupBy(album => album.Album.Artist).Select(a => new ArtistModel { Artist = a.Key, Albums = a.Key.Albums.ToList() }).ToList()
         //    ;
-        public List<IGrouping<IArtist, AlbumModel>> Songs => Queue.Songs
-                .GroupBy(song => song.Album).Select(a => new AlbumModel { Album = a.Key, Songs = a.ToList() }).ToList()
-                .GroupBy(album => album.Album.Artist).ToList();
+        public IEnumerable<IGrouping<IArtist, AlbumModel>> Songs => Queue.Songs
+                .GroupBy(song => song.Album).Select(a => new AlbumModel(a.Key))
+                .GroupBy(album => album.Artist);
 
 
         public ICommand BrowseFilesCommand { get; set; }

@@ -38,9 +38,12 @@
                     />
                 <Button
                     Text="Play all"
+                    WidthRequest="60"
                     />
                 <Button
-                    Text="Play selected"/>
+                    Text="Play selected"
+                    WidthRequest="60"
+                    />
             </StackLayout>
 
             <!--Toolbar-->

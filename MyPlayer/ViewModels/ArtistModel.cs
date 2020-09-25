@@ -21,6 +21,6 @@ namespace MyPlayer.ViewModels
             }
         }
 
-        public List<IAlbum> Albums { get; set; }
+        public IList<IAlbum> Albums => Artist.Albums;
     }
 }

@@ -72,65 +72,70 @@ namespace MyPlayer.Models.Classes
 
         public void Add(IMusicFile item)
         {
-            ISong song = null;
             if (item.IsComposite && item.HasDescription)
             {
-                var content = File.ReadAllLines(item.DescriptionFilename);
-                for (var i = 0; i < content.Length; i++)
-                {
-                    var line = content[i].Trim();
-
-                    if (line.StartsWith("TRACK"))
-                    {
-                        if (song != null)
-                        {
-                            AddSong(song);
-                        }
-                        song = new Song(item);
-                    }
-
-                    if (line.StartsWith("TITLE"))
-                    {
-                        if (song != null)
-                        {
-                            song.Name = line.Replace("TITLE", "").Replace("\"", "").Trim();
-                        }
-                    }
-
-                    if (line.StartsWith("INDEX 01"))
-                    {
-                        var offcet = line.Replace("INDEX 01", "").Trim();
-                        var parts = offcet.Split(':');
-                        if (parts.Length == 3)
-                        {
-                            try
-                            {
-                                song.OffcetInContainer = new TimeSpan(0, 0, int.Parse(parts[0]), int.Parse(parts[1]), (int)(float.Parse(parts[2]) / 75 * 1000));
-                            }
-                            catch
-                            {
-                                song.OffcetInContainer = Consts.ZeroTimeSpan;
-                            }
-                        }
-                    }
-                }
-                if (song != null)
-                {
-                    AddSong(song);
-                }
-
-                for (var i = 0; i < Songs.Count - 2; i++)
-                {
-                    if (Songs[i + 1].OffcetInContainer > Consts.ZeroTimeSpan)
-                    {
-                        Songs[i].Duration = Songs[i + 1].OffcetInContainer - Songs[i].OffcetInContainer;
-                    }
-                }
+                AddSeveralSongs(item);
             }
             else
             {
-                song = new Song(item);
+                var song = new Song(item);
                 AddSong(song);
+            }
+        }
+
+        private void AddSeveralSongs(IMusicFile item)
+        {
+            ISong song = null;
+            var content = File.ReadAllLines(item.DescriptionFilename);
+            for (var i = 0; i < content.Length; i++)
+            {
+                var line = content[i].Trim();
+
+                if (line.StartsWith("TRACK"))
+                {
+                    if (song != null)
+                    {
+                        AddSong(song);
+                    }
+                    song = new Song(item);
+                }
+
+                if (line.StartsWith("TITLE"))
+                {
+                    if (song != null)
+                    {
+                        song.Name = line.Replace("TITLE", "").Replace("\"", "").Trim();
+                    }
+                }
+
+                if (line.StartsWith("INDEX 01"))
+                {
+                    var offcet = line.Replace("INDEX 01", "").Trim();
+                    var parts = offcet.Split(':');
+                    if (parts.Length == 3)
+                    {
+                        try
+                        {
+                            song.OffcetInContainer = new TimeSpan(0, 0, int.Parse(parts[0]), int.Parse(parts[1]), (int)(float.Parse(parts[2]) / 75 * 1000));
+                        }
+                        catch
+                        {
+                            song.OffcetInContainer = Consts.ZeroTimeSpan;
+                        }
+                    }
+                }
+            }
+            if (song != null)
+            {
+                AddSong(song);
+            }
+
+            for (var i = 0; i < Songs.Count - 2; i++)
+            {
+                if (Songs[i + 1].OffcetInContainer > Consts.ZeroTimeSpan)
+                {
+                    Songs[i].Duration = Songs[i + 1].OffcetInContainer - Songs[i].OffcetInContainer;
+                }
             }
         }
 
