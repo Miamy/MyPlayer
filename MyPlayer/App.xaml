@@ -31,6 +31,9 @@
                 </Setter>
             </Style>
 
+            <Style x:Key="CheckBoxStyle" TargetType="CheckBox">
+                <Setter Property="Color" Value="White"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 

@@ -16,7 +16,13 @@
          <model:PlaylistViewModel />
          </ContentPage.BindingContext>
     -->
- 
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding BrowseFilesCommand}" IconImageSource="baseline_add_black_36dp.png"/>
     </ContentPage.ToolbarItems>
@@ -25,13 +31,118 @@
         <StackLayout
             Orientation="Vertical"
             >
+            <ListView IsVisible="False"
 
-            <CollectionView 
+                ItemsSource="{Binding Artists}" 
+                               
+                >
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell >
+                            <StackLayout 
+                                Orientation="Vertical" 
+                                HeightRequest="{Binding Height}">
+                               
+                                <StackLayout
+                                    Orientation="Horizontal"
+                                    HeightRequest="40"
+                                    >
+                                    <CheckBox
+                                        IsChecked="{Binding IsSelected}"
+                                        Color="White"
+                                        />
+                                    <Label 
+                                        Text="{Binding Name}"
+                                        TextColor="White"
+                                        FontSize="Large"
+                                        VerticalTextAlignment="Center"
+                                        VerticalOptions="Center"
+                                        />
+                                </StackLayout>
+                                <ListView 
+                                    ItemsSource="{Binding Albums}" >
+
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <ViewCell >
+                                                <StackLayout 
+                                                    Orientation="Vertical" 
+                                                    HeightRequest="{Binding Height}"
+                                                    >
+                                                    <StackLayout
+                                                        Orientation="Horizontal"
+                                                        HeightRequest="40"
+                                                        Margin="16,0,0,0"
+                                                        >
+                                                        <CheckBox
+                                                            IsChecked="{Binding IsSelected}"
+                                                            Color="White"
+                                                            />
+                                                        <Label 
+                                                            Text="{Binding Name}"
+                                                            TextColor="White"
+                                                            FontSize="Medium"
+                                                            VerticalTextAlignment="Center"
+                                                            VerticalOptions="Center"
+                                                            LineBreakMode="TailTruncation"
+                                                            />
+                                                    </StackLayout>
+
+
+                                                    <ListView 
+                                                        ItemsSource="{Binding Songs}" >
+
+                                                        <ListView.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <ViewCell >
+                                                                    <StackLayout
+                                                                        Orientation="Horizontal"
+                                                                        HeightRequest="{Binding Height}"
+                                                                        Margin="16,0,0,0"
+                                                                        >
+                                                                        <CheckBox
+                                                                            IsChecked="{Binding IsSelected}"
+                                                                            Color="White"
+                                                                            />
+                                                                        <Label 
+                                                                            Text="{Binding Name}"
+                                                                            TextColor="White"
+                                                                            FontSize="Small"
+                                                                            VerticalTextAlignment="Center"
+                                                                            VerticalOptions="Center"
+                                                                            LineBreakMode="TailTruncation"
+                                                                            />
+                                                                    </StackLayout>
+                                                                </ViewCell>
+                                                            </DataTemplate>
+                                                        </ListView.ItemTemplate>
+                                                    </ListView>
+
+
+
+
+                                                </StackLayout>
+                                            </ViewCell>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+
+
+
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>    
+            </ListView>
+
+            <CollectionView  
                 x:Name="OuterView"
-                ItemsSource="{Binding Songs}"
+                ItemsSource="{Binding Artists}"
                 IsGrouped="True"
                 ItemSizingStrategy="MeasureAllItems"
                 SelectionMode="Single" 
+                
                 >
 
                 <CollectionView.ItemsLayout>
@@ -40,14 +151,20 @@
 
                 <CollectionView.GroupHeaderTemplate>
                     <DataTemplate>
-                        <Label 
-                            Text="{Binding Key.Name}"
-                            TextColor="White"
-                            FontSize="Large"
-                            VerticalTextAlignment="Center"
-                            HeightRequest="44"
-                            VerticalOptions="Center"
-                            />
+                        <StackLayout
+                            Orientation="Horizontal"
+                                HeightRequest="44"
+                            >
+                            <CheckBox
+                                IsChecked="{Binding IsSelected}"/>
+                            <Label 
+                                Text="{Binding Name}"
+                                TextColor="White"
+                                FontSize="Large"
+                                VerticalTextAlignment="Center"
+                                VerticalOptions="Center"
+                                />
+                        </StackLayout>
                     </DataTemplate>
                 </CollectionView.GroupHeaderTemplate>
 
@@ -62,9 +179,10 @@
                             <StackLayout
                                 Orientation="Horizontal"
                                 Margin="16,0,0,0"
-                                HeightRequest="{Binding HeaderHeight}"
-                                
+                                HeightRequest="40"
                                 >
+                                <CheckBox
+                                    IsChecked="{Binding IsSelected}"/>
                                 <Label
                                     Text="{Binding Year}"
                                     TextColor="White"
@@ -85,11 +203,7 @@
                                     LineBreakMode="TailTruncation"
                                     />
                             </StackLayout>
-                            <Label 
-                                x:Name="HeightLabel"
-                                IsVisible="False"
-                                HeightRequest="{Binding ItemHeight}"
-                                />
+                           
 
                             <CollectionView 
                                 x:Name="InnerView"
@@ -109,18 +223,23 @@
                                     <DataTemplate>
                                         <StackLayout
                                             Orientation="Vertical"
-                                            HeightRequest="{Binding Path=HeightRequest, Source={x:Reference HeightLabel}}"
+                                            HeightRequest="{Binding Height}"
                                             >
-                                            <Label
-                                                Text="{Binding Name}"
-                                                TextColor="White"
-                                                FontSize="Small"
-                                                VerticalTextAlignment="Center"                                                    
-                                                Margin="16,0,0,0"
-                                                LineBreakMode="TailTruncation"
-                                                VerticalOptions="Center"
-                                                />
-
+                                            <StackLayout
+                                                Orientation="Horizontal">
+                                                <CheckBox
+                                                    IsChecked="{Binding IsSelected}"/>
+                                            
+                                                <Label
+                                                    Text="{Binding Name}"
+                                                    TextColor="White"
+                                                    FontSize="Small"
+                                                    VerticalTextAlignment="Center"                                                    
+                                                    Margin="16,0,0,0"
+                                                    LineBreakMode="TailTruncation"
+                                                    VerticalOptions="Center"
+                                                    />
+                                            </StackLayout>
                                         </StackLayout>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>

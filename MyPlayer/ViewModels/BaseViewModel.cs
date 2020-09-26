@@ -8,6 +8,9 @@ namespace MyPlayer.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
+        protected int HeaderHeight { get; set; } = 40;
+        protected int ItemHeight { get; set; } = 30;
+
         protected void Set<T>(string propertyName, ref T field, T value)
         {
             if (field == null && value != null || field != null && !field.Equals(value))

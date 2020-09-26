@@ -20,13 +20,9 @@ namespace MyPlayer.ViewModels
 
         public IQueue Queue { get; set; }
 
-        //public List<ArtistModel> Songs => Queue.Songs
-        //    .GroupBy(song => song.Album).Select(a => new AlbumModel { Album = a.Key, Songs = a.ToList() }).ToList()
-        //    .GroupBy(album => album.Album.Artist).Select(a => new ArtistModel { Artist = a.Key, Albums = a.Key.Albums.ToList() }).ToList()
-        //    ;
-        public IEnumerable<IGrouping<IArtist, AlbumModel>> Songs => Queue.Songs
+        public List<ArtistModel> Artists => Queue.Songs
                 .GroupBy(song => song.Album).Select(a => new AlbumModel(a.Key))
-                .GroupBy(album => album.Artist);
+                .GroupBy(album => album.Artist).Select(a => new ArtistModel(a.Key)).ToList();
 
 
         public ICommand BrowseFilesCommand { get; set; }

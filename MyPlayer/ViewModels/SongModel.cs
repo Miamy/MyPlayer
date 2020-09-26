@@ -1,15 +1,19 @@
 ﻿using MyPlayer.Models.Interfaces;
+using MyPlayer.ViewModels;
 
-namespace MyPlayer.Models.Classes
+namespace MyPlayer.ViewModels
 {
-    public class SongModel
+    public class SongModel: SelectionViewModel
     {
         public int Index { get; set; }
-        public ISong Song { get; set; }
+        private ISong _song;
+
+        public string Name => _song.Name;
+        public int Height => ItemHeight;
         public SongModel(int index, ISong song)
         {
             Index = index;
-            Song = song;
+            _song = song;
         }     
     }
 }

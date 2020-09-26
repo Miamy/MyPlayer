@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace MyPlayer.ViewModels
 {
-    public class ArtistModel
+    public class ArtistModel : SelectionViewModel
     {
-        public IArtist Artist { get; set; }
+        private IArtist _artist;
 
         private int _count = -1;
         public int Count
@@ -21,6 +21,14 @@ namespace MyPlayer.ViewModels
             }
         }
 
-        public IList<IAlbum> Albums => Artist.Albums;
+        public IList<AlbumModel> Albums { get; private set; }
+        public string Name => _artist.Name;
+        public int Height => Albums.Sum(album => album.Height) + HeaderHeight;
+
+        public ArtistModel(IArtist artist)
+        {
+            _artist = artist;
+            Albums = _artist.Albums.Select(album => new AlbumModel(album)).ToList();
+        }
     }
 }
