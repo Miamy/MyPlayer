@@ -21,14 +21,27 @@ namespace MyPlayer.ViewModels
             }
         }
 
-        public IList<AlbumModel> Albums { get; private set; }
+        public IEnumerable<AlbumModel> Albums { get; private set; }
         public string Name => _artist.Name;
-        public int Height => Albums.Sum(album => album.Height) + HeaderHeight;
+        public int ArtistHeight => Albums.Sum(album => album.AlbumHeight) + HeaderHeight;
+
+        public override bool IsSelected
+        {
+            get => base.IsSelected;
+            set
+            {
+                base.IsSelected = value;
+                foreach (var album in Albums)
+                {
+                    album.IsSelected = value;
+                }
+            }
+        }
 
         public ArtistModel(IArtist artist)
         {
             _artist = artist;
-            Albums = _artist.Albums.Select(album => new AlbumModel(album)).ToList();
+            Albums = _artist.Albums.Select(album => new AlbumModel(album));
         }
     }
 }

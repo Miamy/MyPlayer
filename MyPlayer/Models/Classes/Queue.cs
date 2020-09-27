@@ -9,7 +9,7 @@ using System.Text;
 
 namespace MyPlayer.Models.Classes
 {
-    public class Queue : IQueue
+    public class Queue : IQueue, INotifyPropertyChanged 
     {
         public IList<ISong> Songs { get; set; }
         public IList<IAlbum> Albums { get; set; }

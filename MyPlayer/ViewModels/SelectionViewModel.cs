@@ -7,7 +7,7 @@ namespace MyPlayer.ViewModels
     public class SelectionViewModel : BaseViewModel
     {
         private bool _isSelected = true;
-        public bool IsSelected
+        public virtual bool IsSelected
         {
             get => _isSelected;
             set => Set(nameof(IsSelected), ref _isSelected, value);

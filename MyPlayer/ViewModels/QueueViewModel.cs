@@ -20,10 +20,11 @@ namespace MyPlayer.ViewModels
 
         public IQueue Queue { get; set; }
 
-        public List<ArtistModel> Artists => Queue.Songs
-                .GroupBy(song => song.Album).Select(a => new AlbumModel(a.Key))
-                .GroupBy(album => album.Artist).Select(a => new ArtistModel(a.Key)).ToList();
-
+        //public List<ArtistModel> Artists => Queue.Songs
+        //        .GroupBy(song => song.Album).Select(a => new AlbumModel(a.Key))
+        //        .GroupBy(album => album.Artist).Select(a => new ArtistModel(a.Key)).ToList()
+        public IEnumerable<ArtistModel> Artists => Queue.Artists.Select(a => new ArtistModel(a))
+                ;
 
         public ICommand BrowseFilesCommand { get; set; }
         public ICommand ClearSearchTextCommand { get; set; }
@@ -36,6 +37,15 @@ namespace MyPlayer.ViewModels
             set => Set(nameof(SearchText), ref _searchText, value);
         }
 
+        private int _index = 0;
+        public int Index
+        {
+            get
+            {
+                _index++;
+                return _index;
+            }
+        }
         public QueueViewModel(IQueue queue)
         {
             CreateCommands();
@@ -75,7 +85,7 @@ namespace MyPlayer.ViewModels
 
 
 
-      
+
 
     }
 }

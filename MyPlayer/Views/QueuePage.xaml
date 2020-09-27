@@ -21,6 +21,12 @@
         <ResourceDictionary>
             <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}"/>
             <Style TargetType="Label" BasedOn="{StaticResource LabelStyle}"/>
+
+            <Style TargetType="StackLayout">
+                <Setter Property="Spacing" Value="0"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="Margin" Value="0"/>
+            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -152,25 +158,30 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout
-                            Orientation="Vertical">
+                            Orientation="Vertical"
+                            >
 
                             <StackLayout
                                 Orientation="Horizontal"
-                                HeightRequest="44"
+                                HeightRequest="40"
+                                VerticalOptions="Center"
                                 >
 
                                 <CheckBox
-                                    IsChecked="{Binding IsSelected}"/>
+                                    IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                    Color="OrangeRed"      
+                                    />
                                 <Label 
                                     Text="{Binding Name}"
-                                    FontSize="Large"
+                                    TextColor="OrangeRed"
+                                    FontSize="Medium"
                                     />
                             </StackLayout>
 
                             <!--Albums-->
                             <CollectionView
                                 ItemsSource="{Binding Albums}"
-                                HeightRequest="{Binding Height}"
+                                HeightRequest="{Binding ArtistHeight }"
                                 >
                                 
                                 <CollectionView.ItemTemplate>
@@ -178,34 +189,29 @@
 
                                         <StackLayout 
                                             Orientation="Vertical"
-                                            HeightRequest="{Binding Height}"
+                                            HeightRequest="{Binding AlbumHeight}"
                                             >
 
                                             <StackLayout
-                                                Orientation="Horizontal"
-                                                
-                                                HeightRequest="40"
+                                                Orientation="Horizontal"                                                
+                                                HeightRequest="38"
                                                 >
                                                 <CheckBox
-                                                    IsChecked="{Binding IsSelected}"/>
-                                                <Label
-                                                    Text="{Binding Year}"
-                                                    FontSize="Medium"
-                                                    WidthRequest="46"
-                                                    Margin="16,0,0,0"
+                                                    IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                    Color="Orange"
                                                     />
-
                                                 <Label
-                                                    Text=" - "
-                                                    FontSize="Medium"
-                                                    />
-
-                                                <Label
-                                                    Text="{Binding Name}"
-                                                    FontSize="Medium"
-                                                    
+                                                    Text="{Binding FullName}"
+                                                    TextColor="Orange"
+                                                    FontSize="Small"
+                                                    Margin="10,0,0,0"
                                                     />
                                             </StackLayout>
+                                            <BoxView 
+                                                HorizontalOptions="FillAndExpand" 
+                                                Color="Orange"
+                                                HeightRequest="2"
+                                                />
 
                                             <!--Songs-->
                                             <CollectionView 
@@ -213,7 +219,7 @@
                                                 ItemsSource="{Binding Songs}"
                                                 SelectionMode="Single"
                                                 ItemSizingStrategy="MeasureAllItems"   
-                                                HeightRequest="{Binding Height}"
+                                                HeightRequest="{Binding AlbumHeight}"
                                                 >
 
                                                 <CollectionView.ItemsLayout>
@@ -224,17 +230,27 @@
                                                     <DataTemplate>
                                                         <StackLayout
                                                             Orientation="Vertical"
-                                                            HeightRequest="{Binding Height}"
+                                                            HeightRequest="{Binding SongHeight}"
                                                             >
                                                             <StackLayout
                                                                 Orientation="Horizontal">
                                                                 <CheckBox
-                                                                    IsChecked="{Binding IsSelected}"/>
+                                                                    IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                                    />
+
+                                                                <Label
+                                                                    Text="{Binding Index, StringFormat='{0}.', 
+                                                                        Source={RelativeSource 
+                                                                            Mode=FindAncestorBindingContext, 
+                                                                            AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                                    FontSize="Small"
+                                                                    Margin="16,0,0,0"
+                                                                    />
 
                                                                 <Label
                                                                     Text="{Binding Name}"
                                                                     FontSize="Small"
-                                                                    Margin="32,0,0,0"
+                                                                    Margin="4,0,0,0"
                                                                     />
                                                             </StackLayout>
                                                         </StackLayout>
