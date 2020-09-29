@@ -1,6 +1,4 @@
-﻿using MyPlayer.Models.Interfaces;
-using MyPlayer.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +6,10 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+
+using MyPlayer.Models.Interfaces;
+using MyPlayer.ViewModels;
+using System.ComponentModel;
 
 namespace MyPlayer.Views
 {
@@ -20,6 +22,7 @@ namespace MyPlayer.Views
             InitializeComponent();
             _model = new QueueViewModel(queue);
             BindingContext = _model;
+
         }
 
     }

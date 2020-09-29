@@ -11,7 +11,7 @@ namespace MyPlayer.ViewModels
         protected int HeaderHeight { get; set; } = 40;
         protected int ItemHeight { get; set; } = 30;
 
-        protected void Set<T>(string propertyName, ref T field, T value)
+        protected void Set<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
         {
             if (field == null && value != null || field != null && !field.Equals(value))
             {
@@ -22,7 +22,7 @@ namespace MyPlayer.ViewModels
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void RaisePropertyChanged([CallerMemberName] string name = "")
+        protected void RaisePropertyChanged([CallerMemberName] string name = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }

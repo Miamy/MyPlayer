@@ -7,9 +7,10 @@ namespace MyPlayer.ViewModels
     public class AlbumModel : SelectionViewModel
     {
         private IAlbum _album;
+        private QueueViewModel _owner;
 
         public IArtist Artist => _album.Artist;
-        public IEnumerable<SongModel> Songs { get; private set; }
+        public IList<SongModel> Songs { get; private set; }
 
         public string Name => _album.Name;
         public int Year => _album.Year;
@@ -40,7 +41,19 @@ namespace MyPlayer.ViewModels
             }
         }
 
-        public int AlbumHeight => Count * ItemHeight + HeaderHeight;
+        public int AlbumHeight
+        {
+            get
+            {
+                if (_owner.ShowSongs)
+                {
+                    return Count * ItemHeight;
+                }
+                return 0;
+            }
+        }
+
+        public int AlbumTotalHeight => AlbumHeight + HeaderHeight;
 
         public override bool IsSelected
         {
@@ -55,10 +68,11 @@ namespace MyPlayer.ViewModels
             }
         }
 
-        public AlbumModel(IAlbum album)
+        public AlbumModel(IAlbum album, QueueViewModel owner)
         {
             _album = album;
-            Songs = _album.Songs.Select(song => new SongModel(1, song));
+            _owner = owner;
+            Songs = _album.Songs.Select(song => new SongModel(song)).ToList();
         }
     }
 }

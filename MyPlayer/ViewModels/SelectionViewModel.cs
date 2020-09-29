@@ -6,11 +6,18 @@ namespace MyPlayer.ViewModels
 {
     public class SelectionViewModel : BaseViewModel
     {
-        private bool _isSelected = true;
+        protected bool _isSelected = true;
         public virtual bool IsSelected
         {
             get => _isSelected;
-            set => Set(nameof(IsSelected), ref _isSelected, value);
+            set => Set(ref _isSelected, value);
+        }
+
+        protected bool _isExpanded = true;
+        public virtual bool IsExpanded
+        {
+            get => _isExpanded;
+            set => Set(ref _isExpanded, value);
         }
     }
 }

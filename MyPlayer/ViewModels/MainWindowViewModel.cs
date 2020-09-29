@@ -20,7 +20,7 @@ namespace MyPlayer.ViewModels
         public ISong Current
         { 
             get => _current;
-            set => Set(nameof(Current), ref _current, value);
+            set => Set(ref _current, value);
         }
         public ICommand ShowQueueCommand { get; set; }
         public ICommand ShowSettingsCommand { get; set; }
@@ -48,7 +48,7 @@ namespace MyPlayer.ViewModels
         public bool IsPlaying
         {
             get => _isPlaying;
-            set => Set(nameof(IsPlaying), ref _isPlaying, value);
+            set => Set(ref _isPlaying, value);
         }
 
         public MainWindowViewModel()
@@ -60,8 +60,8 @@ namespace MyPlayer.ViewModels
 
             try
             {
-                //var files = PathScanner.ProceedRoot(@"/storage/emulated/0/Music/");
-                var files = PathScanner.ProceedRoot(@"/storage/2743-1D07/Music/");
+                var files = PathScanner.ProceedRoot(@"/storage/emulated/0/Music/");
+                //var files = PathScanner.ProceedRoot(@"/storage/2743-1D07/Music/");
                 Queue.AddRange2(files);
             }
             catch (UnauthorizedAccessException)
@@ -167,7 +167,7 @@ namespace MyPlayer.ViewModels
         public MediaPlayer MediaPlayer
         {
             get => _mediaPlayer;
-            private set => Set(nameof(MediaPlayer), ref _mediaPlayer, value);
+            private set => Set(ref _mediaPlayer, value);
         }
 
         private void Initialize()

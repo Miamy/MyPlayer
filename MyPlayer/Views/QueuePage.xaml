@@ -31,124 +31,42 @@
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding BrowseFilesCommand}" IconImageSource="baseline_add_black_36dp.png"/>
+        <ToolbarItem 
+            Command="{Binding BrowseFilesCommand}" 
+            IconImageSource="baseline_add_black_36dp.png"/>
+
+        <ToolbarItem 
+            Command="{Binding SelectAllCommand}" 
+            IconImageSource="{Binding AllSelectedImageSource}"/>
+
+        <ToolbarItem 
+            x:Name="ShowAlbumsToolbarItem"
+            Command="{Binding ShowAlbumsCommand}" 
+            CommandParameter="{Binding Source={x:Reference ShowAlbumsToolbarItem}}"
+            Text="{Binding AlbumsToolItemText}" 
+            Order="Secondary"/>
+        
+        <ToolbarItem 
+            x:Name="ShowSongsToolbarItem"
+            Command="{Binding ShowSongsCommand}" 
+            CommandParameter="{Binding Source={x:Reference ShowSongsToolbarItem}}"
+            Text="{Binding SongsToolItemText}" 
+            Order="Secondary" />
     </ContentPage.ToolbarItems>
+
 
     <ContentPage.Content>
         <StackLayout
             Orientation="Vertical"
             >
-            <ListView IsVisible="False"
-
-                      ItemsSource="{Binding Artists}" 
-                               
-                      >
-
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell >
-                            <StackLayout 
-                                Orientation="Vertical" 
-                                HeightRequest="{Binding Height}">
-                               
-                                <StackLayout
-                                    Orientation="Horizontal"
-                                    HeightRequest="40"
-                                    >
-                                    <CheckBox
-                                        IsChecked="{Binding IsSelected}"
-                                        Color="White"
-                                        />
-                                    <Label 
-                                        Text="{Binding Name}"
-                                        TextColor="White"
-                                        FontSize="Large"
-                                        VerticalTextAlignment="Center"
-                                        VerticalOptions="Center"
-                                        />
-                                </StackLayout>
-                                <ListView 
-                                    ItemsSource="{Binding Albums}" >
-
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <ViewCell >
-                                                <StackLayout 
-                                                    Orientation="Vertical" 
-                                                    HeightRequest="{Binding Height}"
-                                                    >
-                                                    <StackLayout
-                                                        Orientation="Horizontal"
-                                                        HeightRequest="40"
-                                                        Margin="16,0,0,0"
-                                                        >
-                                                        <CheckBox
-                                                            IsChecked="{Binding IsSelected}"
-                                                            Color="White"
-                                                            />
-                                                        <Label 
-                                                            Text="{Binding Name}"
-                                                            TextColor="White"
-                                                            FontSize="Medium"
-                                                            VerticalTextAlignment="Center"
-                                                            VerticalOptions="Center"
-                                                            LineBreakMode="TailTruncation"
-                                                            />
-                                                    </StackLayout>
-
-
-                                                    <ListView 
-                                                        ItemsSource="{Binding Songs}" >
-
-                                                        <ListView.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <ViewCell >
-                                                                    <StackLayout
-                                                                        Orientation="Horizontal"
-                                                                        HeightRequest="{Binding Height}"
-                                                                        Margin="16,0,0,0"
-                                                                        >
-                                                                        <CheckBox
-                                                                            IsChecked="{Binding IsSelected}"
-                                                                            Color="White"
-                                                                            />
-                                                                        <Label 
-                                                                            Text="{Binding Name}"
-                                                                            TextColor="White"
-                                                                            FontSize="Small"
-                                                                            VerticalTextAlignment="Center"
-                                                                            VerticalOptions="Center"
-                                                                            LineBreakMode="TailTruncation"
-                                                                            />
-                                                                    </StackLayout>
-                                                                </ViewCell>
-                                                            </DataTemplate>
-                                                        </ListView.ItemTemplate>
-                                                    </ListView>
-
-
-
-
-                                                </StackLayout>
-                                            </ViewCell>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-
-
-
-                            </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>    
-            </ListView>
 
             <CollectionView  
-                x:Name="OuterView"
+                x:Name="ArtistsView"
                 ItemsSource="{Binding Artists}"
                 IsGrouped="False"
                 ItemSizingStrategy="MeasureAllItems"
-                SelectionMode="Single"                 
+                SelectionMode="Single"
+                HeightRequest="{Binding TotalHeight}"
                 >
 
                 <CollectionView.ItemsLayout>
@@ -181,7 +99,11 @@
                             <!--Albums-->
                             <CollectionView
                                 ItemsSource="{Binding Albums}"
-                                HeightRequest="{Binding ArtistHeight }"
+                                HeightRequest="{Binding DiscographyHeight }"
+                                IsVisible="{Binding ShowAlbums, 
+                                                    Source={RelativeSource 
+                                                    Mode=FindAncestorBindingContext, 
+                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                 >
                                 
                                 <CollectionView.ItemTemplate>
@@ -189,7 +111,6 @@
 
                                         <StackLayout 
                                             Orientation="Vertical"
-                                            HeightRequest="{Binding AlbumHeight}"
                                             >
 
                                             <StackLayout
@@ -211,6 +132,10 @@
                                                 HorizontalOptions="FillAndExpand" 
                                                 Color="Orange"
                                                 HeightRequest="2"
+                                                IsVisible="{Binding ShowSongs, 
+                                                            Source={RelativeSource 
+                                                            Mode=FindAncestorBindingContext, 
+                                                            AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                                 />
 
                                             <!--Songs-->
@@ -218,10 +143,25 @@
                                                 x:Name="InnerView"
                                                 ItemsSource="{Binding Songs}"
                                                 SelectionMode="Single"
-                                                ItemSizingStrategy="MeasureAllItems"   
                                                 HeightRequest="{Binding AlbumHeight}"
+                                                IsVisible="{Binding ShowSongs, 
+                                                            Source={RelativeSource 
+                                                            Mode=FindAncestorBindingContext, 
+                                                            AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                                 >
-
+                                                <CollectionView.Triggers>
+                                                    <DataTrigger 
+                                                        TargetType="CollectionView" 
+                                                        Binding="{Binding Path=ShowSongs, 
+                                                                          Source={RelativeSource 
+                                                                          Mode=FindAncestorBindingContext, 
+                                                                          AncestorType={x:Type viewmodel:QueueViewModel}}}" 
+                                                        Value="False">
+                                                        
+                                                        <Setter Property="HeightRequest" Value="0"/>
+                                                    </DataTrigger>
+                                                </CollectionView.Triggers>
+                                                    
                                                 <CollectionView.ItemsLayout>
                                                     <LinearItemsLayout Orientation="Vertical" />
                                                 </CollectionView.ItemsLayout>
@@ -240,9 +180,9 @@
 
                                                                 <Label
                                                                     Text="{Binding Index, StringFormat='{0}.', 
-                                                                        Source={RelativeSource 
-                                                                            Mode=FindAncestorBindingContext, 
-                                                                            AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                                    Source={RelativeSource 
+                                                                    Mode=FindAncestorBindingContext, 
+                                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                                                     FontSize="Small"
                                                                     Margin="16,0,0,0"
                                                                     />
@@ -282,7 +222,7 @@
                     ImageSource="baseline_clear_black_36dp.png"
                     Style="{StaticResource ImageButtonStyle}"
                     Command="{Binding ClearSearchTextCommand}"
-                    WidthRequest="30"
+                    WidthRequest="24"
                     HeightRequest="30"                    
                     />
                 <Image
