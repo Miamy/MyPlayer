@@ -8,8 +8,9 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using Android;
-using Android.Support.V4.App;
-using Android.Support.V4.Content;
+using AndroidX.Core.Content;
+using AndroidX.Core.App;
+
 using LibVLCSharp.Forms.Shared;
 
 namespace MyPlayer.Droid

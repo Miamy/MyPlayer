@@ -29,6 +29,7 @@
             <!--Title-->
             <StackLayout
                 Orientation="Horizontal"
+                IsVisible="{Binding IsNotRoot}"
                 >
                 <Label 
                     Text="{Binding Current}"
@@ -37,12 +38,8 @@
                     FontSize="Small"
                     />
                 <Button
-                    Text="Play all"
-                    WidthRequest="60"
-                    />
-                <Button
-                    Text="Play selected"
-                    WidthRequest="60"
+                    Text="Select"
+                    WidthRequest="80"
                     />
             </StackLayout>
 
@@ -50,35 +47,48 @@
             <StackLayout
                 Orientation="Horizontal"
                 Margin="4,6,4,12"
+                IsVisible="{Binding IsNotRoot}"
                 >
                 <Button
                     ImageSource="baseline_subdirectory_arrow_left_black_36dp.png"
+                    Command="{Binding GotoParentCommand}"
                     />
                 <Button
                     ImageSource="baseline_home_black_36dp.png"
+                    Command="{Binding GotoRootCommand}"
                     />
                 <Button
                     ImageSource="baseline_refresh_black_36dp.png"
+                    Command="{Binding RefreshCommand}"
                     />
             </StackLayout>
 
             <!--Root-->
-            <StackLayout
-                x:Name="RootContainer"
-                Orientation="Vertical"
-                >
+                
                 <ListView
+                    x:Name="RootListView"
                     ItemsSource="{Binding RootFolders}"
                     SeparatorVisibility="Default"
                     SeparatorColor="LightGray"
+                    SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                    IsVisible="{Binding IsRoot}"
                     >
+
+                    <ListView.Triggers>
+                        <Trigger TargetType="ListView" Property="IsVisible" Value="True">
+                            <Setter Property="SelectedItem" Value="{x:Null}"/>
+                        </Trigger>
+                    </ListView.Triggers>
+                    
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
                                 <StackLayout
                                     Orientation="Horizontal"
                                     VerticalOptions="Center"
+                                    HeightRequest="40"
                                     >
+
                                     <Image
                                         Source="baseline_sd_storage_black_36dp.png"
                                         MinimumWidthRequest="60"
@@ -105,8 +115,55 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-            </StackLayout>
 
+            <!--Folders-->
+            <StackLayout
+                x:Name="FoldersContainer"
+                Orientation="Vertical"
+                IsVisible="{Binding IsNotRoot}"
+                >
+                <ListView
+                    ItemsSource="{Binding Data}"
+                    SeparatorVisibility="Default"
+                    SeparatorColor="LightGray"
+                    >
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout
+                                    Orientation="Horizontal"
+                                    VerticalOptions="Center"
+                                    HeightRequest="40"
+                                    >
+
+                                    <Image
+                                        Source="{Binding IconName}"
+                                        MinimumWidthRequest="60"
+                                        WidthRequest="60"
+                                        HeightRequest="30"
+                                        Aspect="AspectFit"
+                                        />
+
+                                    <Label
+                                        Text="{Binding Name}"
+                                        TextColor="White"
+                                        FontSize="Medium"
+                                        HorizontalOptions="StartAndExpand"
+                                        VerticalTextAlignment="Center"
+                                        />
+<!--                                    <Label
+                                        Text="{Binding Path}"
+                                        TextColor="White"
+                                        FontSize="Small"
+                                        MinimumWidthRequest="140"
+                                        VerticalTextAlignment="End"
+                                        />
+-->                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
 
         </StackLayout>
     </ContentPage.Content>

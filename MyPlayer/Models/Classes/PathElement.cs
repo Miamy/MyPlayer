@@ -8,11 +8,15 @@ namespace MyPlayer.Models.Classes
 {
     public class PathElement : IPathElement
     {
-        public static Dictionary<IPathElement, string> Hierarhy = new Dictionary<IPathElement, string>();
+        //public static Dictionary<IPathElement, string> Hierarhy = new Dictionary<IPathElement, string>();
         public string Name { get; set; }
 
         public string FullPath { get; set; }
         public IPathElement Parent { get; set; }
+
+        public bool IsFile => Name?.IndexOf(".") > -1;
+
+        public string IconName => IsFile ? "baseline_audiotrack_black_36dp.png" : "baseline_folder_open_black_36dp.png";
 
         public PathElement(string path)
         {
@@ -21,13 +25,17 @@ namespace MyPlayer.Models.Classes
                 return;
             }
             var parts = PathElement.Split(path);
-            Name = parts[parts.Length - 1];
+            Name = parts[^1];
             FullPath = path;
+            
+            //Parent = GetParent(path);
         }
+
+        private static readonly char[] Splitters = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
 
         private static string[] Split(string path)
         {
-            return path.Split(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries); 
+            return path.Split(Splitters, StringSplitOptions.RemoveEmptyEntries); 
         }
 
 
@@ -38,7 +46,7 @@ namespace MyPlayer.Models.Classes
             {
                 return "";
             }
-            return parts[parts.Length - 2];
+            return parts[^2];
 
         }
         public static string GetGrandParent(string path)
@@ -48,7 +56,7 @@ namespace MyPlayer.Models.Classes
             {
                 return "";
             }
-            return parts[parts.Length - 3];
+            return parts[^3];
         }
     }
 

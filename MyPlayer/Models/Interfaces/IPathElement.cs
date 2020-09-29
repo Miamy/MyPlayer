@@ -10,5 +10,7 @@ namespace MyPlayer.Models.Interfaces
         string Name { get; set; }
         string FullPath { get; }
         IPathElement Parent { get; set; }
+
+        bool IsFile { get; }
     }
 }

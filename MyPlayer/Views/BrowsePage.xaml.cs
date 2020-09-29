@@ -16,5 +16,6 @@ namespace MyPlayer.Views
         {
             InitializeComponent();
         }
+
     }
 }
