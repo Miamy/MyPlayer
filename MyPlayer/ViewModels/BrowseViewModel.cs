@@ -14,8 +14,6 @@ namespace MyPlayer.ViewModels
 {
     public class BrowseViewModel : BaseViewModel
     {
-        public IPathElement Current { get; set; }
-
         private bool _isRoot = true;
         public bool IsRoot
         {
@@ -30,11 +28,10 @@ namespace MyPlayer.ViewModels
 
         public bool IsNotRoot => !IsRoot;
 
-        public List<RootInfo> RootFolders { get; set; }
         public ObservableCollection<IPathElement> Data { get; set; }
 
-        private object _selectedItem;
-        public object SelectedItem
+        private IPathElement _selectedItem;
+        public IPathElement SelectedItem
         {
             get => _selectedItem;
             set
@@ -44,12 +41,11 @@ namespace MyPlayer.ViewModels
                 if (_selectedItem == null)
                     return;
 
-                OpenCardCommand.Execute(_selectedItem);
+                OpenFolderCommand.Execute(_selectedItem);
 
-                SelectedItem = null;
+                _selectedItem = null;
             }
         }
-        public ICommand OpenCardCommand { get; set; }
         public ICommand OpenFolderCommand { get; set; }
         public ICommand GotoRootCommand { get; set; }
         public ICommand GotoParentCommand { get; set; }
@@ -68,20 +64,16 @@ namespace MyPlayer.ViewModels
         }
         private void BuildRoot()
         {
-            RootFolders = new List<RootInfo>
-            {
-                new RootInfo("Internal storage", "")
-            };
-
             var storages = Environment.GetLogicalDrives().Where(drive => drive.IndexOf("storage") > 0).ToList();
             if (storages.Count == 0)
             {
                 return;
             }
-            RootFolders[0].Path = storages[0];
+
+            Data.Add(new PathElement("Internal storage", storages[0]));
             if (storages.Count > 1)
             {
-                RootFolders.Add(new RootInfo("SD card", storages[1]));
+                Data.Add(new PathElement("SD card", storages[1]));
             }
         }
 
@@ -89,7 +81,6 @@ namespace MyPlayer.ViewModels
         private void CreateCommands()
         {
             RefreshCommand = new Command(RefreshAction);
-            OpenCardCommand = new Command(OpenCardAction);
             OpenFolderCommand = new Command(OpenFolderAction);
             GotoRootCommand = new Command(GotoRootAction, CanGotoRoot);
             GotoParentCommand = new Command(GotoParentAction, CanGotoParent);
@@ -102,13 +93,10 @@ namespace MyPlayer.ViewModels
 
         private void GotoParentAction(object obj)
         {
-            throw new NotImplementedException();
+            SelectedItem = SelectedItem.Parent;
         }
 
-        private void OpenFolderAction(object obj)
-        {
-            throw new NotImplementedException();
-        }
+    
 
         private void RefreshAction(object obj)
         {
@@ -125,27 +113,39 @@ namespace MyPlayer.ViewModels
             return IsNotRoot;
         }
 
-        private void OpenCardAction(object obj)
+    
+        private void OpenFolderAction(object obj)
         {
             IsRoot = false;
 
-            var root = obj as RootInfo;
-            var path = root.Path + "/0/";
+            var root = obj as PathElement;
+            if (root.IsFile)
+            {
+                return;            
+            }
+            _selectedItem = root;
+
+            var path = root.FullPath;
+            if (path == "/storage/emulated")
+            {
+                path += "/0";
+            }
             var options = new EnumerationOptions { IgnoreInaccessible = true };
-            
+
+            Data.Clear();
+
             var data = Directory.GetDirectories(path, "*", options).OrderBy(item => item);
             foreach (var item in data)
             {
-                Data.Add(new PathElement(item));
+                Data.Add(new PathElement(root, item));
             }
 
             data = Directory.GetFiles(path, "*.*", options).OrderBy(item => item);
             foreach (var item in data)
             {
-                Data.Add(new PathElement(item));
+                Data.Add(new PathElement(root, item));
             }
         }
-
         #endregion
 
 

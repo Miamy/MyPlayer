@@ -12,5 +12,6 @@ namespace MyPlayer.Models.Interfaces
         IPathElement Parent { get; set; }
 
         bool IsFile { get; }
+        bool IsVirtual { get; set; }
     }
 }

@@ -59,7 +59,7 @@ namespace MyPlayer.Models.Classes
             var files = PathScanner.GetCovers(dir);
             if (files.Length > 0)
             {
-                Cover = new GraphicFile(files[0]);
+                Cover = new GraphicFile(null, files[0]);
             }
         }
     }

@@ -18,17 +18,33 @@ namespace MyPlayer.Models.Classes
 
         public string IconName => IsFile ? "baseline_audiotrack_black_36dp.png" : "baseline_folder_open_black_36dp.png";
 
-        public PathElement(string path)
+        public bool IsVirtual { get; set; }
+
+        public PathElement(string name, string path)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
-                return;
+                throw new ArgumentException($"Bad path {path}");
+            }
+            Name = name;
+            FullPath = path;
+
+            Parent = null;
+            IsVirtual = true;
+        }
+
+        public PathElement(IPathElement parent, string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException($"Bad path {path}");
             }
             var parts = PathElement.Split(path);
             Name = parts[^1];
             FullPath = path;
             
-            //Parent = GetParent(path);
+            Parent = parent;
+            IsVirtual = false;
         }
 
         private static readonly char[] Splitters = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };

@@ -7,7 +7,7 @@ namespace MyPlayer.Models.Classes
 {
     public class GraphicFile : PathElement, IGraphicFile
     {
-        public GraphicFile(string path) : base(path)
+        public GraphicFile(string name, string path) : base(name, path)
         {
         }
     }

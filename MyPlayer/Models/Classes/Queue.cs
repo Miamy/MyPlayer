@@ -151,7 +151,7 @@ namespace MyPlayer.Models.Classes
         {
             foreach (var item in items)
             {
-                var file = new MusicFile(item);
+                var file = new MusicFile(null, item);
                 Add(file);
             }
         }

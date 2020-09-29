@@ -14,7 +14,7 @@ namespace MyPlayer.Models.Classes
         public string DescriptionFilename => Path.Combine(Path.GetDirectoryName(FullPath), Path.GetFileNameWithoutExtension(FullPath) + ".cue");
       
 
-        public MusicFile(string path) : base(path)
+        public MusicFile(string name, string path) : base(name, path)
         {
             HasDescription = IsComposite = Path.GetExtension(path) == ".flac";
             if (IsComposite)
