@@ -29,7 +29,6 @@
             <!--Title-->
             <StackLayout
                 Orientation="Horizontal"
-                IsVisible="{Binding IsNotRoot}"
                 >
                 <Label 
                     Text="{Binding Current}"
@@ -40,6 +39,7 @@
                 <Button
                     Text="Select"
                     WidthRequest="80"
+                    Command="{Binding SelectFolderCommand}"
                     />
             </StackLayout>
 
@@ -47,7 +47,6 @@
             <StackLayout
                 Orientation="Horizontal"
                 Margin="4,6,4,12"
-                IsVisible="{Binding IsNotRoot}"
                 >
                 <Button
                     ImageSource="baseline_subdirectory_arrow_left_black_36dp.png"

@@ -18,9 +18,16 @@ namespace MyPlayer.ViewModels
     {
         private ISong _current;
         public ISong Current
-        { 
+        {
             get => _current;
-            set => Set(ref _current, value);
+            set
+            {
+                Set(ref _current, value);
+                if (_initialized && Current?.Container != null)
+                {
+                    MediaPlayer.Media = new Media(LibVLC, Current.Container.FullPath, FromType.FromPath);
+                }
+            }
         }
         public ICommand ShowQueueCommand { get; set; }
         public ICommand ShowSettingsCommand { get; set; }
@@ -60,6 +67,8 @@ namespace MyPlayer.ViewModels
             private set => Set(ref _mediaPlayer, value);
         }
 
+        private bool _initialized = false;
+
         public MainWindowViewModel()
         {
             CreateCommands();
@@ -69,8 +78,14 @@ namespace MyPlayer.ViewModels
 
             try
             {
-                var files = PathScanner.ProceedRoot(@"/storage/emulated/0/Music/");
-                //var files = PathScanner.ProceedRoot(@"/storage/2743-1D07/Music/");
+                var settings = new SettingsViewModel();
+                var root = settings.RootFolder;
+                if (string.IsNullOrWhiteSpace(root))
+                {
+                    //root = @"/storage/emulated/0/Music/";
+                    root = @"/storage/2743-1D07/Music/";
+                }
+                var files = PathScanner.ProceedRoot(root);
                 Queue.AddRange2(files);
             }
             catch (UnauthorizedAccessException)
@@ -82,9 +97,8 @@ namespace MyPlayer.ViewModels
                 //throw;
             }
 
-            Current = Queue.GetDefault();
-
             Initialize();
+            Current = Queue.GetDefault();
         }
 
 
@@ -113,6 +127,7 @@ namespace MyPlayer.ViewModels
         private void PrevAction(object obj)
         {
             Current = Queue.Prev(Current);
+            PlayCurrent();
         }
 
         private bool CanNext(object arg)
@@ -123,6 +138,7 @@ namespace MyPlayer.ViewModels
         private void NextAction(object obj)
         {
             Current = Queue.Next(Current);
+            PlayCurrent();
         }
 
         private bool CanShowQueue(object arg)
@@ -154,35 +170,48 @@ namespace MyPlayer.ViewModels
 
         private void PlayAction(object obj)
         {
-            if (!File.Exists(Current.Container.FullPath))
-            {
-                return;
-            }
-
             IsPlaying = !IsPlaying;
             if (IsPlaying)
             {
-                //Queue.Play();
-                    MediaPlayer.Play();
+                MediaPlayer.Pause();
             }
             else
             {
-                //Queue.Pause();
-                MediaPlayer.Pause();
+                PlayCurrent();
             }
         }
         #endregion
 
- 
+
         private void Initialize()
         {
-            Core.Initialize();
-
-            LibVLC = new LibVLC();
-            MediaPlayer = new MediaPlayer(LibVLC)
+            if (_initialized)
             {
-                Media = new Media(LibVLC, Current.Container.FullPath, FromType.FromPath)
-            };
-        }      
+                return;
+            }
+            
+            Core.Initialize();
+            LibVLC = new LibVLC();
+            MediaPlayer = new MediaPlayer(LibVLC);
+            _initialized = true;
+        }
+
+        private void PlayCurrent()
+        {
+            if (Current?.Container == null)
+            {
+                return;
+            }
+            if (!File.Exists(Current.Container.FullPath))
+            {
+                return;
+            }
+            if (MediaPlayer.Media == null)
+            {
+                return;
+            }
+
+            MediaPlayer.Play();
+        }
     }
 }

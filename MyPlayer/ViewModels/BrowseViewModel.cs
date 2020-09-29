@@ -43,14 +43,14 @@ namespace MyPlayer.ViewModels
 
                 OpenFolderCommand.Execute(_selectedItem);
 
-                _selectedItem = null;
+                //_selectedItem = null;
             }
         }
         public ICommand OpenFolderCommand { get; set; }
         public ICommand GotoRootCommand { get; set; }
         public ICommand GotoParentCommand { get; set; }
         public ICommand RefreshCommand { get; set; }
-
+        public ICommand SelectFolderCommand { get; set; }
         public BrowseViewModel()
         {
             Data = new ObservableCollection<IPathElement>();
@@ -64,13 +64,14 @@ namespace MyPlayer.ViewModels
         }
         private void BuildRoot()
         {
+            Data.Clear();
             var storages = Environment.GetLogicalDrives().Where(drive => drive.IndexOf("storage") > 0).ToList();
             if (storages.Count == 0)
             {
                 return;
             }
 
-            Data.Add(new PathElement("Internal storage", storages[0]));
+            Data.Add(new PathElement("Internal storage", storages[0] + "/0"));
             if (storages.Count > 1)
             {
                 Data.Add(new PathElement("SD card", storages[1]));
@@ -84,11 +85,25 @@ namespace MyPlayer.ViewModels
             OpenFolderCommand = new Command(OpenFolderAction);
             GotoRootCommand = new Command(GotoRootAction, CanGotoRoot);
             GotoParentCommand = new Command(GotoParentAction, CanGotoParent);
+            SelectFolderCommand = new Command(SelectFolderAction, CanSelectFolder);
+        }
+
+        private bool CanSelectFolder(object arg)
+        {
+            return SelectedItem != null && !SelectedItem.IsVirtual;
+        }
+
+        private async void SelectFolderAction(object obj)
+        {
+            var settings = new SettingsViewModel();
+            settings.RootFolder = SelectedItem.FullPath;
+            settings.Save();
+            await Application.Current.MainPage.Navigation.PopAsync();
         }
 
         private bool CanGotoParent(object arg)
         {
-            return true;
+            return SelectedItem?.Parent != null;
         }
 
         private void GotoParentAction(object obj)
@@ -124,12 +139,9 @@ namespace MyPlayer.ViewModels
                 return;            
             }
             _selectedItem = root;
+            Run(() => ((Command)SelectFolderCommand).ChangeCanExecute());
 
             var path = root.FullPath;
-            if (path == "/storage/emulated")
-            {
-                path += "/0";
-            }
             var options = new EnumerationOptions { IgnoreInaccessible = true };
 
             Data.Clear();

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace MyPlayer.ViewModels
@@ -12,13 +13,18 @@ namespace MyPlayer.ViewModels
     {
         private string _rootFolder;
 
-        public string RootFolder { get => _rootFolder; set => Set(ref _rootFolder, value); }
+        public string RootFolder 
+        { 
+            get => _rootFolder; 
+            set => Set(ref _rootFolder, value); 
+        }
 
         public ICommand SelectRootCommand { get; set; }
 
         public SettingsViewModel()
         {
             CreateCommands();
+            Load();
         }
 
         #region Commands
@@ -39,6 +45,14 @@ namespace MyPlayer.ViewModels
         }
         #endregion
 
+        public void Load()
+        {
+            RootFolder = Preferences.Get("RootFolder", "");
+        }
 
+        public void Save()
+        {
+            Preferences.Set("RootFolder", RootFolder);
+        }
     }
 }

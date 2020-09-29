@@ -38,6 +38,7 @@
                     <Label Text="Root   "
                            VerticalOptions="Center" 
                            HorizontalOptions="Start"
+                           FontSize="Small"
                            />
                     <Frame 
                         BackgroundColor="Black"
@@ -49,9 +50,11 @@
                         <Entry
                 
                             Text="{Binding RootFolder}"
+                            TextColor="White"
                             HorizontalOptions="FillAndExpand"
                             VerticalTextAlignment="Center"
                             HorizontalTextAlignment="Start"
+                            FontSize="Small"
                             />
                     </Frame>
                     <Button
