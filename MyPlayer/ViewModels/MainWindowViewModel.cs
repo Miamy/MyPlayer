@@ -43,12 +43,21 @@ namespace MyPlayer.ViewModels
 
         public IQueue Queue { get; set; }
 
-        private bool _isPlaying;
+        private bool _isPlaying = false;
 
         public bool IsPlaying
         {
             get => _isPlaying;
             set => Set(ref _isPlaying, value);
+        }
+
+        private LibVLC LibVLC { get; set; }
+
+        private MediaPlayer _mediaPlayer;
+        public MediaPlayer MediaPlayer
+        {
+            get => _mediaPlayer;
+            private set => Set(ref _mediaPlayer, value);
         }
 
         public MainWindowViewModel()
@@ -75,7 +84,7 @@ namespace MyPlayer.ViewModels
 
             Current = Queue.GetDefault();
 
-            //Initialize();
+            Initialize();
         }
 
 
@@ -143,33 +152,28 @@ namespace MyPlayer.ViewModels
         }
 
 
-        private async void PlayAction(object obj)
+        private void PlayAction(object obj)
         {
+            if (!File.Exists(Current.Container.FullPath))
+            {
+                return;
+            }
+
             IsPlaying = !IsPlaying;
             if (IsPlaying)
             {
-                Queue.Play();
-                if (File.Exists(Current.Container.FullPath))
-                {
+                //Queue.Play();
                     MediaPlayer.Play();
-                }
             }
             else
             {
-                Queue.Pause();
+                //Queue.Pause();
+                MediaPlayer.Pause();
             }
         }
         #endregion
 
-        private LibVLC LibVLC { get; set; }
-
-        private MediaPlayer _mediaPlayer;
-        public MediaPlayer MediaPlayer
-        {
-            get => _mediaPlayer;
-            private set => Set(ref _mediaPlayer, value);
-        }
-
+ 
         private void Initialize()
         {
             Core.Initialize();
@@ -177,7 +181,7 @@ namespace MyPlayer.ViewModels
             LibVLC = new LibVLC();
             MediaPlayer = new MediaPlayer(LibVLC)
             {
-                Media = new Media(LibVLC, new Uri("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+                Media = new Media(LibVLC, Current.Container.FullPath, FromType.FromPath)
             };
         }      
     }

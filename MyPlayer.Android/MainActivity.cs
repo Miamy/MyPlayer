@@ -24,13 +24,11 @@ namespace MyPlayer.Droid
 
             base.OnCreate(savedInstanceState);
 
+            LibVLCSharpFormsRenderer.Init();
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             SetPermissions();
-
-            LibVLCSharpFormsRenderer.Init();
-
             LoadApplication(new App());
         }
        

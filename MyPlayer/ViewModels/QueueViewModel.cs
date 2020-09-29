@@ -85,7 +85,7 @@ namespace MyPlayer.ViewModels
         }
         public string AllSelectedImageSource => AllSelected ? "baseline_check_box_black_36dp.png" : "baseline_check_box_outline_blank_black_36dp.png";
 
-        public ICommand BrowseFilesCommand { get; set; }
+        
         public ICommand ClearSearchTextCommand { get; set; }
         public ICommand SelectAllCommand { get; set; }
 
@@ -104,7 +104,6 @@ namespace MyPlayer.ViewModels
         #region Commands
         private void CreateCommands()
         {
-            BrowseFilesCommand = new Command(BrowseFilesAction, CanBrowseFiles);
             ClearSearchTextCommand = new Command(ClearSearchTextAction/*, CanClearSearchText*/);
 
             ShowAlbumsCommand = new Command(ShowAlbumsAction);
@@ -123,16 +122,7 @@ namespace MyPlayer.ViewModels
             ShowAlbums = !ShowAlbums;
         }
 
-        private bool CanBrowseFiles(object arg)
-        {
-            return true;
-        }
-
-        private async void BrowseFilesAction(object obj)
-        {
-            var page = new BrowsePage();
-            await Application.Current.MainPage.Navigation.PushAsync(page, false);
-        }
+   
 
         private bool CanClearSearchText(object arg)
         {

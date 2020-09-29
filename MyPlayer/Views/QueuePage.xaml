@@ -31,9 +31,6 @@
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem 
-            Command="{Binding BrowseFilesCommand}" 
-            IconImageSource="baseline_add_black_36dp.png"/>
 
         <ToolbarItem 
             Command="{Binding SelectAllCommand}" 

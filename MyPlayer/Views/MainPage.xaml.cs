@@ -1,4 +1,5 @@
-﻿using MyPlayer.ViewModels;
+﻿using LibVLCSharp.Shared;
+using MyPlayer.ViewModels;
 using MyPlayer.Views;
 using System;
 using System.Collections.Generic;
@@ -21,9 +22,10 @@ namespace MyPlayer
             //BindingContext = Model = new MainWindowViewModel();
         }
 
+      
         protected override void OnAppearing()
         {
-            base.OnAppearing();
+            base.OnAppearing();      
         }
 
        

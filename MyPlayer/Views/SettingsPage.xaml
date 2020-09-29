@@ -5,17 +5,63 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:model="clr-namespace:MyPlayer.ViewModels"
              mc:Ignorable="d"
-             x:Class="MyPlayer.Views.SettingsPage">
+             x:Class="MyPlayer.Views.SettingsPage"
+             BackgroundColor="Black"
+             Title="Settings"
+             >
 
     <ContentPage.BindingContext>
         <model:SettingsViewModel />
     </ContentPage.BindingContext>
-    
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Button" BasedOn="{StaticResource ImageButtonStyle}"/>
+            <Style TargetType="Label" BasedOn="{StaticResource LabelStyle}"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+
+            <Frame 
+                BackgroundColor="Black"
+                BorderColor="White"
+                Margin="20"                
+
+                >
+                <StackLayout
+                    Orientation="Horizontal"
+                    VerticalOptions="Start"
+                    
+                    >
+                    <Label Text="Root   "
+                           VerticalOptions="Center" 
+                           HorizontalOptions="Start"
+                           />
+                    <Frame 
+                        BackgroundColor="Black"
+                        BorderColor="Gray"
+                        HorizontalOptions="FillAndExpand"
+                        Margin="0"
+                        Padding="0"
+                        >
+                        <Entry
+                
+                            Text="{Binding RootFolder}"
+                            HorizontalOptions="FillAndExpand"
+                            VerticalTextAlignment="Center"
+                            HorizontalTextAlignment="Start"
+                            />
+                    </Frame>
+                    <Button
+                        ImageSource="baseline_sd_storage_black_36dp.png"
+                        Command="{Binding SelectRootCommand}"
+                        HorizontalOptions="End"
+                        />
+                </StackLayout>
+            </Frame>
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
