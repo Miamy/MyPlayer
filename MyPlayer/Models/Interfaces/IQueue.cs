@@ -20,9 +20,6 @@ namespace MyPlayer.Models.Interfaces
         void AddRange2(IEnumerable<string> items);
         void Remove(IPathElement item);
 
-        void Play();
-        void Pause();
-        void Stop();
         ISong Next(ISong song);
         ISong Prev(ISong song);
 

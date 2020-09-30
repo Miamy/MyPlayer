@@ -26,7 +26,15 @@ namespace MyPlayer.Models.Classes
             {
                 throw new ArgumentException($"Bad path {path}");
             }
-            Name = name;
+            if (name == null)
+            {
+                var parts = PathElement.Split(path);
+                Name = parts[^1];
+            }
+            else
+            {
+                Name = name;
+            }
             FullPath = path;
 
             Parent = null;

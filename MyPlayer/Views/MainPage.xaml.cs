@@ -1,4 +1,5 @@
 ﻿using LibVLCSharp.Shared;
+using MyPlayer.Models.Classes;
 using MyPlayer.ViewModels;
 using MyPlayer.Views;
 using System;
@@ -13,13 +14,12 @@ namespace MyPlayer
 {
     public partial class MainPage : ContentPage
     {
-        //public MainWindowViewModel Model { get; set; }
+        public MainWindowViewModel Model { get; set; }
 
         public MainPage()
         {
             InitializeComponent();
-
-            //BindingContext = Model = new MainWindowViewModel();
+            BindingContext = Model = new MainWindowViewModel();
         }
 
       
@@ -28,6 +28,10 @@ namespace MyPlayer
             base.OnAppearing();      
         }
 
-       
+        protected override void OnDisappearing()
+        {
+            Storage.SaveQueue(Model.Queue);
+            base.OnDisappearing();
+        }
     }
 }

@@ -20,9 +20,6 @@ namespace MyPlayer.ViewModels
 
         public IQueue Queue { get; set; }
 
-        //public List<ArtistModel> Artists => Queue.Songs
-        //        .GroupBy(song => song.Album).Select(a => new AlbumModel(a.Key))
-        //        .GroupBy(album => album.Artist).Select(a => new ArtistModel(a.Key)).ToList()
         public IList<ArtistModel> Artists => Queue.Artists.Select(a => new ArtistModel(a, this)).ToList();
 
 
@@ -91,6 +88,7 @@ namespace MyPlayer.ViewModels
 
         public ICommand ShowAlbumsCommand { get; set; }
         public ICommand ShowSongsCommand { get; set; }
+        public ICommand PlayTappedCommand { get; set; }
 
         public QueueViewModel(IQueue queue)
         {
@@ -110,6 +108,13 @@ namespace MyPlayer.ViewModels
             ShowSongsCommand = new Command(ShowSongsAction);
 
             SelectAllCommand = new Command(SelectAllAction);
+            PlayTappedCommand = new Command(PlayTappedAction);
+        }
+
+        private async void PlayTappedAction(object obj)
+        {
+            MessagingCenter.Send<BaseViewModel, SongModel>(this, "SongSelected", (SongModel)obj);
+            await Application.Current.MainPage.Navigation.PopAsync();
         }
 
         private void ShowSongsAction(object obj)

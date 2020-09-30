@@ -21,7 +21,7 @@ namespace MyPlayer.ViewModels
             set
             {
                 Set(ref _isRoot, value);
-                RaisePropertyChanged("IsNotRoot");
+                BuildRoot();
                 Run(() => ((Command)GotoRootCommand).ChangeCanExecute());
             }
         }
@@ -76,6 +76,9 @@ namespace MyPlayer.ViewModels
             {
                 Data.Add(new PathElement("SD card", storages[1]));
             }
+
+            SelectedItem = null;
+            UpdateCommands();
         }
 
         #region Commands
@@ -95,20 +98,23 @@ namespace MyPlayer.ViewModels
 
         private async void SelectFolderAction(object obj)
         {
-            var settings = new SettingsViewModel();
-            settings.RootFolder = SelectedItem.FullPath;
-            settings.Save();
+            Settings.Instance.RootFolder = SelectedItem.FullPath;
+            Storage.SaveSettings(Settings.Instance);
             await Application.Current.MainPage.Navigation.PopAsync();
         }
 
         private bool CanGotoParent(object arg)
         {
-            return SelectedItem?.Parent != null;
+            return SelectedItem != null;// && !SelectedItem.IsVirtual;
         }
 
         private void GotoParentAction(object obj)
         {
             SelectedItem = SelectedItem.Parent;
+            if (SelectedItem == null)
+            {
+                BuildRoot();
+            }
         }
 
     
@@ -125,21 +131,21 @@ namespace MyPlayer.ViewModels
 
         private bool CanGotoRoot(object arg)
         {
-            return IsNotRoot;
+            return true;// !IsRoot;
         }
 
     
         private void OpenFolderAction(object obj)
         {
-            IsRoot = false;
-
             var root = obj as PathElement;
             if (root.IsFile)
             {
-                return;            
+                return;
             }
+            IsRoot = root.IsVirtual;
             _selectedItem = root;
-            Run(() => ((Command)SelectFolderCommand).ChangeCanExecute());
+            UpdateCommands();
+            //RaisePropertyChanged("SelectedItem");
 
             var path = root.FullPath;
             var options = new EnumerationOptions { IgnoreInaccessible = true };
@@ -157,6 +163,13 @@ namespace MyPlayer.ViewModels
             {
                 Data.Add(new PathElement(root, item));
             }
+        }
+
+        private void UpdateCommands()
+        {
+            Run(() => ((Command)SelectFolderCommand).ChangeCanExecute());
+            Run(() => ((Command)GotoParentCommand).ChangeCanExecute());
+            Run(() => ((Command)GotoRootCommand).ChangeCanExecute());
         }
         #endregion
 

@@ -160,18 +160,7 @@ namespace MyPlayer.Models.Classes
         {
 
         }
-
-        public void Play()
-        {
-        }
-
-        public void Pause()
-        {
-        }
-
-        public void Stop()
-        {
-        }
+   
 
         public ISong Next(ISong song)
         {

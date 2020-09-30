@@ -31,14 +31,17 @@
                 Orientation="Horizontal"
                 >
                 <Label 
-                    Text="{Binding Current}"
-                    VerticalOptions="Start" 
-                    HorizontalOptions="CenterAndExpand" 
+                    Text="{Binding SelectedItem.Name}"
+                    VerticalOptions="CenterAndExpand" 
+                    HorizontalOptions="StartAndExpand" 
                     FontSize="Small"
+                    TextColor="White"
                     />
                 <Button
                     Text="Select"
+                    FontSize="Small"
                     WidthRequest="80"
+                    HorizontalOptions="End"
                     Command="{Binding SelectFolderCommand}"
                     />
             </StackLayout>
@@ -51,7 +54,13 @@
                 <Button
                     ImageSource="baseline_subdirectory_arrow_left_black_36dp.png"
                     Command="{Binding GotoParentCommand}"
-                    />
+                    >
+                    <Button.Triggers>
+                        <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                            <Setter Property="ImageSource" Value="baseline_subdirectory_arrow_left_black_36dp_d.png"/>
+                        </Trigger>
+                    </Button.Triggers>
+                </Button>
                 <Button
                     ImageSource="baseline_home_black_36dp.png"
                     Command="{Binding GotoRootCommand}"

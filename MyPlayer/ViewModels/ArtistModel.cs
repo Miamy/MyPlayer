@@ -56,5 +56,10 @@ namespace MyPlayer.ViewModels
             _owner = owner;
             Albums = _artist.Albums.Select(album => new AlbumModel(album, _owner)).ToList();
         }
+
+        public override string ToString()
+        {
+            return _artist.ToString();
+        }
     }
 }

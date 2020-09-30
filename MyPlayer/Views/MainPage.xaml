@@ -9,11 +9,11 @@
              Title="My player"
              BackgroundColor="Black"
              >
-
+<!--
     <ContentPage.BindingContext>
         <model:MainWindowViewModel />
     </ContentPage.BindingContext>
-
+-->
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Button" BasedOn="{StaticResource ImageButtonStyle}"/>

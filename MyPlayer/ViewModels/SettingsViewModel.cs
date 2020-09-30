@@ -1,4 +1,6 @@
-﻿using MyPlayer.Views;
+﻿using MyPlayer.Models.Classes;
+using MyPlayer.Models.Interfaces;
+using MyPlayer.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,20 +13,15 @@ namespace MyPlayer.ViewModels
 {
     public class SettingsViewModel : BaseViewModel
     {
-        private string _rootFolder;
-
-        public string RootFolder 
-        { 
-            get => _rootFolder; 
-            set => Set(ref _rootFolder, value); 
-        }
-
         public ICommand SelectRootCommand { get; set; }
+        public ISettings Settings { get; set; }
 
-        public SettingsViewModel()
+        public SettingsViewModel(ISettings settings)
         {
+            //if (settings == null)
+            //    settings = Settings.Instance;
+            Settings = settings;
             CreateCommands();
-            Load();
         }
 
         #region Commands
@@ -45,14 +42,6 @@ namespace MyPlayer.ViewModels
         }
         #endregion
 
-        public void Load()
-        {
-            RootFolder = Preferences.Get("RootFolder", "");
-        }
-
-        public void Save()
-        {
-            Preferences.Set("RootFolder", RootFolder);
-        }
+     
     }
 }

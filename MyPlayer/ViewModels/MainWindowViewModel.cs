@@ -54,7 +54,7 @@ namespace MyPlayer.ViewModels
 
         public bool IsPlaying
         {
-            get => _isPlaying;
+            get => MediaPlayer.IsPlaying;  //_isPlaying;
             set => Set(ref _isPlaying, value);
         }
 
@@ -73,17 +73,36 @@ namespace MyPlayer.ViewModels
         {
             CreateCommands();
 
+            Settings.Instance.PropertyChanged += SettingsPropertyChanged;
+
             Queue = new Queue();
             //Queue.PropertyChanged += PropertyChanged;
 
+
+
+            Initialize();
+            LoadMusicFolder();
+            Current = Queue.GetDefault();
+        }
+
+
+        private void SettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.Equals("RootFolder"))
+            {
+                LoadMusicFolder();
+            }
+        }
+
+        private void LoadMusicFolder()
+        {
             try
             {
-                var settings = new SettingsViewModel();
-                var root = settings.RootFolder;
+                var root = Settings.Instance.RootFolder;
                 if (string.IsNullOrWhiteSpace(root))
                 {
-                    //root = @"/storage/emulated/0/Music/";
-                    root = @"/storage/2743-1D07/Music/";
+                    root = @"/storage/emulated/0/Music/";
+                    //root = @"/storage/2743-1D07/Music/";
                 }
                 var files = PathScanner.ProceedRoot(root);
                 Queue.AddRange2(files);
@@ -96,9 +115,6 @@ namespace MyPlayer.ViewModels
             {
                 //throw;
             }
-
-            Initialize();
-            Current = Queue.GetDefault();
         }
 
 
@@ -148,6 +164,12 @@ namespace MyPlayer.ViewModels
 
         private async void ShowQueueAction(object obj)
         {
+            MessagingCenter.Subscribe<BaseViewModel, SongModel>(this, "SongSelected", (BaseViewModel sender, SongModel song) =>
+            {
+                MessagingCenter.Unsubscribe<BaseViewModel, SongModel>(this, "SongSelected");
+                Current = song.Song;
+            });
+
             var page = new QueuePage(Queue);
             await Application.Current.MainPage.Navigation.PushAsync(page, false);
         }
@@ -189,7 +211,7 @@ namespace MyPlayer.ViewModels
             {
                 return;
             }
-            
+
             Core.Initialize();
             LibVLC = new LibVLC();
             MediaPlayer = new MediaPlayer(LibVLC);

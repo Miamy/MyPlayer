@@ -10,9 +10,6 @@
              Title="Settings"
              >
 
-    <ContentPage.BindingContext>
-        <model:SettingsViewModel />
-    </ContentPage.BindingContext>
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -49,7 +46,7 @@
                         >
                         <Entry
                 
-                            Text="{Binding RootFolder}"
+                            Text="{Binding Settings.RootFolder}"
                             TextColor="White"
                             HorizontalOptions="FillAndExpand"
                             VerticalTextAlignment="Center"

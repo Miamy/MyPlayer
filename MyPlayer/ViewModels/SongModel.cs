@@ -6,14 +6,21 @@ namespace MyPlayer.ViewModels
     public class SongModel: SelectionViewModel
     {
         public int Index { get; set; }
-        private ISong _song;
 
-        public string Name => _song.Name;
+        public string Name => Song.Name;
         public int SongHeight => ItemHeight;
+
+        public ISong Song { get; set; }
+
         public SongModel(ISong song)
         {
-            _song = song;
-        }     
+            Song = song;
+        }
 
+
+        public override string ToString()
+        {
+            return Song.ToString();
+        }
     }
 }
