@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace MyPlayer.ViewModels
 {
@@ -71,8 +72,8 @@ namespace MyPlayer.ViewModels
         public int TotalHeight => Artists.Sum(artist => artist.DiscographyTotalHeight);
 
         private bool _allSelected = true;
-        public bool AllSelected 
-        { 
+        public bool AllSelected
+        {
             get => _allSelected;
             set
             {
@@ -82,7 +83,7 @@ namespace MyPlayer.ViewModels
         }
         public string AllSelectedImageSource => AllSelected ? "baseline_check_box_black_36dp.png" : "baseline_check_box_outline_blank_black_36dp.png";
 
-        
+
         public ICommand ClearSearchTextCommand { get; set; }
         public ICommand SelectAllCommand { get; set; }
 
@@ -127,7 +128,7 @@ namespace MyPlayer.ViewModels
             ShowAlbums = !ShowAlbums;
         }
 
-   
+
 
         private bool CanClearSearchText(object arg)
         {

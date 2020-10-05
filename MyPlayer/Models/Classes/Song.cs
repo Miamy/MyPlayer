@@ -7,7 +7,7 @@ using System.Text;
 
 namespace MyPlayer.Models.Classes
 {
-    public class Song : MediaBase, ISong
+    public class Song : ISong
     {
 
         public string Name { get; set; }
@@ -40,8 +40,6 @@ namespace MyPlayer.Models.Classes
             Name = Path.GetFileNameWithoutExtension(file.Name);
             Duration = Consts.ZeroTimeSpan;
             OffcetInContainer = offcet;
-
-            MediaInfo.Setup(file.FullPath);
         }
 
         public override string ToString()

@@ -34,28 +34,54 @@ namespace MyPlayer.Models.Classes
             Artists = new List<IArtist>();
         }
 
+        private static IAlbum lastAlbum = null;
+        private static IArtist lastArtist = null;
+
         private void AddSong(ISong song)
         {
             Songs.Add(song);
 
-            var albumName = song.MediaInfo.AlbumName;
+            var songPath = song.Container.FullPath;
+            var albumName = PathElement.GetParent(songPath);
+            var year = 0;
+            if (albumName.Length > 4)
+            {
+                var yearStr = albumName.Substring(0, 4);
+                if (int.TryParse(yearStr, out int test))
+                {
+                    year = test;
+                    albumName = albumName.Substring(6, albumName.Length - 6);
+                }
+            }
+
             if (!string.IsNullOrWhiteSpace(albumName))
             {
-                var album = Albums.FirstOrDefault(a => a.Name == albumName);
+                var album = lastAlbum;
+                if (album?.Name != albumName)
+                {
+                    album = Albums.FirstOrDefault(a => a.Name == albumName);
+                }
                 if (album == null)
                 {
-                    album = new Album(albumName);
-                    album.Year = album.MediaInfo.Year = song.MediaInfo.Year;
-                    album.MediaInfo.Cover = song.MediaInfo.Cover;
+                    album = new Album(albumName)
+                    {
+                        Year = year
+                    };
                     Albums.Add(album);
                 }
                 song.Album = album;
+                lastAlbum = album;
             }
 
-            var artistName = song.MediaInfo.Artist;
+            var artistName = PathElement.GetGrandParent(songPath);
             if (!string.IsNullOrWhiteSpace(artistName))
             {
-                var artist = Artists.FirstOrDefault(a => a.Name == artistName);
+                var artist = lastArtist;
+                if (artist?.Name != artistName)
+                {
+                    artist = Artists.FirstOrDefault(a => a.Name == artistName);
+                }
+                
                 if (artist == null)
                 {
                     artist = new Artist(artistName);
@@ -65,6 +91,7 @@ namespace MyPlayer.Models.Classes
                 {
                     song.Album.Artist = artist;
                 }
+                lastArtist = artist;
             }
 
             //RaisePropertyChanged("Songs");

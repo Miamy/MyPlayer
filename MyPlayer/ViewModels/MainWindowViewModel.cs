@@ -44,7 +44,7 @@ namespace MyPlayer.ViewModels
                 {
                     return null;
                 }
-                return Current.MediaInfo.Cover;
+                return Current.Album?.Cover;
             }
         }
 

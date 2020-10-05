@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MyPlayer.Models.Interfaces
 {
-    public interface IAlbum : IMediaBase
+    public interface IAlbum 
     {
         string Name { get; set; }
         IArtist Artist { get; set; }
@@ -14,7 +14,7 @@ namespace MyPlayer.Models.Interfaces
 
         int Year { get; set; }
 
-        //MusicFileType Type { get; set; }
+        IGraphicFile Cover { get; set; }
 
         int Count { get; }
         void AddSong(ISong song);

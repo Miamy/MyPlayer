@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MyPlayer.Models.Classes
 {
-    public class Album : MediaBase, IAlbum
+    public class Album : IAlbum
     {
         private string _name;
 
@@ -57,6 +57,7 @@ namespace MyPlayer.Models.Classes
         }
 
         public int Year { get; set; }
+        public IGraphicFile Cover { get; set; }
 
         public Album(string name)
         {
@@ -67,8 +68,10 @@ namespace MyPlayer.Models.Classes
         public int Count => Songs.Count;
         private void Clear()
         {
-            MediaInfo.Clear();
+            Cover = null;
+            Year = 0;
             Duration = Consts.ZeroTimeSpan;
+            Songs.Clear();
         }
 
         public void AddSong(ISong song)
@@ -80,6 +83,15 @@ namespace MyPlayer.Models.Classes
             Songs.Add(song);
             Duration += song.Duration;
 
+            if (Cover == null)
+            {
+                var dir = Path.GetDirectoryName(song.Container.FullPath);
+                var files = PathScanner.GetCovers(dir);
+                if (files.Length > 0)
+                {
+                    Cover = new GraphicFile(null, files[0]);
+                }
+            }
         }
 
         public override string ToString()
@@ -94,6 +106,20 @@ namespace MyPlayer.Models.Classes
                 result = Artist.ToString() + " / " + result;
             }
             return result;
+        }
+
+        public static int ExtractYear(string name)
+        {
+            if (name.Length < 4)
+            {
+                return 0;
+            }
+            var year = name.Substring(0, 4);
+            if (int.TryParse(year, out int test))
+            {
+                return test;
+            }
+            return 0;
         }
     }
 }
