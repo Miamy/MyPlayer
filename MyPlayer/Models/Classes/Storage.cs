@@ -37,12 +37,26 @@ namespace MyPlayer.Models.Classes
             {
                 Directory.CreateDirectory(folder);
             }
-            var file = Path.Combine(folder, "query.txt");
-            File.WriteAllText(file, value);
-            using (StreamReader reader = new StreamReader()
-            var zip = new ZipArchive()
 
+            var filename = "query.json";
+            var file = Path.Combine(folder, filename);
+            if (File.Exists(file))
+            {
+                File.Delete(file);
+            }
+            File.WriteAllText(file, value);
+
+            var zipFile = Path.Combine(folder, "query.zip");
+            using (var stream = new FileStream(zipFile, FileMode.OpenOrCreate))
+            {
+                using (var zip = new ZipArchive(stream, ZipArchiveMode.Update))
+                {
+                    zip.CreateEntryFromFile(file, filename);
+                }
+            }
+            File.Delete(file);
         }
+
         public static void LoadQueue(IQueue queue)
         {
 
