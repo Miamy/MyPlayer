@@ -12,11 +12,14 @@ using AndroidX.Core.Content;
 using AndroidX.Core.App;
 
 using LibVLCSharp.Forms.Shared;
+using MyPlayer.Models.Interfaces;
+using MyPlayer.Droid;
+
 
 namespace MyPlayer.Droid
 {
     [Activity(Label = "MyPlayer", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity 
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -67,5 +70,8 @@ namespace MyPlayer.Droid
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
         #endregion
+
+
+      
     }
 }
