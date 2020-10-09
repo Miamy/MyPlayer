@@ -9,15 +9,16 @@ using Xamarin.Forms;
 
 namespace MyPlayer.Models
 {
-    public class ArtistHeightConverter : BindableObject, IValueConverter
+    class ArtistHeightConverter : BindableObject, IValueConverter
     {
-        public static readonly BindableProperty ArtistProperty = BindableProperty.Create(nameof(Artist), typeof(object), typeof(ArtistHeightConverter));
+        public static readonly BindableProperty MyArtistProperty = BindableProperty.Create(nameof(MyArtist), typeof(string), typeof(ArtistHeightConverter));
 
-        public object Artist
+        public string MyArtist
         {
-            get { return GetValue(ArtistProperty); }
-            set { SetValue(ArtistProperty, value); }
+            get { return (string)GetValue(MyArtistProperty); }
+            set { SetValue(MyArtistProperty, value); }
         }
+        //public object Artist { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -33,15 +34,16 @@ namespace MyPlayer.Models
         }
     }
 
-    public class AlbumHeightConverter : BindableObject, IValueConverter
+    class AlbumHeightConverter : BindableObject, IValueConverter
     {
-        public static readonly BindableProperty AlbumProperty = BindableProperty.Create(nameof(Album), typeof(object), typeof(AlbumHeightConverter));
+        public static readonly BindableProperty MyAlbumProperty = BindableProperty.Create(nameof(MyAlbum), typeof(object), typeof(AlbumHeightConverter));
 
-        public object Album
+        public object MyAlbum
         {
-            get { return GetValue(AlbumProperty); }
-            set { SetValue(AlbumProperty, value); }
+            get { return GetValue(MyAlbumProperty); }
+            set { SetValue(MyAlbumProperty, value); }
         }
+        //public object Album { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

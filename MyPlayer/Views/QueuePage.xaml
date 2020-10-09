@@ -17,8 +17,11 @@
          </ContentPage.BindingContext>
     -->
 
+    
     <ContentPage.Resources>
         <ResourceDictionary>
+            
+
             <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}"/>
             <Style TargetType="Label" BasedOn="{StaticResource LabelStyle}"/>
 
@@ -74,9 +77,24 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout
-                            Orientation="Vertical"
+                            Orientation="Vertical"       
                             >
+<!--
+                            <StackLayout.Resources>
+                                <model:ArtistHeightConverter x:Key="artistHeightConverter" MyArtist="{Binding Name}"/>
 
+                            </StackLayout.Resources>
+                            
+                            <StackLayout.HeightRequest>
+                                <Binding Source="{RelativeSource 
+                                         Mode=FindAncestorBindingContext, 
+                                         AncestorType={x:Type viewmodel:QueueViewModel}}"
+                                         Path="ArtistHeightMock" 
+                                         Converter="{StaticResource artistHeightConverter}"
+                                         >
+                                </Binding>
+                            </StackLayout.HeightRequest>
+-->
                             <StackLayout
                                 Orientation="Horizontal"
                                 HeightRequest="40"
@@ -110,7 +128,21 @@
                                         <StackLayout 
                                             Orientation="Vertical"
                                             >
-
+<!--
+                                            <StackLayout.Resources>
+                                                <model:AlbumHeightConverter x:Key="albumHeightConverter" MyAlbum="{Binding Path=Name}"/>
+                                            </StackLayout.Resources>
+                                            
+                                            <StackLayout.HeightRequest>
+                                                <Binding Source="{RelativeSource 
+                                                         Mode=FindAncestorBindingContext, 
+                                                         AncestorType={x:Type viewmodel:QueueViewModel}}"
+                                                         Path="AlbumHeightMock"
+                                                         Converter="{StaticResource albumHeightConverter}"
+                                                         >
+                                                </Binding>
+                                            </StackLayout.HeightRequest>
+-->
                                             <StackLayout
                                                 Orientation="Horizontal"                                                
                                                 HeightRequest="38"
@@ -175,9 +207,9 @@
                                                                 <TapGestureRecognizer 
                                                                     NumberOfTapsRequired="2"    
                                                                     Command="{Binding PlayTappedCommand, 
-                                                                            Source={RelativeSource 
-                                                                                Mode=FindAncestorBindingContext, 
-                                                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                                    Source={RelativeSource 
+                                                                    Mode=FindAncestorBindingContext, 
+                                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
 
                                                                     CommandParameter="{Binding .}"
                                                                     />

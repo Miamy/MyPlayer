@@ -135,7 +135,7 @@ namespace MyPlayer.ViewModels
 
         private bool CanClearSearchText(object arg)
         {
-            return SearchText != "";
+            return !string.IsNullOrWhiteSpace(SearchText);
         }
 
         private void ClearSearchTextAction(object obj)
