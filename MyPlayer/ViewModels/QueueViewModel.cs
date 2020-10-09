@@ -83,6 +83,9 @@ namespace MyPlayer.ViewModels
         }
         public string AllSelectedImageSource => AllSelected ? "baseline_check_box_black_36dp.png" : "baseline_check_box_outline_blank_black_36dp.png";
 
+        public int ArtistHeightMock { get; set; } = -1;
+        public int AlbumHeightMock { get; set; } = -1;
+
 
         public ICommand ClearSearchTextCommand { get; set; }
         public ICommand SelectAllCommand { get; set; }

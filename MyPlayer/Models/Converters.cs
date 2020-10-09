@@ -9,33 +9,53 @@ using Xamarin.Forms;
 
 namespace MyPlayer.Models
 {
-    public class ArtistToHeightConverter : BindableObject, IValueConverter
+    public class ArtistHeightConverter : BindableObject, IValueConverter
     {
-        public static readonly BindableProperty ModelProperty = BindableProperty.Create("Model", typeof(object), typeof(ArtistToHeightConverter));
+        public static readonly BindableProperty ArtistProperty = BindableProperty.Create(nameof(Artist), typeof(object), typeof(ArtistHeightConverter));
 
-        public object Model
+        public object Artist
         {
-            get { return GetValue(ModelProperty); }
-            set { SetValue(ModelProperty, value); }
+            get { return GetValue(ArtistProperty); }
+            set { SetValue(ArtistProperty, value); }
         }
-        public List<IGrouping<IArtist, IGrouping<IAlbum, ISong>>> Songs { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var label = (Label)parameter;
-            var name = label.Text;
+            //var label = (Label)parameter;
+            //var name = label.Text;
             //var album = Songs.
             return 300;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            //return (string)value == " " ? 0 : Parse(value);
             throw new NotImplementedException();
-
         }
     }
 
+    public class AlbumHeightConverter : BindableObject, IValueConverter
+    {
+        public static readonly BindableProperty AlbumProperty = BindableProperty.Create(nameof(Album), typeof(object), typeof(AlbumHeightConverter));
+
+        public object Album
+        {
+            get { return GetValue(AlbumProperty); }
+            set { SetValue(AlbumProperty, value); }
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            //var label = (Label)parameter;
+            //var name = label.Text;
+            //var album = Songs.
+            return 300;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 
 }
