@@ -30,6 +30,10 @@ namespace MyPlayer.Models.Classes
 
         public TimeSpan OffcetInContainer { get; set; }
 
+        public int Count => 1;
+
+        public IList<IMediaBase> Children { get; set; } = null;
+
         public Song(IMusicFile file) : this(file, Consts.ZeroTimeSpan)
         {
         }

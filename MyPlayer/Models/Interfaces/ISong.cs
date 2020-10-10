@@ -5,9 +5,8 @@ using System.Text;
 
 namespace MyPlayer.Models.Interfaces
 { 
-    public interface ISong 
+    public interface ISong : IMediaBase
     {
-        string Name { get; set; }
         TimeSpan Duration { get; set; }
         IFile Container { get; set; }
         IAlbum Album { get; set; }

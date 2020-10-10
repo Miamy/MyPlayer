@@ -21,7 +21,7 @@ namespace MyPlayer.ViewModels
 
         public IQueue Queue { get; set; }
 
-        public IList<ArtistModel> Artists => Queue.Artists.Select(a => new ArtistModel(a, this)).ToList();
+        public IList<VisualObject<IArtist>> Artists => Queue.Artists.Select(a => new VisualObject<IArtist>(a, this)).ToList();
 
 
         private string _searchText;
@@ -63,13 +63,17 @@ namespace MyPlayer.ViewModels
                 Set(ref _showSongs, value);
                 RaisePropertyChanged("TotalHeight");
                 RaisePropertyChanged("SongsToolItemText");
+                //foreach (var artist in Artists)
+                //{
+                //    artist.DoPropertyChanged("Height");
+                //}
             }
         }
 
         public string AlbumsToolItemText => ShowAlbums ? "Hide albums" : "Show albums";
         public string SongsToolItemText => ShowSongs ? "Hide songs" : "Show songs";
 
-        public int TotalHeight => Artists.Sum(artist => artist.DiscographyTotalHeight);
+        public int TotalHeight => Artists.Sum(artist => artist.Height);
 
         private bool _allSelected = true;
         public bool AllSelected
@@ -117,7 +121,11 @@ namespace MyPlayer.ViewModels
 
         private async void PlayTappedAction(object obj)
         {
-            MessagingCenter.Send<BaseViewModel, SongModel>(this, "SongSelected", (SongModel)obj);
+            if (!(obj is VisualObject<IMediaBase> selected))
+            {
+                return;
+            }
+            MessagingCenter.Send<BaseViewModel, IMediaBase>(this, "SongSelected", selected.Data);
             await Application.Current.MainPage.Navigation.PopAsync();
         }
 

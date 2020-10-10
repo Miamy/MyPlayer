@@ -4,11 +4,8 @@ using System.Text;
 
 namespace MyPlayer.Models.Interfaces
 {
-    public interface IArtist
+    public interface IArtist : IMediaBase
     {
-        string Name { get; set; }
-        IList<IAlbum> Albums { get; set; }
-        int Count { get; }
         void AddAlbum(IAlbum album);
     }
 }

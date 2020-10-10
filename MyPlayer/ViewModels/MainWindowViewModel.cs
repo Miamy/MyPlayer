@@ -164,10 +164,10 @@ namespace MyPlayer.ViewModels
 
         private async void ShowQueueAction(object obj)
         {
-            MessagingCenter.Subscribe<BaseViewModel, SongModel>(this, "SongSelected", (BaseViewModel sender, SongModel song) =>
+            MessagingCenter.Subscribe<BaseViewModel, IMediaBase>(this, "SongSelected", (BaseViewModel sender, IMediaBase song) =>
             {
-                MessagingCenter.Unsubscribe<BaseViewModel, SongModel>(this, "SongSelected");
-                Current = song.Song;
+                MessagingCenter.Unsubscribe<BaseViewModel, IMediaBase>(this, "SongSelected");
+                Current = (ISong)song;
             });
 
             var page = new QueuePage(Queue);

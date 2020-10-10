@@ -20,7 +20,8 @@
     
     <ContentPage.Resources>
         <ResourceDictionary>
-            
+            <model:ArtistHeightConverter x:Key="artistHeightConverter" MyArtist="{Binding Name}"/>
+
 
             <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}"/>
             <Style TargetType="Label" BasedOn="{StaticResource LabelStyle}"/>
@@ -68,6 +69,7 @@
                 ItemSizingStrategy="MeasureAllItems"
                 SelectionMode="Single"
                 HeightRequest="{Binding TotalHeight}"
+                VerticalOptions="FillAndExpand"
                 >
 
                 <CollectionView.ItemsLayout>
@@ -79,22 +81,7 @@
                         <StackLayout
                             Orientation="Vertical"       
                             >
-<!--
-                            <StackLayout.Resources>
-                                <model:ArtistHeightConverter x:Key="artistHeightConverter" MyArtist="{Binding Name}"/>
 
-                            </StackLayout.Resources>
-                            
-                            <StackLayout.HeightRequest>
-                                <Binding Source="{RelativeSource 
-                                         Mode=FindAncestorBindingContext, 
-                                         AncestorType={x:Type viewmodel:QueueViewModel}}"
-                                         Path="ArtistHeightMock" 
-                                         Converter="{StaticResource artistHeightConverter}"
-                                         >
-                                </Binding>
-                            </StackLayout.HeightRequest>
--->
                             <StackLayout
                                 Orientation="Horizontal"
                                 HeightRequest="40"
@@ -114,35 +101,21 @@
 
                             <!--Albums-->
                             <CollectionView
-                                ItemsSource="{Binding Albums}"
-                                HeightRequest="{Binding DiscographyHeight }"
+                                ItemsSource="{Binding Children}"
+                                
                                 IsVisible="{Binding ShowAlbums, 
-                                Source={RelativeSource 
-                                Mode=FindAncestorBindingContext, 
-                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                    Source={RelativeSource 
+                                    Mode=FindAncestorBindingContext, 
+                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                HeightRequest="{Binding Height}"
                                 >
                                 
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
-
                                         <StackLayout 
                                             Orientation="Vertical"
-                                            >
-<!--
-                                            <StackLayout.Resources>
-                                                <model:AlbumHeightConverter x:Key="albumHeightConverter" MyAlbum="{Binding Path=Name}"/>
-                                            </StackLayout.Resources>
-                                            
-                                            <StackLayout.HeightRequest>
-                                                <Binding Source="{RelativeSource 
-                                                         Mode=FindAncestorBindingContext, 
-                                                         AncestorType={x:Type viewmodel:QueueViewModel}}"
-                                                         Path="AlbumHeightMock"
-                                                         Converter="{StaticResource albumHeightConverter}"
-                                                         >
-                                                </Binding>
-                                            </StackLayout.HeightRequest>
--->
+                                            HeightRequest="{Binding Height }"
+                                            >                                       
                                             <StackLayout
                                                 Orientation="Horizontal"                                                
                                                 HeightRequest="38"
@@ -152,7 +125,7 @@
                                                     Color="Orange"
                                                     />
                                                 <Label
-                                                    Text="{Binding FullName}"
+                                                    Text="{Binding Name}"
                                                     TextColor="Orange"
                                                     FontSize="Small"
                                                     Margin="10,0,0,0"
@@ -163,22 +136,22 @@
                                                 Color="Orange"
                                                 HeightRequest="2"
                                                 IsVisible="{Binding ShowSongs, 
-                                                Source={RelativeSource 
-                                                Mode=FindAncestorBindingContext, 
-                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                    Source={RelativeSource 
+                                                    Mode=FindAncestorBindingContext, 
+                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                                 />
 
                                             <!--Songs-->
                                             <CollectionView 
                                                 x:Name="InnerView"
-                                                ItemsSource="{Binding Songs}"
+                                                ItemsSource="{Binding Children}"
                                                 SelectionMode="Single"
-                                                HeightRequest="{Binding AlbumHeight}"
                                                 IsVisible="{Binding ShowSongs, 
-                                                Source={RelativeSource 
-                                                Mode=FindAncestorBindingContext, 
-                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                    Source={RelativeSource 
+                                                    Mode=FindAncestorBindingContext, 
+                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                                 >
+                                                <!--
                                                 <CollectionView.Triggers>
                                                     <DataTrigger 
                                                         TargetType="CollectionView" 
@@ -191,7 +164,7 @@
                                                         <Setter Property="HeightRequest" Value="0"/>
                                                     </DataTrigger>
                                                 </CollectionView.Triggers>                                                  
-                                                
+                                                -->
                                                 <CollectionView.ItemsLayout>
                                                     <LinearItemsLayout Orientation="Vertical" />
                                                 </CollectionView.ItemsLayout>
@@ -200,7 +173,7 @@
                                                     <DataTemplate>
                                                         <StackLayout
                                                             Orientation="Horizontal"
-                                                            HeightRequest="{Binding SongHeight}"
+                                                            HeightRequest="{Binding Height}"
                                                             >
 
                                                             <StackLayout.GestureRecognizers>
@@ -218,12 +191,12 @@
                                                             <CheckBox
                                                                 IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                                                 />
-
-                                                            <Label
-                                                                Text="{Binding Index, StringFormat='{0}.', 
+                                                            <!--                                                                Text="{Binding Index, StringFormat='{0}.', 
                                                                 Source={RelativeSource 
                                                                 Mode=FindAncestorBindingContext, 
                                                                 AncestorType={x:Type viewmodel:QueueViewModel}}}"
+-->
+                                                            <Label
                                                                 FontSize="Small"
                                                                 Margin="16,0,0,0"
                                                                 />
@@ -257,7 +230,7 @@
                 >
                 <Editor 
                     Placeholder="Text to search"
-                    PlaceholderColor="LightGray"
+                    PlaceholderColor="Gray"
                     Text="{Binding SearchText, Mode=TwoWay}"
                     TextColor="White"
                     HorizontalOptions="StartAndExpand"

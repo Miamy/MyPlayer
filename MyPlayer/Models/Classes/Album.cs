@@ -40,7 +40,7 @@ namespace MyPlayer.Models.Classes
             }
         }
         public TimeSpan Duration { get; set; }
-        public IList<ISong> Songs { get; set; }
+        public IList<IMediaBase> Children { get; set; }
 
         private IArtist _artist;
         public IArtist Artist
@@ -62,25 +62,25 @@ namespace MyPlayer.Models.Classes
         public Album(string name)
         {
             Name = name;
-            Songs = new List<ISong>();
+            Children = new List<IMediaBase>();
         }
 
-        public int Count => Songs.Count;
+        public int Count => Children.Count;
         private void Clear()
         {
             Cover = null;
             Year = 0;
             Duration = Consts.ZeroTimeSpan;
-            Songs.Clear();
+            Children.Clear();
         }
 
         public void AddSong(ISong song)
         {
-            if (Songs.IndexOf(song) != -1)
+            if (Children.IndexOf(song) != -1)
             {
                 return;
             }
-            Songs.Add(song);
+            Children.Add(song);
             Duration += song.Duration;
 
             if (Cover == null)

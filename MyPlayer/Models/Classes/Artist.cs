@@ -9,23 +9,23 @@ namespace MyPlayer.Models.Classes
     public class Artist : IArtist
     {
         public string Name { get; set; }
-        public IList<IAlbum> Albums { get; set; }
+        public IList<IMediaBase> Children { get; set; }
 
-        public int Count => Albums.Sum(album => album.Count);
+        public int Count => Children.Sum(album => album.Count);
         public Artist(string name)
         {
             Name = name;
-            Albums = new List<IAlbum>();
+            Children = new List<IMediaBase>();
         }
 
 
         public void AddAlbum(IAlbum album)
         {
-            if (Albums.IndexOf(album) != -1)
+            if (Children.IndexOf(album) != -1)
             {
                 return;
             }
-            Albums.Add(album);
+            Children.Add(album);
         }
 
         public override string ToString()

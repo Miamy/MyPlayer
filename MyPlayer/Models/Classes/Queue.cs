@@ -252,9 +252,9 @@ namespace MyPlayer.Models.Classes
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void RaisePropertyChanged([CallerMemberName] string aName = "")
+        protected virtual void RaisePropertyChanged([CallerMemberName] string name = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(aName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
         public void SwitchLoopType()
