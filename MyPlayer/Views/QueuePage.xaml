@@ -60,6 +60,8 @@
         <StackLayout
             Orientation="Vertical"
             VerticalOptions="StartAndExpand"
+            Margin="4"
+            
             >
 
             <CollectionView  
@@ -69,7 +71,7 @@
                 ItemSizingStrategy="MeasureAllItems"
                 SelectionMode="Single"
                 HeightRequest="{Binding TotalHeight}"
-                VerticalOptions="FillAndExpand"
+                VerticalOptions="FillAndExpand" 
                 >
 
                 <CollectionView.ItemsLayout>

@@ -1,6 +1,7 @@
 ﻿using MyPlayer.Models.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -9,11 +10,11 @@ using Xamarin.Forms;
 
 namespace MyPlayer.ViewModels
 {
-    public class VisualObject<T> : BindableObject where T : IMediaBase
+    public class VisualObject<T> : INotifyPropertyChanged where T : IMediaBase
     {
         private QueueViewModel _owner;
-        public QueueViewModel Owner 
-        { 
+        public QueueViewModel Owner
+        {
             get => _owner;
             set
             {
@@ -43,7 +44,7 @@ namespace MyPlayer.ViewModels
 
 
         protected bool _isSelected = true;
-        public virtual bool IsSelected
+        public bool IsSelected
         {
             get => _isSelected;
             set
@@ -61,15 +62,24 @@ namespace MyPlayer.ViewModels
 
         protected bool _isExpanded = true;
 
-        public virtual bool IsExpanded
+        public bool IsExpanded
         {
             get => _isExpanded;
             set => Set(ref _isExpanded, value);
         }
 
-        public IList<VisualObject<IMediaBase>> Children { get; set; }
+        private ICollection<VisualObject<IMediaBase>> children;
+        public ICollection<VisualObject<IMediaBase>> Children
+        {
+            get => children;
+            set
+            {
+                children = value;
+            }
+        }
 
         private T _data;
+
         public T Data
         {
             get => _data;
@@ -78,7 +88,7 @@ namespace MyPlayer.ViewModels
                 _data = value;
                 if (_data?.Children != null)
                 {
-                    Children = new List<VisualObject<IMediaBase>>(_data.Children.Select(child => new VisualObject<IMediaBase>(child, Owner)));
+                    Children = new ObservableCollection<VisualObject<IMediaBase>>(_data.Children.Select(child => new VisualObject<IMediaBase>(child, Owner)));
                 }
             }
         }
@@ -116,6 +126,17 @@ namespace MyPlayer.ViewModels
                 //OnPropertyChanging(nameof(Height));
                 OnPropertyChanged(nameof(Height));
             }
-        }   
+            if (e.PropertyName == "AllSelected")
+            {
+                IsSelected = _owner.AllSelected;
+            }
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
     }
 }

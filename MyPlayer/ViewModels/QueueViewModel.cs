@@ -19,10 +19,21 @@ namespace MyPlayer.ViewModels
     public class QueueViewModel : BaseViewModel
     {
 
-        public IQueue Queue { get; set; }
+        private IQueue _queue;
+        public IQueue Queue 
+        { 
+            get => _queue;
+            set
+            {
+                _queue = value;
+                if (_queue != null)
+                {
+                    Artists = new ObservableCollection<VisualObject<IArtist>>(_queue.Artists.Select(a => new VisualObject<IArtist>(a, this)));
+                }
+            }
+        }
 
-        public IList<VisualObject<IArtist>> Artists => Queue.Artists.Select(a => new VisualObject<IArtist>(a, this)).ToList();
-
+        public Collection<VisualObject<IArtist>> Artists { get; private set; }
 
         private string _searchText;
 
@@ -32,16 +43,16 @@ namespace MyPlayer.ViewModels
             set => Set(ref _searchText, value);
         }
 
-        private int _index = 0;
+        //private int _index = 0;
 
-        public int Index
-        {
-            get
-            {
-                _index++;
-                return _index;
-            }
-        }
+        //public int Index
+        //{
+        //    get
+        //    {
+        //        _index++;
+        //        return _index;
+        //    }
+        //}
 
         private bool _showAlbums;
         public bool ShowAlbums
@@ -76,6 +87,7 @@ namespace MyPlayer.ViewModels
         public int TotalHeight => Artists.Sum(artist => artist.Height);
 
         private bool _allSelected = true;
+
         public bool AllSelected
         {
             get => _allSelected;
@@ -86,10 +98,6 @@ namespace MyPlayer.ViewModels
             }
         }
         public string AllSelectedImageSource => AllSelected ? "baseline_check_box_black_36dp.png" : "baseline_check_box_outline_blank_black_36dp.png";
-
-        public int ArtistHeightMock { get; set; } = -1;
-        public int AlbumHeightMock { get; set; } = -1;
-
 
         public ICommand ClearSearchTextCommand { get; set; }
         public ICommand SelectAllCommand { get; set; }
@@ -154,10 +162,6 @@ namespace MyPlayer.ViewModels
         private void SelectAllAction(object obj)
         {
             AllSelected = !AllSelected;
-            foreach (var artist in Artists)
-            {
-                artist.IsSelected = AllSelected;
-            }
         }
         #endregion
 
