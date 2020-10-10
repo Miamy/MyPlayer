@@ -12,6 +12,23 @@ namespace MyPlayer.ViewModels
     public class VisualObject<T> : BindableObject where T : IMediaBase
     {
         private QueueViewModel _owner;
+        public QueueViewModel Owner 
+        { 
+            get => _owner;
+            set
+            {
+                if (_owner != null)
+                {
+                    _owner.PropertyChanged -= OwnerPropertyChanged;
+                }
+                _owner = value;
+                if (_owner != null)
+                {
+                    _owner.PropertyChanged += OwnerPropertyChanged;
+                }
+            }
+        }
+
         protected int HeaderHeight { get; set; } = 40;
         protected int ItemHeight { get; set; } = 30;
 
@@ -61,7 +78,7 @@ namespace MyPlayer.ViewModels
                 _data = value;
                 if (_data?.Children != null)
                 {
-                    Children = new List<VisualObject<IMediaBase>>(_data.Children.Select(child => new VisualObject<IMediaBase>(child, _owner)));
+                    Children = new List<VisualObject<IMediaBase>>(_data.Children.Select(child => new VisualObject<IMediaBase>(child, Owner)));
                 }
             }
         }
@@ -76,42 +93,29 @@ namespace MyPlayer.ViewModels
                 var isSong = Children == null;
                 if (isSong)
                 {
-                    return _owner.ShowSongs ? ItemHeight : 0;
+                    return Owner.ShowSongs ? ItemHeight : 0;
                 }
                 else
                 {
-                    //return _owner.ShowAlbums ? (Data != null ? Data.Count * ItemHeight : 0) + HeaderHeight : 0;
-                    return _owner.ShowAlbums ? Children.Sum(child => child.Height) + HeaderHeight : 0;
+                    return Owner.ShowAlbums ? Children.Sum(child => child.Height) + HeaderHeight : 0;
                 }
             }
         }
 
+
         public VisualObject(T data, QueueViewModel owner)
         {
-            _owner = owner;
+            Owner = owner;
             Data = data;
-            _owner.PropertyChanged += _ownerPropertyChanged;
         }
 
-        private void _ownerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OwnerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "TotalHeight")
             {
                 //OnPropertyChanging(nameof(Height));
                 OnPropertyChanged(nameof(Height));
             }
-        }
-
-        internal void DoPropertyChanged(string name)
-        {
-            OnPropertyChanged(name);
-            if (Children != null)
-            {
-                foreach (var child in Children)
-                {
-                    child.OnPropertyChanged(name);
-                }
-            }
-        }
+        }   
     }
 }

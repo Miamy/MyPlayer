@@ -191,7 +191,7 @@
                                                             <CheckBox
                                                                 IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                                                 />
-                                                            <!--                                                                Text="{Binding Index, StringFormat='{0}.', 
+                                                            <!--Text="{Binding Index, StringFormat='{0}.', 
                                                                 Source={RelativeSource 
                                                                 Mode=FindAncestorBindingContext, 
                                                                 AncestorType={x:Type viewmodel:QueueViewModel}}}"
