@@ -15,6 +15,8 @@ namespace MyPlayer.Models.Classes
         public IList<IAlbum> Albums { get; set; }
         public IList<IArtist> Artists { get; set; }
 
+        public IList<IPathElement> PathElements { get; set; }
+
 
         private LoopType _loopType = LoopType.All;
         public LoopType LoopType
@@ -32,6 +34,49 @@ namespace MyPlayer.Models.Classes
             Songs = new List<ISong>();
             Albums = new List<IAlbum>();
             Artists = new List<IArtist>();
+            PathElements = new List<IPathElement>();
+        }
+
+        public void AddFromRoot(string path)
+        {
+            PathElements.Clear();
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                throw new ArgumentException($"Bad path {path}");
+            }
+
+            var pathElement = new PathElement("", path);
+            PathElements.Add(pathElement);
+            ProceedPath(pathElement, path);
+        }
+
+        private void ProceedPath(IPathElement parent, string path)
+        {
+            IPathElement pathElement;
+
+            var folders = Directory.GetDirectories(path);
+            foreach (var folder in folders)
+            {
+                pathElement = new PathElement(parent, folder);
+                PathElements.Add(pathElement);
+
+                ProceedPath(pathElement, folder);
+            }
+
+            var files = Directory.GetFiles(path);
+            foreach (var file in files)
+            {
+                if (PathElement.IsMusicFile(file))
+                {
+                    pathElement = new MusicFile(parent, file);
+                    Add((IMusicFile)pathElement);
+                }
+                else
+                {
+                    pathElement = new PathElement(parent, file);
+                }
+                PathElements.Add(pathElement);
+            }
         }
 
         private static IAlbum lastAlbum = null;
@@ -154,22 +199,22 @@ namespace MyPlayer.Models.Classes
             }
         }
 
-        public void AddRange(IEnumerable<IMusicFile> items)
-        {
-            foreach (var item in items)
-            {
-                Add(item);
-            }
-        }
+        //public void AddRange(IEnumerable<IMusicFile> items)
+        //{
+        //    foreach (var item in items)
+        //    {
+        //        Add(item);
+        //    }
+        //}
 
-        public void AddRange2(IEnumerable<string> items)
-        {
-            foreach (var item in items)
-            {
-                var file = new MusicFile(null, item);
-                Add(file);
-            }
-        }
+        //public void AddRange2(IEnumerable<string> items)
+        //{
+        //    foreach (var item in items)
+        //    {
+        //        var file = new MusicFile("", item);
+        //        Add(file);
+        //    }
+        //}
 
         public void Remove(IPathElement item)
         {

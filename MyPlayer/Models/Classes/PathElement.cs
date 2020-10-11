@@ -8,6 +8,7 @@ namespace MyPlayer.Models.Classes
 {
     public class PathElement : IPathElement
     {
+        public static string[] MusicExtentions => new string[] { ".mp3", ".flac" };
         //public static Dictionary<IPathElement, string> Hierarhy = new Dictionary<IPathElement, string>();
         public string Name { get; set; }
 
@@ -18,7 +19,7 @@ namespace MyPlayer.Models.Classes
 
         public string IconName => IsFile ? "baseline_audiotrack_black_36dp.png" : "baseline_folder_open_black_36dp.png";
 
-        public bool IsVirtual { get; set; }
+        public bool IsVirtual => Parent == null;
 
         public PathElement(string name, string path)
         {
@@ -38,7 +39,6 @@ namespace MyPlayer.Models.Classes
             FullPath = path;
 
             Parent = null;
-            IsVirtual = true;
         }
 
         public PathElement(IPathElement parent, string path)
@@ -52,7 +52,6 @@ namespace MyPlayer.Models.Classes
             FullPath = path;
             
             Parent = parent;
-            IsVirtual = false;
         }
 
         private static readonly char[] Splitters = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
@@ -82,6 +81,18 @@ namespace MyPlayer.Models.Classes
             }
             return parts[^3];
         }
+
+        public override string ToString()
+        {
+            return FullPath;
+        }
+
+        public static bool IsMusicFile(string name)
+        {
+            var extention = Path.GetExtension(name);
+            return (MusicExtentions.Any(ext => ext == extention));
+        }
+
     }
 
 }

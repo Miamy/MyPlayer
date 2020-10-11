@@ -16,7 +16,17 @@ namespace MyPlayer.Models.Classes
 
         public MusicFile(string name, string path) : base(name, path)
         {
-            HasDescription = IsComposite = Path.GetExtension(path) == ".flac";
+            Init();
+        }
+
+        public MusicFile(IPathElement parent, string path) : base(parent, path)
+        {
+            Init();
+        }
+
+        private void Init()
+        {
+            HasDescription = IsComposite = Path.GetExtension(Name) == ".flac";
             if (IsComposite)
             {
                 HasDescription = File.Exists(DescriptionFilename);

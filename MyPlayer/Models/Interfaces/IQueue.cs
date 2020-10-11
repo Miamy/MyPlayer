@@ -16,8 +16,9 @@ namespace MyPlayer.Models.Interfaces
         LoopType LoopType { get; set; }
 
         void Add(IMusicFile item);
-        void AddRange(IEnumerable<IMusicFile> items);
-        void AddRange2(IEnumerable<string> items);
+        //void AddRange(IEnumerable<IMusicFile> items);
+        //void AddRange2(IEnumerable<string> items);
+        void AddFromRoot(string path);
         void Remove(IPathElement item);
 
         ISong Next(ISong song);

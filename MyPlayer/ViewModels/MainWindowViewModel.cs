@@ -105,7 +105,9 @@ namespace MyPlayer.ViewModels
                     //root = @"/storage/2743-1D07/Music/";
                 }
                 var files = PathScanner.ProceedRoot(root);
-                Queue.AddRange2(files);
+                //Queue.AddRange2(files);
+
+                Queue.AddFromRoot(root);
             }
             catch (UnauthorizedAccessException)
             {
