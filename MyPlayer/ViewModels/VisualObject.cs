@@ -10,7 +10,7 @@ using Xamarin.Forms;
 
 namespace MyPlayer.ViewModels
 {
-    public class VisualObject<T> : INotifyPropertyChanged where T : IMediaBase
+    public class VisualObject<T> : BaseViewModel where T : IMediaBase
     {
         private QueueViewModel _owner;
         public QueueViewModel Owner
@@ -33,15 +33,7 @@ namespace MyPlayer.ViewModels
         protected int HeaderHeight { get; set; } = 40;
         protected int ItemHeight { get; set; } = 30;
 
-        protected void Set<F>(ref F field, F value, [CallerMemberName] string propertyName = null)
-        {
-            if (field == null && value != null || field != null && !field.Equals(value))
-            {
-                field = value;
-                OnPropertyChanged(propertyName);
-            }
-        }
-
+      
 
         protected bool _isSelected = true;
         public bool IsSelected
@@ -124,19 +116,13 @@ namespace MyPlayer.ViewModels
             if (e.PropertyName == "TotalHeight")
             {
                 //OnPropertyChanging(nameof(Height));
-                OnPropertyChanged(nameof(Height));
+                RaisePropertyChanged(nameof(Height));
             }
             if (e.PropertyName == "AllSelected")
             {
                 IsSelected = _owner.AllSelected;
             }
         }
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
+   
     }
 }

@@ -24,7 +24,7 @@ namespace MyPlayer.Models.Classes
                 if (int.TryParse(year, out int test))
                 {
                     Year = test;
-                    _name = _name.Substring(6, _name.Length - 6);
+                    //_name = _name.Substring(6, _name.Length - 6);
                 }
             }
         }

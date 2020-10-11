@@ -16,24 +16,24 @@ using Xamarin.Forms.Internals;
 namespace MyPlayer.ViewModels
 {
 
-    public class QueueViewModel : BaseViewModel
+    public class QueueViewModel : BaseViewModel, IQueueViewModel
     {
 
         private IQueue _queue;
-        public IQueue Queue 
-        { 
+        public IQueue Queue
+        {
             get => _queue;
             set
             {
                 _queue = value;
                 if (_queue != null)
                 {
-                    Artists = new ObservableCollection<VisualObject<IArtist>>(_queue.Artists.Select(a => new VisualObject<IArtist>(a, this)));
+                    Artists = new ReadOnlyCollection<VisualObject<IArtist>>(_queue.Artists.Select(a => new VisualObject<IArtist>(a, this)).ToList());
                 }
             }
         }
 
-        public Collection<VisualObject<IArtist>> Artists { get; private set; }
+        public IReadOnlyCollection<VisualObject<IArtist>> Artists { get; private set; }
 
         private string _searchText;
 
@@ -166,7 +166,16 @@ namespace MyPlayer.ViewModels
         #endregion
 
 
-
+        public ISong Next(ISong song)
+        {
+            var aSong = Queue.Next(song);
+            return aSong;
+        }
+        public ISong Prev(ISong song)
+        {
+            var aSong = Queue.Prev(song);
+            return aSong;
+        }
 
 
     }

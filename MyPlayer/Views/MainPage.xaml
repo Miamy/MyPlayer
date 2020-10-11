@@ -43,7 +43,7 @@
             HorizontalOptions="FillAndExpand"
             >
             <Image
-                Source="{Binding Current.MediaInfo.Cover.FullPath}"
+                Source="{Binding Current.Cover.FullPath}"
                 Aspect="AspectFit"
                 VerticalOptions="FillAndExpand"
                 HorizontalOptions="FillAndExpand"
@@ -70,21 +70,21 @@
                 >
 
                 <Label
-                    Text="{Binding Current.MediaInfo.Artist}"
+                    Text="{Binding Current.Artist}"
                     FontSize="Small"
                     TextColor="White"
                     MinimumWidthRequest="160"
                     MinimumHeightRequest="26"
                     />
                 <Label
-                    Text="{Binding Current.MediaInfo.Year}"
+                    Text="{Binding Current.Year}"
                     FontSize="Small"
                     TextColor="White"
                     MinimumHeightRequest="26"
                     />
 
                 <Label
-                    Text="{Binding Current.MediaInfo.AlbumName}"
+                    Text="{Binding Current.Name}"
                     FontSize="Small"
                     TextColor="White"
                     MinimumHeightRequest="26"

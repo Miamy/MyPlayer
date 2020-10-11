@@ -43,16 +43,7 @@ namespace MyPlayer.Models.Classes
 
             var songPath = song.Container.FullPath;
             var albumName = PathElement.GetParent(songPath);
-            var year = 0;
-            if (albumName.Length > 4)
-            {
-                var yearStr = albumName.Substring(0, 4);
-                if (int.TryParse(yearStr, out int test))
-                {
-                    year = test;
-                    albumName = albumName.Substring(6, albumName.Length - 6);
-                }
-            }
+       
 
             if (!string.IsNullOrWhiteSpace(albumName))
             {
@@ -63,10 +54,7 @@ namespace MyPlayer.Models.Classes
                 }
                 if (album == null)
                 {
-                    album = new Album(albumName)
-                    {
-                        Year = year
-                    };
+                    album = new Album(albumName);
                     Albums.Add(album);
                 }
                 song.Album = album;

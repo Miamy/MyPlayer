@@ -9,11 +9,11 @@ namespace MyPlayer.Models.Interfaces
     public interface IQueue : INotifyPropertyChanged
     {
         IList<ISong> Songs { get; }
-
-     
-        LoopType LoopType { get; set; }
         IList<IAlbum> Albums { get; set; }
         IList<IArtist> Artists { get; set; }
+
+
+        LoopType LoopType { get; set; }
 
         void Add(IMusicFile item);
         void AddRange(IEnumerable<IMusicFile> items);

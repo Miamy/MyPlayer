@@ -69,7 +69,7 @@
                 ItemsSource="{Binding Artists}"
                 IsGrouped="False"
                 ItemSizingStrategy="MeasureAllItems"
-                SelectionMode="Single"
+                SelectionMode="None"
                 HeightRequest="{Binding TotalHeight}"
                 VerticalOptions="FillAndExpand" 
                 >
@@ -110,6 +110,7 @@
                                     Mode=FindAncestorBindingContext, 
                                     AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                 HeightRequest="{Binding Height}"
+                                SelectionMode="None"
                                 >
                                 
                                 <CollectionView.ItemTemplate>
