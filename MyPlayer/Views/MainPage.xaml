@@ -6,7 +6,6 @@
              xmlns:model="clr-namespace:MyPlayer.ViewModels"
              mc:Ignorable="d" 
              x:Class="MyPlayer.MainPage"
-             Title="My player"
              BackgroundColor="Black"
              >
 <!--
@@ -16,7 +15,8 @@
 -->
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style TargetType="Button" BasedOn="{StaticResource ImageButtonStyle}"/>
+            <Style TargetType="Image" BasedOn="{StaticResource ImageButtonStyle}"/>
+            <Style TargetType="Button" BasedOn="{StaticResource ToolButtonStyle}"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -43,13 +43,42 @@
             HorizontalOptions="FillAndExpand"
             >
             <Image
-                Source="{Binding Current.Cover.FullPath}"
+                Source="{Binding Current.Album.Cover.FullPath}"
                 Aspect="AspectFit"
                 VerticalOptions="FillAndExpand"
                 HorizontalOptions="FillAndExpand"
                 />
         </StackLayout>
 
+        <StackLayout
+                x:Name="TimeLayout"
+            Orientation="Horizontal"
+                >
+            <Label
+                Text="{Binding Position}"
+                TextColor="Gray"
+                FontSize="Micro"
+                HorizontalOptions="Start"
+                />
+
+            <Slider
+                Minimum="0" 
+                Maximum="1"
+                Value="{Binding Position, Mode=TwoWay}"
+                ThumbColor="SkyBlue" 
+                MinimumTrackColor="SkyBlue"
+                MaximumTrackColor="LightGray"
+                HorizontalOptions="FillAndExpand"
+                />
+            <Label
+                Text="{Binding Length}"
+                TextColor="Gray"
+                FontSize="Micro"
+                HorizontalOptions="End"
+                />
+
+        </StackLayout>
+        
         <StackLayout
             x:Name="InfoLayout"
             VerticalOptions="End"
@@ -59,35 +88,31 @@
             <Label
                 Text="{Binding Current.Name}"
                 FontSize="Medium"
-                TextColor="White"
+                TextColor="Gray"
                 MinimumHeightRequest="50"
                 VerticalTextAlignment="Center"
-                VerticalOptions="Start"
+                VerticalOptions="Center"
+                HorizontalOptions="CenterAndExpand"
                 />
             <StackLayout
                 Orientation="Horizontal"
                 MinimumHeightRequest="26"
+                HorizontalOptions="Center"
                 >
-
                 <Label
-                    Text="{Binding Current.Artist}"
+                    Text="{Binding Current.Album.Artist.Name}"
                     FontSize="Small"
-                    TextColor="White"
+                    TextColor="Gray"
                     MinimumWidthRequest="160"
                     MinimumHeightRequest="26"
+                    Margin="10,0,10,0"
                     />
                 <Label
-                    Text="{Binding Current.Year}"
+                    Text="{Binding Current.Album.Name}"
                     FontSize="Small"
-                    TextColor="White"
+                    TextColor="Gray"
                     MinimumHeightRequest="26"
-                    />
-
-                <Label
-                    Text="{Binding Current.Name}"
-                    FontSize="Small"
-                    TextColor="White"
-                    MinimumHeightRequest="26"
+                    Margin="10,0,10,0"
                     />
             </StackLayout>
 
@@ -97,60 +122,72 @@
             x:Name="ButtonsLayout"
             Orientation="Horizontal"
             VerticalOptions="End"
-            HeightRequest="40"
+            HorizontalOptions="FillAndExpand"
+            HeightRequest="50"
             >
 
-            <Button
-                Command="{Binding LoopCommand}"
+            <Image
+                Style="{StaticResource ImageButtonStyle}"
                 >
-                <Button.Triggers>
-                    <DataTrigger TargetType="Button" Binding="{Binding Queue.LoopType}" Value="None">
-                        <Setter Property="ImageSource" Value="baseline_keyboard_backspace_black_36dp.png"/>
-                    </DataTrigger>
-                    <DataTrigger TargetType="Button" Binding="{Binding Queue.LoopType}" Value="All">
-                        <Setter Property="ImageSource" Value="baseline_repeat_black_36dp.png"/>
-                    </DataTrigger>
-                    <DataTrigger TargetType="Button" Binding="{Binding Queue.LoopType}" Value="One">
-                        <Setter Property="ImageSource" Value="baseline_repeat_one_black_36dp.png"/>
-                    </DataTrigger>
-                </Button.Triggers>
-            </Button>
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding LoopCommand}"/>
+                </Image.GestureRecognizers>
 
-            <Button 
-                Command="{Binding PrevCommand}"
-                ImageSource="baseline_skip_previous_black_36dp.png"
-                />
+                <Image.Triggers>
+                    <DataTrigger TargetType="Image" Binding="{Binding QueueViewModel.LoopType}" Value="None">
+                        <Setter Property="Source" Value="baseline_keyboard_backspace_black_36dp.png"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Image" Binding="{Binding QueueViewModel.LoopType}" Value="All">
+                        <Setter Property="Source" Value="baseline_repeat_black_36dp.png"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Image" Binding="{Binding QueueViewModel.LoopType}" Value="One">
+                        <Setter Property="Source" Value="baseline_repeat_one_black_36dp.png"/>
+                    </DataTrigger>
+                </Image.Triggers>
+            </Image>
 
-            <Button
-                x:Name="PlayButton"
-                Command="{Binding PlayCommand}"
-                ImageSource="baseline_play_arrow_black_36dp.png"
+            <Image
+                Source="baseline_skip_previous_black_36dp.png"
+                Style="{StaticResource ImageButtonStyle}"
                 >
-                <Button.Triggers>
-                    <DataTrigger TargetType="Button" Binding="{Binding IsPlaying}" Value="true">
-                        <Setter Property="ImageSource" Value="baseline_pause_black_36dp.png"/>
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding PrevCommand}"/>
+                </Image.GestureRecognizers>
+            </Image>
+
+            <Image
+                Source="baseline_play_arrow_black_36dp.png"
+                Style="{StaticResource ImageButtonStyle}"
+                >
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding PlayCommand}"/>
+                </Image.GestureRecognizers>
+                <Image.Triggers>
+                    <DataTrigger TargetType="Image" Binding="{Binding IsPlaying}" Value="true">
+                        <Setter Property="Source" Value="baseline_pause_black_36dp.png"/>
                     </DataTrigger>
-                </Button.Triggers>
-            </Button>
+                </Image.Triggers>
+            </Image>
             <!--
                  <Button
                  ImageSource="baseline_stop_black_36dp.png"
                  Style="{StaticResource ImageButtonStyle}"
                  />
             -->
-            <Button
-                Command="{Binding NextCommand}"
-                ImageSource="baseline_skip_next_black_36dp.png"
-                />
+            <Image
+                Source="baseline_skip_next_black_36dp.png"
+                Style="{StaticResource ImageButtonStyle}"
+                >
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding NextCommand}"/>
+                </Image.GestureRecognizers>
+            </Image>
             <Button
                 ImageSource="baseline_delete_black_36dp.png"
+                IsVisible="False"
                 />
 
-            <StackLayout
-                x:Name="TimeLayout"
-                VerticalOptions="End"
-                >
-            </StackLayout>
+         
         </StackLayout>
     </StackLayout>
 

@@ -219,91 +219,13 @@ namespace MyPlayer.Models.Classes
         public void Remove(IPathElement item)
         {
 
-        }
-   
+        }    
 
-        public ISong Next(ISong song)
-        {
-            var index = Songs.IndexOf(song);
-            if (index == -1)
-            {
-                return GetDefault();
-            }
-
-            switch (LoopType)
-            {
-                case LoopType.None:
-                    if (index == Songs.Count - 1)
-                    {
-                        return Songs[Songs.Count - 1];
-                    }
-                    break;
-                case LoopType.One:
-                    return song;
-                case LoopType.All:
-                    if (index == Songs.Count - 1)
-                    {
-                        return Songs[0];
-                    }
-                    break;
-            }
-            return Songs[index + 1];
-        }
-
-        public ISong Prev(ISong song)
-        {
-            var index = Songs.IndexOf(song);
-            if (index == -1)
-            {
-                return GetDefault();
-            }
-
-            switch (LoopType)
-            {
-                case LoopType.None:
-                    if (index == 0)
-                    {
-                        return Songs[0];
-                    }
-                    break;
-                case LoopType.One:
-                    return song;
-                case LoopType.All:
-                    if (index == 0)
-                    {
-                        return Songs[Songs.Count - 1];
-                    }
-                    break;
-            }
-            return Songs[index - 1];
-        }
-
-        public ISong GetDefault()
-        {
-            return Songs.FirstOrDefault();
-        }
-
-
+       
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void RaisePropertyChanged([CallerMemberName] string name = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        public void SwitchLoopType()
-        {
-            switch (LoopType)
-            {
-                case LoopType.None:
-                    LoopType = LoopType.One;
-                    break;
-                case LoopType.One:
-                    LoopType = LoopType.All;
-                    break;
-                case LoopType.All:
-                    LoopType = LoopType.None;
-                    break;
-            }
-        }
+        }   
     }
 }

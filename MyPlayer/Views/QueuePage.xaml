@@ -8,7 +8,6 @@
              xmlns:interfaces="clr-namespace:MyPlayer.Models.Interfaces"
              mc:Ignorable="d"
              x:Class="MyPlayer.Views.QueuePage"
-             Title="Playlist"
              BackgroundColor="Black"
              >
     <!--
@@ -72,6 +71,7 @@
                 SelectionMode="None"
                 HeightRequest="{Binding TotalHeight}"
                 VerticalOptions="FillAndExpand" 
+                Margin="2,2,2,12"
                 >
 
                 <CollectionView.ItemsLayout>
@@ -227,26 +227,41 @@
             </CollectionView>
 
             <StackLayout
-                Orientation="Horizontal"
                 VerticalOptions="End"
-                Margin="6"
+                Padding="1"
+                Margin="1"
+                BackgroundColor="Olive"
                 >
+                <StackLayout
+                    Orientation="Horizontal"
+                    BackgroundColor="Black"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Margin="2"
+                    >
+                
                 <Editor 
                     Placeholder="Text to search"
                     PlaceholderColor="Gray"
                     Text="{Binding SearchText, Mode=TwoWay}"
                     TextColor="White"
                     HorizontalOptions="StartAndExpand"
+                    Margin="6,0,0,0"
                     />
                 <Button
                     ImageSource="baseline_clear_black_36dp.png"
                     Style="{StaticResource ImageButtonStyle}"
                     Command="{Binding ClearSearchTextCommand}"
                     WidthRequest="24"
-                    HeightRequest="30"                    
+                    HeightRequest="30"     
+                    HorizontalOptions="End"
                     />
                 <Image
-                    Source="baseline_search_black_36dp.png"/>
+                    Source="baseline_search_black_36dp.png"
+                    HorizontalOptions="End"
+                    Margin="6,0,0,0"
+                    />
+                </StackLayout>
             </StackLayout>
         </StackLayout>
 

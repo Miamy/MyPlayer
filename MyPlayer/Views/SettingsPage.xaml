@@ -7,7 +7,6 @@
              mc:Ignorable="d"
              x:Class="MyPlayer.Views.SettingsPage"
              BackgroundColor="Black"
-             Title="Settings"
              >
 
 

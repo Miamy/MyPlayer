@@ -121,7 +121,7 @@ namespace MyPlayer.ViewModels
 
         private void RefreshAction(object obj)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         private void GotoRootAction(object obj)

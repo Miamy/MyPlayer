@@ -29,6 +29,21 @@ namespace MyPlayer.ViewModels
                 }
             }
         }
+
+
+        public long Length => MediaPlayer.Media.Duration == -1 ? 0 : MediaPlayer.Length * 1000;
+
+        private float _position = 0;
+        public float Position 
+        { 
+            get => _position;
+            set
+            {
+                Set(ref _position, value);
+                MediaPlayer.Position = value;
+            }            
+        }
+
         public ICommand ShowQueueCommand { get; set; }
         public ICommand ShowSettingsCommand { get; set; }
         public ICommand PlayCommand { get; set; }
@@ -48,7 +63,7 @@ namespace MyPlayer.ViewModels
             }
         }
 
-        public IQueue Queue { get; set; }
+        public IQueueViewModel QueueViewModel { get; set; }
 
         private bool _isPlaying = false;
 
@@ -75,14 +90,14 @@ namespace MyPlayer.ViewModels
 
             Settings.Instance.PropertyChanged += SettingsPropertyChanged;
 
-            Queue = new Queue();
+            QueueViewModel = new QueueViewModel();
             //Queue.PropertyChanged += PropertyChanged;
 
 
 
             Initialize();
             LoadMusicFolder();
-            Current = Queue.GetDefault();
+            Current = QueueViewModel.GetDefault();
         }
 
 
@@ -104,10 +119,7 @@ namespace MyPlayer.ViewModels
                     root = @"/storage/emulated/0/Music/";
                     //root = @"/storage/2743-1D07/Music/";
                 }
-                var files = PathScanner.ProceedRoot(root);
-                //Queue.AddRange2(files);
-
-                Queue.AddFromRoot(root);
+                QueueViewModel.AddFromRoot(root);
             }
             catch (UnauthorizedAccessException)
             {
@@ -135,7 +147,7 @@ namespace MyPlayer.ViewModels
 
         private void LoopAction(object obj)
         {
-            Queue.SwitchLoopType();
+            QueueViewModel.SwitchLoopType();
         }
         private bool CanPrev(object arg)
         {
@@ -144,7 +156,7 @@ namespace MyPlayer.ViewModels
 
         private void PrevAction(object obj)
         {
-            Current = Queue.Prev(Current);
+            Current = QueueViewModel.Prev(Current);
             PlayCurrent();
         }
 
@@ -155,7 +167,7 @@ namespace MyPlayer.ViewModels
 
         private void NextAction(object obj)
         {
-            Current = Queue.Next(Current);
+            Current = QueueViewModel.Next(Current);
             PlayCurrent();
         }
 
@@ -172,7 +184,7 @@ namespace MyPlayer.ViewModels
                 Current = (ISong)song;
             });
 
-            var page = new QueuePage(Queue);
+            var page = new QueuePage(QueueViewModel);
             await Application.Current.MainPage.Navigation.PushAsync(page, false);
         }
         private bool CanShowSettings(object arg)
@@ -194,7 +206,7 @@ namespace MyPlayer.ViewModels
 
         private void PlayAction(object obj)
         {
-            IsPlaying = !IsPlaying;
+
             if (IsPlaying)
             {
                 MediaPlayer.Pause();
@@ -203,6 +215,7 @@ namespace MyPlayer.ViewModels
             {
                 PlayCurrent();
             }
+            IsPlaying = !IsPlaying;
         }
         #endregion
 
@@ -217,7 +230,21 @@ namespace MyPlayer.ViewModels
             Core.Initialize();
             LibVLC = new LibVLC();
             MediaPlayer = new MediaPlayer(LibVLC);
+            MediaPlayer.MediaChanged += MediaPlayerMediaChanged;
+            MediaPlayer.PositionChanged += MediaPlayerPositionChanged;
             _initialized = true;
+        }
+
+        private void MediaPlayerPositionChanged(object sender, MediaPlayerPositionChangedEventArgs e)
+        {
+            //Position = (long)(MediaPlayer.Length * e.Position);
+            Position = e.Position;
+            //RaisePropertyChanged("Position");
+        }
+
+        private void MediaPlayerMediaChanged(object sender, MediaPlayerMediaChangedEventArgs e)
+        {
+            RaisePropertyChanged("Length");
         }
 
         private void PlayCurrent()

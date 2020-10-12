@@ -8,9 +8,31 @@
 
     <Application.Resources>
         <ResourceDictionary>
-            <Style x:Key="ImageButtonStyle" TargetType="Button">
+            <Style x:Key="ImageButtonStyle" TargetType="Image">
                 <Setter Property="BackgroundColor" Value="Black"/>
-                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="HeightRequest">
+                    <Setter.Value>
+                        <OnPlatform x:TypeArguments="x:Double">
+                            <On Platform="iOS">28</On>
+                            <On Platform="Android">40</On>
+                        </OnPlatform>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="WidthRequest">
+                    <Setter.Value>
+                        <OnPlatform x:TypeArguments="x:Double">
+                            <On Platform="iOS">38</On>
+                            <On Platform="Android">58</On>
+                        </OnPlatform>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="ToolButtonStyle" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="Black"/>
+                <Setter Property="TextColor" Value="Gray"/>
                 <Setter Property="HorizontalOptions" Value="CenterAndExpand"/>
                 <Setter Property="VerticalOptions" Value="Center"/>
                 <Setter Property="HeightRequest">
@@ -42,9 +64,11 @@
                 <Setter Property="LineBreakMode" Value="TailTruncation"/>
             </Style>
 
+            
 
         </ResourceDictionary>
     </Application.Resources>
 
 
 </Application>
+    

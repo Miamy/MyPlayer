@@ -28,9 +28,9 @@ namespace MyPlayer
             base.OnAppearing();      
         }
 
-        protected override void OnDisappearing()
+        protected override async void OnDisappearing()
         {
-            Storage.SaveQueue(Model.Queue);
+            await Task.Run(() => Storage.SaveQueue(Model.QueueViewModel));
             base.OnDisappearing();
         }
     }

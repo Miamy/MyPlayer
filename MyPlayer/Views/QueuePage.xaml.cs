@@ -15,12 +15,12 @@ namespace MyPlayer.Views
 {
     public partial class QueuePage : ContentPage
     {
-        private readonly QueueViewModel _model;
+        private readonly IQueueViewModel _model;
 
-        public QueuePage(IQueue queue)
+        public QueuePage(IQueueViewModel model)
         {
             InitializeComponent();
-            _model = new QueueViewModel(queue);
+            _model = model;
             BindingContext = _model;
 
         }

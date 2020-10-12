@@ -127,16 +127,6 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\baseline_fast_forward_black_36dp.png">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\baseline_fast_rewind_black_36dp.png">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\drawable\baseline_playlist_play_black_36dp.png">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
     </AndroidResource>

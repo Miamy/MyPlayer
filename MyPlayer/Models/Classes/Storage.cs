@@ -22,16 +22,8 @@ namespace MyPlayer.Models.Classes
             settings.RootFolder = Preferences.Get("RootFolder", "");
         }
 
-        public static void SaveQueue(IQueue queue)
+        public static void SaveQueue(IQueueViewModel queue)
         {
-            var settings = new JsonSerializerSettings()
-            {
-                MaxDepth = 2,
-                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-                PreserveReferencesHandling = PreserveReferencesHandling.All
-            };
-            var formatter = Formatting.Indented;
-            var value = JsonConvert.SerializeObject(queue, formatter, settings);
             var folder = DependencyService.Get<IFileSystem>().GetWorkFolder();
             if (!Directory.Exists(folder))
             {
@@ -44,12 +36,25 @@ namespace MyPlayer.Models.Classes
             {
                 File.Delete(file);
             }
+
+            var settings = new JsonSerializerSettings()
+            {
+                MaxDepth = 6,
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                PreserveReferencesHandling = PreserveReferencesHandling.All
+            };
+            var formatter = Formatting.Indented;
+            var value = JsonConvert.SerializeObject(queue, formatter, settings);
             File.WriteAllText(file, value);
 
             var zipFile = Path.Combine(folder, "query.zip");
-            using (var stream = new FileStream(zipFile, FileMode.OpenOrCreate))
+            if (File.Exists(zipFile))
             {
-                using (var zip = new ZipArchive(stream, ZipArchiveMode.Update))
+                File.Delete(zipFile);
+            }
+            using (var stream = new FileStream(zipFile, FileMode.Create))
+            {
+                using (var zip = new ZipArchive(stream, ZipArchiveMode.Create))
                 {
                     zip.CreateEntryFromFile(file, filename);
                 }
@@ -57,7 +62,7 @@ namespace MyPlayer.Models.Classes
             File.Delete(file);
         }
 
-        public static void LoadQueue(IQueue queue)
+        public static void LoadQueue(IQueueViewModel queue)
         {
 
         }

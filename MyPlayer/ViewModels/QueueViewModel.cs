@@ -1,4 +1,5 @@
-﻿using MyPlayer.Models.Classes;
+﻿using MyPlayer.Models;
+using MyPlayer.Models.Classes;
 using MyPlayer.Models.Interfaces;
 using MyPlayer.Views;
 using System;
@@ -20,20 +21,17 @@ namespace MyPlayer.ViewModels
     {
 
         private IQueue _queue;
-        public IQueue Queue
+
+        public IReadOnlyCollection<VisualObject<IArtist>> Artists { get; private set; } = null;
+        //{ get; private set; }
+
+        private void RetreiveArtists(bool force)
         {
-            get => _queue;
-            set
+            if (Artists == null || force)
             {
-                _queue = value;
-                if (_queue != null)
-                {
-                    Artists = new ReadOnlyCollection<VisualObject<IArtist>>(_queue.Artists.Select(a => new VisualObject<IArtist>(a, this)).ToList());
-                }
+                Artists = new ReadOnlyCollection<VisualObject<IArtist>>(_queue.Artists.Select(a => new VisualObject<IArtist>(a, this)).ToList());
             }
         }
-
-        public IReadOnlyCollection<VisualObject<IArtist>> Artists { get; private set; }
 
         private string _searchText;
 
@@ -106,10 +104,22 @@ namespace MyPlayer.ViewModels
         public ICommand ShowSongsCommand { get; set; }
         public ICommand PlayTappedCommand { get; set; }
 
-        public QueueViewModel(IQueue queue)
+        private LoopType _loopType = LoopType.All;
+        public LoopType LoopType
+        {
+            get => _loopType;
+            set
+            {
+                _loopType = value;
+                RaisePropertyChanged();
+            }
+        }
+        public ISong Current { get; set; }
+
+        public QueueViewModel()
         {
             CreateCommands();
-            Queue = queue;
+            _queue = new Queue();
             SearchText = "";
             ShowAlbums = true;
             ShowSongs = true;
@@ -165,18 +175,60 @@ namespace MyPlayer.ViewModels
         }
         #endregion
 
+        public void AddFromRoot(string path)
+        {
+            _queue.AddFromRoot(path);
+            RetreiveArtists(true);
+        }
 
         public ISong Next(ISong song)
         {
-            var aSong = Queue.Next(song);
-            return aSong;
+            if (LoopType == LoopType.One)
+            {
+                return song;
+            }
+
+            var newSong = _queue.Songs.Skip(1).SingleOrDefault();
+            if (newSong == null && LoopType == LoopType.All)
+            {
+                newSong = _queue.Songs.FirstOrDefault();
+            }
+            return newSong;
         }
         public ISong Prev(ISong song)
         {
-            var aSong = Queue.Prev(song);
-            return aSong;
+            if (LoopType == LoopType.One)
+            {
+                return song;
+            }
+
+            var newSong = _queue.Songs.Skip(-1).SingleOrDefault();
+            if (newSong == null && LoopType == LoopType.All)
+            {
+                newSong = _queue.Songs.LastOrDefault();
+            }
+            return newSong;
         }
 
+        public ISong GetDefault()
+        {
+            return _queue.Songs.FirstOrDefault();
+        }
 
+        public void SwitchLoopType()
+        {
+            switch (LoopType)
+            {
+                case LoopType.None:
+                    LoopType = LoopType.One;
+                    break;
+                case LoopType.One:
+                    LoopType = LoopType.All;
+                    break;
+                case LoopType.All:
+                    LoopType = LoopType.None;
+                    break;
+            }
+        }
     }
 }

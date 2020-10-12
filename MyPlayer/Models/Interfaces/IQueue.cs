@@ -12,19 +12,12 @@ namespace MyPlayer.Models.Interfaces
         IList<IAlbum> Albums { get; set; }
         IList<IArtist> Artists { get; set; }
 
-
-        LoopType LoopType { get; set; }
-
         void Add(IMusicFile item);
         //void AddRange(IEnumerable<IMusicFile> items);
         //void AddRange2(IEnumerable<string> items);
         void AddFromRoot(string path);
         void Remove(IPathElement item);
 
-        ISong Next(ISong song);
-        ISong Prev(ISong song);
 
-        ISong GetDefault();
-        void SwitchLoopType();
     }
 }
