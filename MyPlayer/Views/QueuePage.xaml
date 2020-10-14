@@ -250,7 +250,7 @@
                     />
                 <Button
                     ImageSource="baseline_clear_black_36dp.png"
-                    Style="{StaticResource ImageButtonStyle}"
+                    Style="{StaticResource ButtonStyle}"
                     Command="{Binding ClearSearchTextCommand}"
                     WidthRequest="24"
                     HeightRequest="30"     

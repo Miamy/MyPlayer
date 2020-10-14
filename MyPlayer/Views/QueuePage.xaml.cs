@@ -10,6 +10,7 @@ using Xamarin.Forms.Xaml;
 using MyPlayer.Models.Interfaces;
 using MyPlayer.ViewModels;
 using System.ComponentModel;
+using MyPlayer.Models.Classes;
 
 namespace MyPlayer.Views
 {
@@ -25,5 +26,10 @@ namespace MyPlayer.Views
 
         }
 
+        protected override async void OnDisappearing()
+        {
+            await Task.Run(() => Storage.SaveQueue(_model));
+            base.OnDisappearing();
+        }
     }
 }

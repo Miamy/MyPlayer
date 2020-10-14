@@ -12,7 +12,7 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style TargetType="Button" BasedOn="{StaticResource ImageButtonStyle}"/>
+            <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}"/>
             <Style TargetType="Label" BasedOn="{StaticResource LabelStyle}"/>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -22,37 +22,47 @@
 
             <Frame 
                 BackgroundColor="Black"
-                BorderColor="White"
-                Margin="20"                
+                BorderColor="Black"
+                Padding="2"
 
                 >
                 <StackLayout
                     Orientation="Horizontal"
                     VerticalOptions="Start"
-                    
+                    HorizontalOptions="FillAndExpand"
                     >
-                    <Label Text="Root   "
+                    <Label Text="Root  "
                            VerticalOptions="Center" 
                            HorizontalOptions="Start"
                            FontSize="Small"
                            />
-                    <Frame 
-                        BackgroundColor="Black"
-                        BorderColor="Gray"
-                        HorizontalOptions="FillAndExpand"
-                        Margin="0"
+                    <StackLayout 
+                        Orientation="Vertical"
                         Padding="0"
+                        Spacing="0"
+                        HorizontalOptions="FillAndExpand"
                         >
                         <Entry
-                
                             Text="{Binding Settings.RootFolder}"
                             TextColor="White"
                             HorizontalOptions="FillAndExpand"
                             VerticalTextAlignment="Center"
                             HorizontalTextAlignment="Start"
                             FontSize="Small"
-                            />
-                    </Frame>
+                            >
+                            <Entry.Triggers>
+                                <EventTrigger Event="Focus">
+                                </EventTrigger> 
+                            </Entry.Triggers>
+                        </Entry>
+                        <BoxView 
+                            BackgroundColor="DarkGray"
+                            HorizontalOptions="FillAndExpand"
+                            HeightRequest="2"
+                            VerticalOptions="End"
+                            >
+                        </BoxView>
+                    </StackLayout>
                     <Button
                         ImageSource="baseline_sd_storage_black_36dp.png"
                         Command="{Binding SelectRootCommand}"

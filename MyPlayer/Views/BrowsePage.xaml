@@ -16,7 +16,8 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style TargetType="Button" BasedOn="{StaticResource ImageButtonStyle}"/>
+            <Style TargetType="Image" BasedOn="{StaticResource ImageStyle}"/>
+            <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -51,27 +52,36 @@
                 Orientation="Horizontal"
                 Margin="4,6,4,12"
                 >
-                <Button
-                    ImageSource="baseline_subdirectory_arrow_left_black_36dp.png"
-                    Command="{Binding GotoParentCommand}"
+                <Image
+                    Source="baseline_subdirectory_arrow_left_black_36dp.png"
                     >
-                    <Button.Triggers>
-                        <Trigger TargetType="Button" Property="IsEnabled" Value="False">
-                            <Setter Property="ImageSource" Value="baseline_subdirectory_arrow_left_black_36dp_d.png"/>
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding GotoParentCommand}"/>
+                    </Image.GestureRecognizers>
+                    <Image.Triggers>
+                        <Trigger TargetType="Image" Property="IsEnabled" Value="False">
+                            <Setter Property="Source" Value="baseline_subdirectory_arrow_left_black_36dp_d.png"/>
                         </Trigger>
-                    </Button.Triggers>
-                </Button>
-                <Button
-                    ImageSource="baseline_home_black_36dp.png"
-                    Command="{Binding GotoRootCommand}"
-                    />
-                <Button
-                    ImageSource="baseline_refresh_black_36dp.png"
-                    Command="{Binding RefreshCommand}"
-                    />
+                    </Image.Triggers>
+                </Image>
+
+                <Image
+                    Source="baseline_home_black_36dp.png"
+                    >
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding GotoRootCommand}"/>
+                    </Image.GestureRecognizers>
+                </Image>
+
+                <Image
+                    Source="baseline_refresh_black_36dp.png"
+                    >
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding RefreshCommand}"/>
+                    </Image.GestureRecognizers>
+                </Image>
             </StackLayout>
 
-    
             <!--Folders-->
             <StackLayout
                 x:Name="FoldersContainer"
@@ -98,12 +108,13 @@
                                         WidthRequest="60"
                                         HeightRequest="30"
                                         Aspect="AspectFit"
+                                        HorizontalOptions="Start"
                                         />
 
                                     <Label
                                         Text="{Binding Name}"
                                         TextColor="White"
-                                        FontSize="Medium"
+                                        FontSize="Small"
                                         HorizontalOptions="StartAndExpand"
                                         VerticalTextAlignment="Center"
                                         />

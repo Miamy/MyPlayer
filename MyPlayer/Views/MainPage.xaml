@@ -15,8 +15,8 @@
 -->
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style TargetType="Image" BasedOn="{StaticResource ImageButtonStyle}"/>
-            <Style TargetType="Button" BasedOn="{StaticResource ToolButtonStyle}"/>
+            <Style TargetType="Image" BasedOn="{StaticResource ImageStyle}"/>
+            <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -55,7 +55,7 @@
             Orientation="Horizontal"
                 >
             <Label
-                Text="{Binding Position}"
+                Text="{Binding PositionTS, StringFormat='{0:mm\\:ss}'}"
                 TextColor="Gray"
                 FontSize="Micro"
                 HorizontalOptions="Start"
@@ -71,7 +71,7 @@
                 HorizontalOptions="FillAndExpand"
                 />
             <Label
-                Text="{Binding Length}"
+                Text="{Binding Length, StringFormat='{0:mm\\:ss}'}"
                 TextColor="Gray"
                 FontSize="Micro"
                 HorizontalOptions="End"
@@ -85,7 +85,12 @@
             Orientation="Vertical"
             Margin="2,2,2,8"
             >
+            <StackLayout
+                Orientation="Horizontal"
+                Margin="0"
+                >
             <Label
+                x:Name="NameLabel"
                 Text="{Binding Current.Name}"
                 FontSize="Medium"
                 TextColor="Gray"
@@ -93,7 +98,23 @@
                 VerticalTextAlignment="Center"
                 VerticalOptions="Center"
                 HorizontalOptions="CenterAndExpand"
+                LineBreakMode="NoWrap"
                 />
+                <!--
+            <Label
+                x:Name="NameLabelHidden"
+                Text="{Binding Current.Name}"
+                FontSize="Medium"
+                TextColor="Gray"
+                MinimumHeightRequest="50"
+                VerticalTextAlignment="Center"
+                VerticalOptions="Center"
+                HorizontalOptions="CenterAndExpand"
+                LineBreakMode="NoWrap"
+                TranslationX="{Binding Width, Source={Reference InfoLayout}}"
+                />
+                -->
+            </StackLayout>
             <StackLayout
                 Orientation="Horizontal"
                 MinimumHeightRequest="26"
@@ -115,7 +136,19 @@
                     Margin="10,0,10,0"
                     />
             </StackLayout>
-
+            <StackLayout
+                Orientation="Horizontal"
+                MinimumHeightRequest="26"
+                HorizontalOptions="Center"
+                >
+                <Label
+                    Text="{Binding MediaInfo}"
+                    FontSize="Micro"
+                    TextColor="Gray"
+                    MinimumHeightRequest="26"
+                    Margin="10,0,10,0"
+                    />
+            </StackLayout>
         </StackLayout>
 
         <StackLayout
@@ -127,7 +160,6 @@
             >
 
             <Image
-                Style="{StaticResource ImageButtonStyle}"
                 >
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding LoopCommand}"/>
@@ -148,7 +180,6 @@
 
             <Image
                 Source="baseline_skip_previous_black_36dp.png"
-                Style="{StaticResource ImageButtonStyle}"
                 >
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding PrevCommand}"/>
@@ -157,7 +188,6 @@
 
             <Image
                 Source="baseline_play_arrow_black_36dp.png"
-                Style="{StaticResource ImageButtonStyle}"
                 >
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding PlayCommand}"/>
@@ -171,12 +201,10 @@
             <!--
                  <Button
                  ImageSource="baseline_stop_black_36dp.png"
-                 Style="{StaticResource ImageButtonStyle}"
                  />
             -->
             <Image
                 Source="baseline_skip_next_black_36dp.png"
-                Style="{StaticResource ImageButtonStyle}"
                 >
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding NextCommand}"/>

@@ -188,7 +188,7 @@ namespace MyPlayer.ViewModels
                 return song;
             }
 
-            var newSong = _queue.Songs.Skip(1).SingleOrDefault();
+            var newSong = _queue.Songs.Next(song);
             if (newSong == null && LoopType == LoopType.All)
             {
                 newSong = _queue.Songs.FirstOrDefault();
@@ -202,7 +202,7 @@ namespace MyPlayer.ViewModels
                 return song;
             }
 
-            var newSong = _queue.Songs.Skip(-1).SingleOrDefault();
+            var newSong = _queue.Songs.Previous(song);
             if (newSong == null && LoopType == LoopType.All)
             {
                 newSong = _queue.Songs.LastOrDefault();
@@ -229,6 +229,61 @@ namespace MyPlayer.ViewModels
                     LoopType = LoopType.None;
                     break;
             }
+        }
+    }
+
+    public static class ExtensionMethods
+    {
+        public static T Previous<T>(this IList<T> list, T item)
+        {
+            var index = list.IndexOf(item) - 1;
+            return index > -1 ? list[index] : default;
+        }
+        public static T Next<T>(this IList<T> list, T item)
+        {
+            var index = list.IndexOf(item) + 1;
+            return index < list.Count() ? list[index] : default;
+        }
+        public static T Previous<T>(this IList<T> list, Func<T, Boolean> lookup)
+        {
+            var item = list.SingleOrDefault(lookup);
+            var index = list.IndexOf(item) - 1;
+            return index > -1 ? list[index] : default;
+        }
+        public static T Next<T>(this IList<T> list, Func<T, Boolean> lookup)
+        {
+            var item = list.SingleOrDefault(lookup);
+            var index = list.IndexOf(item) + 1;
+            return index < list.Count() ? list[index] : default;
+        }
+        public static T PreviousOrFirst<T>(this IList<T> list, T item)
+        {
+            if (list.Count() < 1)
+                throw new Exception("No array items!");
+
+            var previous = list.Previous(item);
+            return previous == null ? list.First() : previous;
+        }
+        public static T NextOrLast<T>(this IList<T> list, T item)
+        {
+            if (list.Count() < 1)
+                throw new Exception("No array items!");
+            var next = list.Next(item);
+            return next == null ? list.Last() : next;
+        }
+        public static T PreviousOrFirst<T>(this IList<T> list, Func<T, Boolean> lookup)
+        {
+            if (list.Count() < 1)
+                throw new Exception("No array items!");
+            var previous = list.Previous(lookup);
+            return previous == null ? list.First() : previous;
+        }
+        public static T NextOrLast<T>(this IList<T> list, Func<T, Boolean> lookup)
+        {
+            if (list.Count() < 1)
+                throw new Exception("No array items!");
+            var next = list.Next(lookup);
+            return next == null ? list.Last() : next;
         }
     }
 }

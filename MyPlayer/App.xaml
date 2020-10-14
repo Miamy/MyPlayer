@@ -8,7 +8,7 @@
 
     <Application.Resources>
         <ResourceDictionary>
-            <Style x:Key="ImageButtonStyle" TargetType="Image">
+            <Style x:Key="ImageStyle" TargetType="Image">
                 <Setter Property="BackgroundColor" Value="Black"/>
                 <Setter Property="HorizontalOptions" Value="CenterAndExpand"/>
                 <Setter Property="VerticalOptions" Value="Center"/>
@@ -30,7 +30,7 @@
                 </Setter>
             </Style>
 
-            <Style x:Key="ToolButtonStyle" TargetType="Button">
+            <Style x:Key="ButtonStyle" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="Black"/>
                 <Setter Property="TextColor" Value="Gray"/>
                 <Setter Property="HorizontalOptions" Value="CenterAndExpand"/>

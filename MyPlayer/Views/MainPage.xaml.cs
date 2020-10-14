@@ -14,7 +14,8 @@ namespace MyPlayer
 {
     public partial class MainPage : ContentPage
     {
-        public MainWindowViewModel Model { get; set; }
+        private MainWindowViewModel Model { get; set; }
+        private bool Execute { get; set; }
 
         public MainPage()
         {
@@ -25,13 +26,40 @@ namespace MyPlayer
       
         protected override void OnAppearing()
         {
-            base.OnAppearing();      
+            base.OnAppearing();
+            Execute = true;
+
+            Device.StartTimer(TimeSpan.FromMilliseconds(30), () =>
+            {
+                //NameLabelHidden.IsVisible = true;
+                if (NameLabel.Width > InfoLayout.Width / 2 - 10)
+                {
+                    NameLabel.TranslationX += 4;
+                    //NameLabelHidden.TranslationX += 204;
+
+                    if (NameLabel.TranslationX > InfoLayout.Width )
+                    {
+                        NameLabel.TranslationX = -NameLabel.Width;
+                    }
+                    //if (NameLabelHidden.TranslationX > InfoLayout.Width)
+                    //{
+                    //    NameLabelHidden.TranslationX = -NameLabelHidden.Width;
+                    //}
+                }
+                else
+                {
+                    NameLabel.TranslationX = 0;
+                    //NameLabelHidden.TranslationX = InfoLayout.Width / 2;
+                    //NameLabelHidden.IsVisible = false;
+                }
+                return Execute;
+            });
         }
 
-        protected override async void OnDisappearing()
+        protected override void OnDisappearing()
         {
-            await Task.Run(() => Storage.SaveQueue(Model.QueueViewModel));
             base.OnDisappearing();
+            Execute = false;
         }
     }
 }

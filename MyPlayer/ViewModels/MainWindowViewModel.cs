@@ -25,24 +25,56 @@ namespace MyPlayer.ViewModels
                 Set(ref _current, value);
                 if (_initialized && Current?.Container != null)
                 {
+                    //MediaPlayer.Media = null;
+                    if (MediaPlayer.Media != null)
+                    {
+                        MediaPlayer.Media.ParsedChanged -= MediaPlayerMediaParsedChanged;
+                    }
                     MediaPlayer.Media = new Media(LibVLC, Current.Container.FullPath, FromType.FromPath);
+                    MediaPlayer.Media.ParsedChanged += MediaPlayerMediaParsedChanged;
+                    MediaPlayer.Media.Parse();
                 }
             }
         }
 
 
-        public long Length => MediaPlayer.Media.Duration == -1 ? 0 : MediaPlayer.Length * 1000;
+        public TimeSpan Length => MediaPlayer.Media.Duration == -1 ? TimeSpan.Zero : TimeSpan.FromMilliseconds(MediaPlayer.Media.Duration);
 
         private float _position = 0;
-        public float Position 
-        { 
+        public float Position
+        {
             get => _position;
             set
             {
                 Set(ref _position, value);
                 MediaPlayer.Position = value;
-            }            
+            }
         }
+
+        public TimeSpan PositionTS
+        {
+            get => MediaPlayer.Media.Duration == -1 ? TimeSpan.Zero : TimeSpan.FromMilliseconds(MediaPlayer.Position * MediaPlayer.Media.Duration);
+        }
+
+        public string MediaInfo
+        {
+            get
+            {
+                if (MediaPlayer == null)
+                {
+                    return "-";
+                }
+                var media = MediaPlayer.Media;
+                if (media == null || !media.IsParsed || media.Tracks.Length == 0)
+                {
+                    return "-";
+                }
+                var track = media.Tracks[0];
+                var bitrate = track.Bitrate == 0 ? "VBR" : $"{track.Bitrate / 1000} kB/s"; 
+                return $"{bitrate}, {track.Data.Audio.Channels} ch, {track.Data.Audio.Rate} Hz";
+            }
+        }
+
 
         public ICommand ShowQueueCommand { get; set; }
         public ICommand ShowSettingsCommand { get; set; }
@@ -235,16 +267,27 @@ namespace MyPlayer.ViewModels
             _initialized = true;
         }
 
+        private void MediaPlayerMediaParsedChanged(object sender, MediaParsedChangedEventArgs e)
+        {
+            RaisePropertyChanged("Length");
+            RaisePropertyChanged("MediaInfo");
+        }
+
+        private TimeSpan lastPosition = TimeSpan.Zero;
         private void MediaPlayerPositionChanged(object sender, MediaPlayerPositionChangedEventArgs e)
         {
             //Position = (long)(MediaPlayer.Length * e.Position);
             Position = e.Position;
-            //RaisePropertyChanged("Position");
+            if ((PositionTS - lastPosition).Milliseconds >= 200)
+            {
+                RaisePropertyChanged("PositionTS");
+            }
+            lastPosition = PositionTS;
         }
 
         private void MediaPlayerMediaChanged(object sender, MediaPlayerMediaChangedEventArgs e)
         {
-            RaisePropertyChanged("Length");
+           
         }
 
         private void PlayCurrent()
