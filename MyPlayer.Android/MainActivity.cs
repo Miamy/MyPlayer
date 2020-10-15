@@ -19,7 +19,7 @@ using MyPlayer.Droid;
 namespace MyPlayer.Droid
 {
     [Activity(Label = "MyPlayer", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity 
+    public class MainActivity : Xamarin.Forms.Platform.Android.FormsAppCompatActivity 
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -63,7 +63,7 @@ namespace MyPlayer.Droid
         }
 
 
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 

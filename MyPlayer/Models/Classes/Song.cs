@@ -9,7 +9,7 @@ namespace MyPlayer.Models.Classes
 {
     public class Song : ISong
     {
-
+        public int Id { get; set; }
         public string Name { get; set; }
         public TimeSpan Duration { get; set; }
         public IFile Container { get; set; }

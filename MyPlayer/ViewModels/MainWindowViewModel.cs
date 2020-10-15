@@ -1,4 +1,5 @@
 ﻿using LibVLCSharp.Shared;
+using MyPlayer.CommonClasses;
 using MyPlayer.Models.Classes;
 using MyPlayer.Models.Interfaces;
 using MyPlayer.Views;
@@ -122,10 +123,12 @@ namespace MyPlayer.ViewModels
 
             Settings.Instance.PropertyChanged += SettingsPropertyChanged;
 
-            QueueViewModel = new QueueViewModel();
+            QueueViewModel = Storage.LoadQueue();
+            if (QueueViewModel == null)
+            {
+                QueueViewModel = new QueueViewModel();
+            }
             //Queue.PropertyChanged += PropertyChanged;
-
-
 
             Initialize();
             LoadMusicFolder();
@@ -210,7 +213,7 @@ namespace MyPlayer.ViewModels
 
         private async void ShowQueueAction(object obj)
         {
-            MessagingCenter.Subscribe<BaseViewModel, IMediaBase>(this, "SongSelected", (BaseViewModel sender, IMediaBase song) =>
+            MessagingCenter.Subscribe(this, "SongSelected", (BaseViewModel sender, IMediaBase song) =>
             {
                 MessagingCenter.Unsubscribe<BaseViewModel, IMediaBase>(this, "SongSelected");
                 Current = (ISong)song;

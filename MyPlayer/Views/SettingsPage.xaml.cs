@@ -1,4 +1,5 @@
-﻿using MyPlayer.Models.Classes;
+﻿using MyPlayer.CommonClasses;
+using MyPlayer.Models.Classes;
 using MyPlayer.ViewModels;
 using System;
 using System.Collections.Generic;

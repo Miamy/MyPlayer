@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace MyPlayer.Models.Classes
+namespace MyPlayer.CommonClasses
 {
     public static class PathScanner
     {

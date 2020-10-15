@@ -37,10 +37,6 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controls\" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <None Update="Views\BrowsePage.xaml">

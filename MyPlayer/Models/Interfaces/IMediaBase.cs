@@ -10,5 +10,6 @@ namespace MyPlayer.Models.Interfaces
         int Count { get; }
 
         IList<IMediaBase> Children { get; set; }
+        int Id { get; set; }
     }
 }

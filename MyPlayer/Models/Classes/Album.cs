@@ -1,4 +1,5 @@
-﻿using MyPlayer.Models.Interfaces;
+﻿using MyPlayer.CommonClasses;
+using MyPlayer.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +10,7 @@ namespace MyPlayer.Models.Classes
     public class Album : IAlbum
     {
         private string _name;
-
+        public int Id { get; set; }
         public string Name
         {
             get => _name;

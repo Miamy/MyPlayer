@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:model="clr-namespace:MyPlayer.ViewModels"
+             xmlns:trigger="clr-namespace:MyPlayer.Controls"
              mc:Ignorable="d"
              x:Class="MyPlayer.Views.SettingsPage"
              BackgroundColor="Black"
@@ -19,17 +20,11 @@
 
     <ContentPage.Content>
         <StackLayout>
-
-            <Frame 
-                BackgroundColor="Black"
-                BorderColor="Black"
-                Padding="2"
-
-                >
                 <StackLayout
                     Orientation="Horizontal"
                     VerticalOptions="Start"
                     HorizontalOptions="FillAndExpand"
+                    Margin="40,20,10,2"
                     >
                     <Label Text="Root  "
                            VerticalOptions="Center" 
@@ -45,17 +40,28 @@
                         <Entry
                             Text="{Binding Settings.RootFolder}"
                             TextColor="White"
+                            BackgroundColor="Transparent"
                             HorizontalOptions="FillAndExpand"
                             VerticalTextAlignment="Center"
                             HorizontalTextAlignment="Start"
                             FontSize="Small"
                             >
                             <Entry.Triggers>
-                                <EventTrigger Event="Focus">
-                                </EventTrigger> 
+                                <Trigger TargetType="Entry" Property="Entry.IsFocused" Value="True">
+                                    <Trigger.EnterActions>
+                                        <trigger:UnderlineTrigger Control="{x:Reference Underliner}" Value="True" />
+                                    </Trigger.EnterActions>
+
+                                    <Trigger.ExitActions>
+                                        <trigger:UnderlineTrigger Control="{x:Reference Underliner}" Value="False"/>
+                                    </Trigger.ExitActions>
+
+                                </Trigger>
                             </Entry.Triggers>
                         </Entry>
+                        
                         <BoxView 
+                            x:Name="Underliner"
                             BackgroundColor="DarkGray"
                             HorizontalOptions="FillAndExpand"
                             HeightRequest="2"
@@ -69,8 +75,6 @@
                         HorizontalOptions="End"
                         />
                 </StackLayout>
-            </Frame>
-
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

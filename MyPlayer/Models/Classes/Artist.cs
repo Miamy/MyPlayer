@@ -8,6 +8,7 @@ namespace MyPlayer.Models.Classes
 {
     public class Artist : IArtist
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public IList<IMediaBase> Children { get; set; }
 

@@ -10,7 +10,7 @@ using Xamarin.Forms.Xaml;
 using MyPlayer.Models.Interfaces;
 using MyPlayer.ViewModels;
 using System.ComponentModel;
-using MyPlayer.Models.Classes;
+using MyPlayer.CommonClasses;
 
 namespace MyPlayer.Views
 {
