@@ -80,6 +80,13 @@ namespace MyPlayer.CommonClasses
                 return null;
             }
 
+            FileAttributes attributes = File.GetAttributes(folder);
+            if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+            {
+                attributes &= ~FileAttributes.ReadOnly;
+                File.SetAttributes(folder, attributes);
+            }
+
             var zipFile = Path.Combine(folder, "query.zip");
             if (!File.Exists(zipFile))
             {
@@ -88,10 +95,8 @@ namespace MyPlayer.CommonClasses
 
             using (var stream = new FileStream(zipFile, FileMode.Open))
             {
-                using (var zip = new ZipArchive(stream, ZipArchiveMode.Read))
-                {
-                    zip.ExtractToDirectory(folder, true);
-                }
+                using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
+                zip.ExtractToDirectory(folder, true);
             }
 
             var filename = "query.json";
@@ -131,7 +136,7 @@ namespace MyPlayer.CommonClasses
                 ObjectCreationHandling = ObjectCreationHandling.Auto,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 ReferenceResolver = new IDReferenceResolver()
-        };
+            };
         }
 
         //public static Func<IReferenceResolver> IDReferenceResolver { get; set; } 

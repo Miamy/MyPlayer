@@ -116,6 +116,7 @@ namespace MyPlayer.ViewModels
             }
         }
         public ISong Current { get; set; }
+        public int Id { get; set; }
 
         public QueueViewModel()
         {

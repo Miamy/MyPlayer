@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace MyPlayer.Models.Interfaces
 {
-    public interface IQueueViewModel
+    public interface IQueueViewModel : IId
     {
         IReadOnlyCollection<VisualObject<IArtist>> Artists { get; }
 

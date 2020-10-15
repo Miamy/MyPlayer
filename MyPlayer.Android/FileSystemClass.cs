@@ -22,6 +22,7 @@ namespace MyPlayer.Droid
         [Obsolete]
         public static string GetWorkFolderStatic()
         {
+            var s = Android.OS.Environment.DirectoryDocuments;
             return Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "MyPlayer");
         }
         
