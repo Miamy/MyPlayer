@@ -31,7 +31,7 @@ namespace MyPlayer.ViewModels
                     {
                         MediaPlayer.Media.ParsedChanged -= MediaPlayerMediaParsedChanged;
                     }
-                    MediaPlayer.Media = new Media(LibVLC, Current.Container.FullPath, FromType.FromPath);
+                    MediaPlayer.Media = new Media(LibVLC, Current.Container, FromType.FromPath);
                     MediaPlayer.Media.ParsedChanged += MediaPlayerMediaParsedChanged;
                     MediaPlayer.Media.Parse();
                 }
@@ -84,7 +84,7 @@ namespace MyPlayer.ViewModels
         public ICommand PrevCommand { get; set; }
         public ICommand LoopCommand { get; set; }
 
-        public IPathElement Cover
+        public string Cover
         {
             get
             {
@@ -123,15 +123,12 @@ namespace MyPlayer.ViewModels
 
             Settings.Instance.PropertyChanged += SettingsPropertyChanged;
 
-            QueueViewModel = Storage.LoadQueue();
-            if (QueueViewModel == null)
-            {
                 QueueViewModel = new QueueViewModel();
-            }
             //Queue.PropertyChanged += PropertyChanged;
 
             Initialize();
             LoadMusicFolder();
+            Storage.LoadQueue(QueueViewModel);
             Current = QueueViewModel.GetDefault();
         }
 
@@ -299,7 +296,7 @@ namespace MyPlayer.ViewModels
             {
                 return;
             }
-            if (!File.Exists(Current.Container.FullPath))
+            if (!File.Exists(Current.Container))
             {
                 return;
             }

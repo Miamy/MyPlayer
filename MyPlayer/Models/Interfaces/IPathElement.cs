@@ -13,5 +13,8 @@ namespace MyPlayer.Models.Interfaces
 
         bool IsFile { get; }
         bool IsVirtual { get; }
+        bool IsComposite { get; set; }
+        bool HasDescription { get; set; }
+        string DescriptionFilename { get; }
     }
 }

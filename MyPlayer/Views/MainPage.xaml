@@ -43,7 +43,7 @@
             HorizontalOptions="FillAndExpand"
             >
             <Image
-                Source="{Binding Current.Album.Cover.FullPath}"
+                Source="{Binding Current.Album.Cover}"
                 Aspect="AspectFit"
                 VerticalOptions="FillAndExpand"
                 HorizontalOptions="FillAndExpand"

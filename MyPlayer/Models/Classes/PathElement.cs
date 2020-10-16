@@ -21,6 +21,12 @@ namespace MyPlayer.Models.Classes
 
         public bool IsVirtual => Parent == null;
 
+
+        public bool IsComposite { get; set; }
+        public bool HasDescription { get; set; }
+
+        public string DescriptionFilename => Path.Combine(Path.GetDirectoryName(FullPath), Path.GetFileNameWithoutExtension(FullPath) + ".cue");
+
         public PathElement(string name, string path)
         {
             if (string.IsNullOrWhiteSpace(path))
@@ -39,6 +45,7 @@ namespace MyPlayer.Models.Classes
             FullPath = path;
 
             Parent = null;
+            Init();
         }
 
         public PathElement(IPathElement parent, string path)
@@ -50,15 +57,16 @@ namespace MyPlayer.Models.Classes
             var parts = PathElement.Split(path);
             Name = parts[^1];
             FullPath = path;
-            
+
             Parent = parent;
+            Init();
         }
 
         private static readonly char[] Splitters = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
 
         private static string[] Split(string path)
         {
-            return path.Split(Splitters, StringSplitOptions.RemoveEmptyEntries); 
+            return path.Split(Splitters, StringSplitOptions.RemoveEmptyEntries);
         }
 
 
@@ -93,6 +101,13 @@ namespace MyPlayer.Models.Classes
             return (MusicExtentions.Any(ext => ext == extention));
         }
 
+        private void Init()
+        {
+            HasDescription = IsComposite = Path.GetExtension(Name) == ".flac";
+            if (IsComposite)
+            {
+                HasDescription = File.Exists(DescriptionFilename);
+            }
+        }
     }
-
 }

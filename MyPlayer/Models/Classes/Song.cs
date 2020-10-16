@@ -7,12 +7,9 @@ using System.Text;
 
 namespace MyPlayer.Models.Classes
 {
-    public class Song : ISong
+    public class Song : MediaBase, ISong
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
         public TimeSpan Duration { get; set; }
-        public IFile Container { get; set; }
 
         private IAlbum _album;
         public IAlbum Album 
@@ -30,18 +27,13 @@ namespace MyPlayer.Models.Classes
 
         public TimeSpan OffcetInContainer { get; set; }
 
-        public int Count => 1;
 
-        public IList<IMediaBase> Children { get; set; } = null;
-
-        public Song(IMusicFile file) : this(file, Consts.ZeroTimeSpan)
+        public Song(string name, string container) : this(name, container, Consts.ZeroTimeSpan)
         {
         }
 
-        public Song(IMusicFile file, TimeSpan offcet)
+        public Song(string name, string container, TimeSpan offcet) : base(name, container)
         {
-            Container = file;
-            Name = Path.GetFileNameWithoutExtension(file.Name);
             Duration = Consts.ZeroTimeSpan;
             OffcetInContainer = offcet;
         }
@@ -54,6 +46,11 @@ namespace MyPlayer.Models.Classes
                 result = Album.ToString() + " / " + result;
             }
             return result;
+        }
+
+        public override string GetUniqueName()
+        {
+            return Container + ":::" + OffcetInContainer.ToString();
         }
     }
 }

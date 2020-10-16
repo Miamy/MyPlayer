@@ -3,7 +3,7 @@ using MyPlayer.Models;
 using MyPlayer.Models.Classes;
 using MyPlayer.Models.Interfaces;
 using MyPlayer.Views;
-using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -18,19 +18,18 @@ using Xamarin.Forms.Internals;
 namespace MyPlayer.ViewModels
 {
 
+    [JsonObject(MemberSerialization.OptIn)]
     public class QueueViewModel : BaseViewModel, IQueueViewModel
     {
-
         private IQueue _queue;
 
-        public IReadOnlyCollection<VisualObject<IArtist>> Artists { get; private set; } = null;
-        //{ get; private set; }
+        public IReadOnlyCollection<VisualObject<IMediaBase>> Artists { get; private set; } = null;
 
         private void RetreiveArtists(bool force)
         {
             if (Artists == null || force)
             {
-                Artists = new ReadOnlyCollection<VisualObject<IArtist>>(_queue.Artists.Select(a => new VisualObject<IArtist>(a, this)).ToList());
+                Artists = new ReadOnlyCollection<VisualObject<IMediaBase>>(_queue.Artists.Select(a => new VisualObject<IMediaBase>(a, this)).ToList());
             }
         }
 
@@ -54,6 +53,7 @@ namespace MyPlayer.ViewModels
         //}
 
         private bool _showAlbums;
+        [JsonProperty]
         public bool ShowAlbums
         {
             get => _showAlbums;
@@ -63,8 +63,9 @@ namespace MyPlayer.ViewModels
                 RaisePropertyChanged("AlbumsToolItemText");
             }
         }
-        private bool _showSongs;
 
+        private bool _showSongs;
+        [JsonProperty]
         public bool ShowSongs
         {
             get => _showSongs;
@@ -106,6 +107,8 @@ namespace MyPlayer.ViewModels
         public ICommand PlayTappedCommand { get; set; }
 
         private LoopType _loopType = LoopType.All;
+       
+        [JsonProperty]
         public LoopType LoopType
         {
             get => _loopType;
@@ -115,8 +118,9 @@ namespace MyPlayer.ViewModels
                 RaisePropertyChanged();
             }
         }
+        [JsonProperty]
         public ISong Current { get; set; }
-        public int Id { get; set; }
+        //public int Id { get; set; }
 
         public QueueViewModel()
         {
@@ -234,58 +238,5 @@ namespace MyPlayer.ViewModels
         }
     }
 
-    public static class ExtensionMethods
-    {
-        public static T Previous<T>(this IList<T> list, T item)
-        {
-            var index = list.IndexOf(item) - 1;
-            return index > -1 ? list[index] : default;
-        }
-        public static T Next<T>(this IList<T> list, T item)
-        {
-            var index = list.IndexOf(item) + 1;
-            return index < list.Count() ? list[index] : default;
-        }
-        public static T Previous<T>(this IList<T> list, Func<T, Boolean> lookup)
-        {
-            var item = list.SingleOrDefault(lookup);
-            var index = list.IndexOf(item) - 1;
-            return index > -1 ? list[index] : default;
-        }
-        public static T Next<T>(this IList<T> list, Func<T, Boolean> lookup)
-        {
-            var item = list.SingleOrDefault(lookup);
-            var index = list.IndexOf(item) + 1;
-            return index < list.Count() ? list[index] : default;
-        }
-        public static T PreviousOrFirst<T>(this IList<T> list, T item)
-        {
-            if (list.Count() < 1)
-                throw new Exception("No array items!");
 
-            var previous = list.Previous(item);
-            return previous == null ? list.First() : previous;
-        }
-        public static T NextOrLast<T>(this IList<T> list, T item)
-        {
-            if (list.Count() < 1)
-                throw new Exception("No array items!");
-            var next = list.Next(item);
-            return next == null ? list.Last() : next;
-        }
-        public static T PreviousOrFirst<T>(this IList<T> list, Func<T, Boolean> lookup)
-        {
-            if (list.Count() < 1)
-                throw new Exception("No array items!");
-            var previous = list.Previous(lookup);
-            return previous == null ? list.First() : previous;
-        }
-        public static T NextOrLast<T>(this IList<T> list, Func<T, Boolean> lookup)
-        {
-            if (list.Count() < 1)
-                throw new Exception("No array items!");
-            var next = list.Next(lookup);
-            return next == null ? list.Last() : next;
-        }
-    }
 }

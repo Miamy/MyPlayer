@@ -1,4 +1,5 @@
-﻿using MyPlayer.Models.Interfaces;
+﻿using MyPlayer.CommonClasses;
+using MyPlayer.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -68,8 +69,8 @@ namespace MyPlayer.Models.Classes
             {
                 if (PathElement.IsMusicFile(file))
                 {
-                    pathElement = new MusicFile(parent, file);
-                    Add((IMusicFile)pathElement);
+                    pathElement = new PathElement(parent, file);
+                    Add(pathElement);
                 }
                 else
                 {
@@ -86,7 +87,7 @@ namespace MyPlayer.Models.Classes
         {
             Songs.Add(song);
 
-            var songPath = song.Container.FullPath;
+            var songPath = song.Container;
             var albumName = PathElement.GetParent(songPath);
        
 
@@ -99,7 +100,7 @@ namespace MyPlayer.Models.Classes
                 }
                 if (album == null)
                 {
-                    album = new Album(albumName);
+                    album = new Album(albumName, songPath.GetOneLevelUp());
                     Albums.Add(album);
                 }
                 song.Album = album;
@@ -117,7 +118,7 @@ namespace MyPlayer.Models.Classes
                 
                 if (artist == null)
                 {
-                    artist = new Artist(artistName);
+                    artist = new Artist(artistName, songPath.GetLevelUp(2));
                     Artists.Add(artist);
                 }
                 if (song.Album != null)
@@ -126,11 +127,9 @@ namespace MyPlayer.Models.Classes
                 }
                 lastArtist = artist;
             }
-
-            //RaisePropertyChanged("Songs");
         }
 
-        public void Add(IMusicFile item)
+        public void Add(IPathElement item)
         {
             if (item.IsComposite && item.HasDescription)
             {
@@ -138,12 +137,12 @@ namespace MyPlayer.Models.Classes
             }
             else
             {
-                var song = new Song(item);
+                var song = new Song(item.Name, item.FullPath);
                 AddSong(song);
             }
         }
 
-        private void AddSeveralSongs(IMusicFile item)
+        private void AddSeveralSongs(IPathElement item)
         {
             ISong song = null;
             var content = File.ReadAllLines(item.DescriptionFilename);
@@ -157,7 +156,7 @@ namespace MyPlayer.Models.Classes
                     {
                         AddSong(song);
                     }
-                    song = new Song(item);
+                    song = new Song(item.Name, item.FullPath);
                 }
 
                 if (line.StartsWith("TITLE"))
@@ -197,24 +196,7 @@ namespace MyPlayer.Models.Classes
                     Songs[i].Duration = Songs[i + 1].OffcetInContainer - Songs[i].OffcetInContainer;
                 }
             }
-        }
-
-        //public void AddRange(IEnumerable<IMusicFile> items)
-        //{
-        //    foreach (var item in items)
-        //    {
-        //        Add(item);
-        //    }
-        //}
-
-        //public void AddRange2(IEnumerable<string> items)
-        //{
-        //    foreach (var item in items)
-        //    {
-        //        var file = new MusicFile("", item);
-        //        Add(file);
-        //    }
-        //}
+        }      
 
         public void Remove(IPathElement item)
         {

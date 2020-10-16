@@ -7,41 +7,27 @@ using System.Text;
 
 namespace MyPlayer.Models.Classes
 {
-    public class Album : IAlbum
+    public class Album : MediaBase, IAlbum
     {
-        private string _name;
-        public int Id { get; set; }
-        public string Name
+        public override string Name
         {
-            get => _name;
+            get => base.Name;
             set
             {
-                _name = value;
-                if (_name.Length < 4)
+                base.Name = value;
+                if (base.Name.Length < 4)
                 {
                     return;
                 }
-                var year = _name.Substring(0, 4);
+                var year = base.Name.Substring(0, 4);
                 if (int.TryParse(year, out int test))
                 {
                     Year = test;
-                    //_name = _name.Substring(6, _name.Length - 6);
                 }
             }
         }
 
-        private IPathElement _container;
-
-        public IPathElement Container
-        {
-            get => _container;
-            set
-            {
-                _container = value;
-            }
-        }
         public TimeSpan Duration { get; set; }
-        public IList<IMediaBase> Children { get; set; }
 
         private IArtist _artist;
         public IArtist Artist
@@ -58,15 +44,13 @@ namespace MyPlayer.Models.Classes
         }
 
         public int Year { get; set; }
-        public IGraphicFile Cover { get; set; }
+        public string Cover { get; set; }
 
-        public Album(string name)
+        public Album(string name, string container) : base(name, container)
         {
-            Name = name;
             Children = new List<IMediaBase>();
         }
 
-        public int Count => Children.Count;
         private void Clear()
         {
             Cover = null;
@@ -86,11 +70,11 @@ namespace MyPlayer.Models.Classes
 
             if (Cover == null)
             {
-                var dir = Path.GetDirectoryName(song.Container.FullPath);
+                var dir = Path.GetDirectoryName(song.Container);
                 var files = PathScanner.GetCovers(dir);
                 if (files.Length > 0)
                 {
-                    Cover = new GraphicFile(null, files[0]);
+                    Cover = files[0];
                 }
             }
         }

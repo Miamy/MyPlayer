@@ -6,9 +6,12 @@ using System.Windows.Input;
 
 namespace MyPlayer.Models.Interfaces
 {
-    public interface IQueueViewModel : IId
+    public interface IQueueViewModel 
     {
-        IReadOnlyCollection<VisualObject<IArtist>> Artists { get; }
+        IReadOnlyCollection<VisualObject<IMediaBase>> Artists { get; }
+
+        bool ShowAlbums { get; set; }
+        bool ShowSongs { get; set; }
 
         ISong Next(ISong song);
         ISong Prev(ISong song);

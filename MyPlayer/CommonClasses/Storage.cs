@@ -1,10 +1,14 @@
-﻿using MyPlayer.Models.Interfaces;
+﻿using MyPlayer.Models.Classes;
+using MyPlayer.Models.Interfaces;
+using MyPlayer.ViewModels;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -25,6 +29,10 @@ namespace MyPlayer.CommonClasses
 
         public static void SaveQueue(IQueueViewModel queue)
         {
+            Preferences.Set("LoopType", (int)queue.LoopType);
+            Preferences.Set("ShowAlbums", queue.ShowAlbums);
+            Preferences.Set("ShowSongs", queue.ShowSongs);
+
             var folder = DependencyService.Get<IFileSystem>().GetWorkFolder();
             if (!Directory.Exists(folder))
             {
@@ -38,26 +46,32 @@ namespace MyPlayer.CommonClasses
                 File.Delete(file);
             }
 
-            //var formatter = Formatting.Indented;
-            //var value = JsonConvert.SerializeObject(queue, formatter, GetSettings());
+            var queueData = new Dictionary<string, bool>();
 
-            JsonSerializer serializer = new JsonSerializer
+            var simples = queue.Artists.Select(artist => new { artist.Data.Container, artist.IsSelected });
+            foreach (var element in simples)
             {
-                NullValueHandling = NullValueHandling.Include,
-                TypeNameHandling = TypeNameHandling.Auto,
-                Formatting = Formatting.Indented,
-                MaxDepth = 116,
-                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-                PreserveReferencesHandling = PreserveReferencesHandling.All
-            };
-
-            using (StreamWriter sw = new StreamWriter(file))
-            using (JsonWriter writer = new JsonTextWriter(sw))
-            {
-                serializer.Serialize(writer, queue, typeof(IQueueViewModel));
+                queueData.Add(element.Container, element.IsSelected);
             }
 
-            //File.WriteAllText(file, value);
+            var albums = queue.Artists.SelectMany(artist => artist.Children);
+            simples = albums.Select(album => new { album.Data.Container, album.IsSelected });
+            foreach (var element in simples)
+            {
+                queueData.Add(element.Container, element.IsSelected);
+            }
+
+            var songs = albums.SelectMany(albums => albums.Children);
+            simples = songs.Select(song => new { Container = ((ISong)song.Data).GetUniqueName(), song.IsSelected });
+            foreach (var element in simples)
+            {
+                queueData.Add(element.Container, element.IsSelected);
+            }
+
+            var formatter = Formatting.Indented;
+            var value = JsonConvert.SerializeObject(queueData, formatter, GetSettings());
+            File.WriteAllText(file, value);
+
 
             var zipFile = Path.Combine(folder, "query.zip");
             if (File.Exists(zipFile))
@@ -72,12 +86,17 @@ namespace MyPlayer.CommonClasses
             File.Delete(file);
         }
 
-        public static IQueueViewModel LoadQueue()
+        public static void LoadQueue(IQueueViewModel queue)
         {
+            if (queue == null)
+            {
+                return;
+            }
+
             var folder = DependencyService.Get<IFileSystem>().GetWorkFolder();
             if (!Directory.Exists(folder))
             {
-                return null;
+                return;
             }
 
             FileAttributes attributes = File.GetAttributes(folder);
@@ -90,7 +109,7 @@ namespace MyPlayer.CommonClasses
             var zipFile = Path.Combine(folder, "query.zip");
             if (!File.Exists(zipFile))
             {
-                return null;
+                return;
             }
 
             using (var stream = new FileStream(zipFile, FileMode.Open))
@@ -103,18 +122,26 @@ namespace MyPlayer.CommonClasses
             var file = Path.Combine(folder, filename);
             if (!File.Exists(file))
             {
-                return null;
+                return;
             }
 
             var value = File.ReadAllText(file);
             try
             {
-                var queue = JsonConvert.DeserializeObject<IQueueViewModel>(value, GetSettings());
-                return queue;
+                //var queue = JsonConvert.DeserializeObject<IQueueViewModel>(value, GetSettings());
+                var queueData = JsonConvert.DeserializeObject<Dictionary<string, bool>>(value, GetSettings());
+                foreach (var data in queueData)
+                {
+                    var item = queue.Artists.Flatten(e => e.Children).FirstOrDefault(d => d.Data.GetUniqueName() == data.Key);
+                    if (item != null)
+                    {
+                        item.IsSelected = data.Value;
+                    }
+                }
+
             }
             catch (Exception e)
             {
-                return null;
             }
             finally
             {
@@ -135,7 +162,7 @@ namespace MyPlayer.CommonClasses
                 StringEscapeHandling = StringEscapeHandling.EscapeNonAscii,
                 ObjectCreationHandling = ObjectCreationHandling.Auto,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
-                ReferenceResolver = new IDReferenceResolver()
+                //ReferenceResolver = new IDReferenceResolver()
             };
         }
 

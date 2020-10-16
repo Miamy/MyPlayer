@@ -8,8 +8,9 @@ namespace MyPlayer.Models.Interfaces
     public interface ISong : IMediaBase
     {
         TimeSpan Duration { get; set; }
-        IFile Container { get; set; }
         IAlbum Album { get; set; }
         TimeSpan OffcetInContainer { get; set; }
+
+        
     }
 }

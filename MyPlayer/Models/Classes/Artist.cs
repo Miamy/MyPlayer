@@ -6,16 +6,12 @@ using System.Text;
 
 namespace MyPlayer.Models.Classes
 {
-    public class Artist : IArtist
+    public class Artist : MediaBase, IArtist
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public IList<IMediaBase> Children { get; set; }
+        public override int Count => Children.Sum(album => album.Count);
 
-        public int Count => Children.Sum(album => album.Count);
-        public Artist(string name)
+        public Artist(string name, string container) : base(name, container)
         {
-            Name = name;
             Children = new List<IMediaBase>();
         }
 

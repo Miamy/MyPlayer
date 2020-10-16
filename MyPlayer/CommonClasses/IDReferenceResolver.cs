@@ -5,40 +5,43 @@ using System.Collections.Generic;
 
 namespace MyPlayer.CommonClasses
 {
-    internal class IDReferenceResolver : IReferenceResolver
-    {
-        private readonly IDictionary<int, IMediaBase> _data = new Dictionary<int, IMediaBase>();
+    //internal class IDReferenceResolver : IReferenceResolver
+    //{
+    //    private readonly IDictionary<int, IId> _data = new Dictionary<int, IId>();
 
-        public object ResolveReference(object context, string reference)
-        {
-            int id = int.Parse(reference);
+    //    public object ResolveReference(object context, string reference)
+    //    {
+    //        int id = int.Parse(reference);
 
-            IMediaBase p;
-            _data.TryGetValue(id, out p);
+    //        IId p;
+    //        _data.TryGetValue(id, out p);
 
-            return p;
-        }
+    //        return p;
+    //    }
 
-        public string GetReference(object context, object value)
-        {
-            IMediaBase p = (IMediaBase)value;
-            _data[p.Id] = p;
+    //    public string GetReference(object context, object value)
+    //    {
+    //        IId p = (IId)value;
+    //        _data[p.Id] = p;
 
-            return p.Id.ToString();
-        }
+    //        return p.Id.ToString();
+    //    }
 
-        public bool IsReferenced(object context, object value)
-        {
-            IMediaBase p = (IMediaBase)value;
+    //    public bool IsReferenced(object context, object value)
+    //    {
+    //        IId p = (IId)value;
 
-            return _data.ContainsKey(p.Id);
-        }
+    //        return _data.ContainsKey(p.Id);
+    //    }
 
-        public void AddReference(object context, string reference, object value)
-        {
-            int id = int.Parse(reference);
+    //    public void AddReference(object context, string reference, object value)
+    //    {
+    //        int id = int.Parse(reference);
 
-            _data[id] = (IMediaBase)value;
-        }
-    }
+    //        if (value is IId valueWithId)
+    //        {
+    //            _data[id] = valueWithId;
+    //        }
+    //    }
+    //}
 }

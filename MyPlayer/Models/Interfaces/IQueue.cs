@@ -12,9 +12,7 @@ namespace MyPlayer.Models.Interfaces
         IList<IAlbum> Albums { get; set; }
         IList<IArtist> Artists { get; set; }
 
-        void Add(IMusicFile item);
-        //void AddRange(IEnumerable<IMusicFile> items);
-        //void AddRange2(IEnumerable<string> items);
+        void Add(IPathElement item);
         void AddFromRoot(string path);
         void Remove(IPathElement item);
 
