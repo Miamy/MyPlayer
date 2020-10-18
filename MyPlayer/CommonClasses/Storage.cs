@@ -46,27 +46,7 @@ namespace MyPlayer.CommonClasses
                 File.Delete(file);
             }
 
-            var queueData = new Dictionary<string, bool>();
-
-            var simples = queue.Artists.Select(artist => new { artist.Data.Container, artist.IsSelected });
-            foreach (var element in simples)
-            {
-                queueData.Add(element.Container, element.IsSelected);
-            }
-
-            var albums = queue.Artists.SelectMany(artist => artist.Children);
-            simples = albums.Select(album => new { album.Data.Container, album.IsSelected });
-            foreach (var element in simples)
-            {
-                queueData.Add(element.Container, element.IsSelected);
-            }
-
-            var songs = albums.SelectMany(albums => albums.Children);
-            simples = songs.Select(song => new { Container = ((ISong)song.Data).GetUniqueName(), song.IsSelected });
-            foreach (var element in simples)
-            {
-                queueData.Add(element.Container, element.IsSelected);
-            }
+            var queueData = queue.Artists.Flatten(a => a.Children).Where(a => !a.IsSelected).ToDictionary(a => a.Data.GetUniqueName(), a => a.IsSelected);
 
             var formatter = Formatting.Indented;
             var value = JsonConvert.SerializeObject(queueData, formatter, GetSettings());
@@ -99,7 +79,7 @@ namespace MyPlayer.CommonClasses
                 return;
             }
 
-            FileAttributes attributes = File.GetAttributes(folder);
+            var attributes = File.GetAttributes(folder);
             if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
             {
                 attributes &= ~FileAttributes.ReadOnly;
@@ -128,11 +108,11 @@ namespace MyPlayer.CommonClasses
             var value = File.ReadAllText(file);
             try
             {
-                //var queue = JsonConvert.DeserializeObject<IQueueViewModel>(value, GetSettings());
+                var flattened = queue.Artists.Flatten(e => e.Children);
                 var queueData = JsonConvert.DeserializeObject<Dictionary<string, bool>>(value, GetSettings());
                 foreach (var data in queueData)
                 {
-                    var item = queue.Artists.Flatten(e => e.Children).FirstOrDefault(d => d.Data.GetUniqueName() == data.Key);
+                    var item = flattened.FirstOrDefault(d => d.Data.GetUniqueName() == data.Key);
                     if (item != null)
                     {
                         item.IsSelected = data.Value;
@@ -165,7 +145,5 @@ namespace MyPlayer.CommonClasses
                 //ReferenceResolver = new IDReferenceResolver()
             };
         }
-
-        //public static Func<IReferenceResolver> IDReferenceResolver { get; set; } 
     }
 }
