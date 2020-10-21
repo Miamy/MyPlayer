@@ -30,11 +30,11 @@ namespace MyPlayer.ViewModels
             if (Artists == null || force)
             {
                 Artists = new ReadOnlyCollection<VisualObject<IMediaBase>>(_queue.Artists.Select(a => new VisualObject<IMediaBase>(a, this)).ToList());
-                Flattened = Artists.Flatten(a => a.Children).ToList();
+                Flattened = Artists.Flatten(a => a.Children).Cast<VisualObject<ISong>>().ToList();
             }
         }
 
-        public IList<VisualObject<IMediaBase>> Flattened { get; private set; }
+        public IList<VisualObject<ISong>> Flattened { get; private set; }
 
         private string _searchText;
 
@@ -148,11 +148,11 @@ namespace MyPlayer.ViewModels
 
         private async void PlayTappedAction(object obj)
         {
-            if (!(obj is VisualObject<IMediaBase> selected))
+            if (!(obj is VisualObject<ISong> selected))
             {
                 return;
             }
-            MessagingCenter.Send<BaseViewModel, IMediaBase>(this, "SongSelected", selected.Data);
+            MessagingCenter.Send<BaseViewModel, VisualObject<ISong>>(this, "SongSelected", selected);
             await Application.Current.MainPage.Navigation.PopAsync();
         }
 
@@ -190,11 +190,11 @@ namespace MyPlayer.ViewModels
             RetreiveArtists(true);
         }
 
-        public VisualObject<ISong> Next(VisualObject<IMediaBase> song)
+        public VisualObject<ISong> Next(VisualObject<ISong> song)
         {
             if (LoopType == LoopType.One)
             {
-                return (VisualObject<Song>)song;
+                return song;
             }
 
             var newSong = Flattened.Next(song);
@@ -202,13 +202,13 @@ namespace MyPlayer.ViewModels
             {
                 newSong = Flattened.FirstOrDefault();
             }
-            return (VisualObject<Song>)newSong;
+            return newSong;
         }
-        public VisualObject<ISong> Prev(VisualObject<IMediaBase> song)
+        public VisualObject<ISong> Prev(VisualObject<ISong> song)
         {
             if (LoopType == LoopType.One)
             {
-                return (VisualObject < ISong > _ song;
+                return song;
             }
 
             var newSong = Flattened.Previous(song);
@@ -216,10 +216,10 @@ namespace MyPlayer.ViewModels
             {
                 newSong = Flattened.LastOrDefault();
             }
-            return (VisualObject<ISong>)newSong;
+            return newSong;
         }
 
-        public VisualObject<IMediaBase> GetDefault()
+        public VisualObject<ISong> GetDefault()
         {
             return Flattened.FirstOrDefault();
         }

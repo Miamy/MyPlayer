@@ -71,7 +71,7 @@ namespace MyPlayer.ViewModels
                     return "-";
                 }
                 var track = media.Tracks[0];
-                var bitrate = track.Bitrate == 0 ? "VBR" : $"{track.Bitrate / 1000} kB/s"; 
+                var bitrate = track.Bitrate == 0 ? "VBR" : $"{track.Bitrate / 1000} kB/s";
                 return $"{bitrate}, {track.Data.Audio.Channels} ch, {track.Data.Audio.Rate} Hz";
             }
         }
@@ -123,7 +123,7 @@ namespace MyPlayer.ViewModels
 
             Settings.Instance.PropertyChanged += SettingsPropertyChanged;
 
-                QueueViewModel = new QueueViewModel();
+            QueueViewModel = new QueueViewModel();
             //Queue.PropertyChanged += PropertyChanged;
 
             Initialize();
@@ -216,10 +216,10 @@ namespace MyPlayer.ViewModels
 
         private async void ShowQueueAction(object obj)
         {
-            MessagingCenter.Subscribe(this, "SongSelected", (BaseViewModel sender, IMediaBase song) =>
+            MessagingCenter.Subscribe(this, "SongSelected", (BaseViewModel sender, VisualObject<ISong> song) =>
             {
-                MessagingCenter.Unsubscribe<BaseViewModel, IMediaBase>(this, "SongSelected");
-                Current = (ISong)song;
+                MessagingCenter.Unsubscribe<BaseViewModel, VisualObject<ISong>>(this, "SongSelected");
+                Current = song;
             });
 
             var page = new QueuePage(QueueViewModel);
@@ -294,7 +294,7 @@ namespace MyPlayer.ViewModels
 
         private void MediaPlayerMediaChanged(object sender, MediaPlayerMediaChangedEventArgs e)
         {
-           
+
         }
 
         private void PlayCurrent()
