@@ -108,7 +108,7 @@ namespace MyPlayer.CommonClasses
             var value = File.ReadAllText(file);
             try
             {
-                var flattened = queue.Artists.Flatten(e => e.Children);
+                var flattened = queue.Flattened;
                 var queueData = JsonConvert.DeserializeObject<Dictionary<string, bool>>(value, GetSettings());
                 foreach (var data in queueData)
                 {
@@ -118,7 +118,6 @@ namespace MyPlayer.CommonClasses
                         item.IsSelected = data.Value;
                     }
                 }
-
             }
             catch (Exception e)
             {

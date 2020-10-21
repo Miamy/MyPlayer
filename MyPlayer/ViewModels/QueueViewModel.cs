@@ -30,8 +30,11 @@ namespace MyPlayer.ViewModels
             if (Artists == null || force)
             {
                 Artists = new ReadOnlyCollection<VisualObject<IMediaBase>>(_queue.Artists.Select(a => new VisualObject<IMediaBase>(a, this)).ToList());
+                Flattened = Artists.Flatten(a => a.Children).ToList();
             }
         }
+
+        public IList<VisualObject<IMediaBase>> Flattened { get; private set; }
 
         private string _searchText;
 
@@ -107,7 +110,7 @@ namespace MyPlayer.ViewModels
         public ICommand PlayTappedCommand { get; set; }
 
         private LoopType _loopType = LoopType.All;
-       
+
         [JsonProperty]
         public LoopType LoopType
         {
@@ -187,38 +190,38 @@ namespace MyPlayer.ViewModels
             RetreiveArtists(true);
         }
 
-        public ISong Next(ISong song)
+        public VisualObject<ISong> Next(VisualObject<IMediaBase> song)
         {
             if (LoopType == LoopType.One)
             {
-                return song;
+                return (VisualObject<Song>)song;
             }
 
-            var newSong = _queue.Songs.Next(song);
+            var newSong = Flattened.Next(song);
             if (newSong == null && LoopType == LoopType.All)
             {
-                newSong = _queue.Songs.FirstOrDefault();
+                newSong = Flattened.FirstOrDefault();
             }
-            return newSong;
+            return (VisualObject<Song>)newSong;
         }
-        public ISong Prev(ISong song)
+        public VisualObject<ISong> Prev(VisualObject<IMediaBase> song)
         {
             if (LoopType == LoopType.One)
             {
-                return song;
+                return (VisualObject < ISong > _ song;
             }
 
-            var newSong = _queue.Songs.Previous(song);
+            var newSong = Flattened.Previous(song);
             if (newSong == null && LoopType == LoopType.All)
             {
-                newSong = _queue.Songs.LastOrDefault();
+                newSong = Flattened.LastOrDefault();
             }
-            return newSong;
+            return (VisualObject<ISong>)newSong;
         }
 
-        public ISong GetDefault()
+        public VisualObject<IMediaBase> GetDefault()
         {
-            return _queue.Songs.FirstOrDefault();
+            return Flattened.FirstOrDefault();
         }
 
         public void SwitchLoopType()

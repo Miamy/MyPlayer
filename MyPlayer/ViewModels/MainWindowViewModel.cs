@@ -17,21 +17,21 @@ namespace MyPlayer.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
-        private ISong _current;
-        public ISong Current
+        private VisualObject<ISong> _current;
+        public VisualObject<ISong> Current
         {
             get => _current;
             set
             {
                 Set(ref _current, value);
-                if (_initialized && Current?.Container != null)
+                if (_initialized && Current?.Data.Container != null)
                 {
                     //MediaPlayer.Media = null;
                     if (MediaPlayer.Media != null)
                     {
                         MediaPlayer.Media.ParsedChanged -= MediaPlayerMediaParsedChanged;
                     }
-                    MediaPlayer.Media = new Media(LibVLC, Current.Container, FromType.FromPath);
+                    MediaPlayer.Media = new Media(LibVLC, Current.Data.Container, FromType.FromPath);
                     MediaPlayer.Media.ParsedChanged += MediaPlayerMediaParsedChanged;
                     MediaPlayer.Media.Parse();
                 }
@@ -92,18 +92,18 @@ namespace MyPlayer.ViewModels
                 {
                     return null;
                 }
-                return Current.Album?.Cover;
+                return Current.Data.Album?.Cover;
             }
         }
 
         public IQueueViewModel QueueViewModel { get; set; }
 
-        private bool _isPlaying = false;
+        //private bool _isPlaying = false;
 
         public bool IsPlaying
         {
             get => MediaPlayer.IsPlaying;  //_isPlaying;
-            set => Set(ref _isPlaying, value);
+            //set => Set(ref _isPlaying, value);
         }
 
         private LibVLC LibVLC { get; set; }
@@ -129,7 +129,7 @@ namespace MyPlayer.ViewModels
             Initialize();
             LoadMusicFolder();
             Storage.LoadQueue(QueueViewModel);
-            Current = QueueViewModel.GetDefault();
+            Current = (VisualObject<ISong>)QueueViewModel.GetDefault();
         }
 
 
@@ -189,7 +189,10 @@ namespace MyPlayer.ViewModels
         private void PrevAction(object obj)
         {
             Current = QueueViewModel.Prev(Current);
-            PlayCurrent();
+            if (IsPlaying)
+            {
+                PlayCurrent();
+            }
         }
 
         private bool CanNext(object arg)
@@ -200,7 +203,10 @@ namespace MyPlayer.ViewModels
         private void NextAction(object obj)
         {
             Current = QueueViewModel.Next(Current);
-            PlayCurrent();
+            if (IsPlaying)
+            {
+                PlayCurrent();
+            }
         }
 
         private bool CanShowQueue(object arg)
@@ -247,7 +253,8 @@ namespace MyPlayer.ViewModels
             {
                 PlayCurrent();
             }
-            IsPlaying = !IsPlaying;
+            //IsPlaying = !IsPlaying;
+            RaisePropertyChanged("IsPlaying");
         }
         #endregion
 
@@ -292,11 +299,11 @@ namespace MyPlayer.ViewModels
 
         private void PlayCurrent()
         {
-            if (Current?.Container == null)
+            if (Current?.Data.Container == null)
             {
                 return;
             }
-            if (!File.Exists(Current.Container))
+            if (!File.Exists(Current.Data.Container))
             {
                 return;
             }
