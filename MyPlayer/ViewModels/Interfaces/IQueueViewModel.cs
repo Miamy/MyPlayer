@@ -9,17 +9,18 @@ namespace MyPlayer.Models.Interfaces
     public interface IQueueViewModel 
     {
         IReadOnlyCollection<VisualObject<IMediaBase>> Artists { get; }
-        IList<VisualObject<ISong>> Flattened { get; }
+        //IList<VisualObject<IMediaBase>> Flattened { get; }
+        IList<ISong> Songs { get; }
 
         bool ShowAlbums { get; set; }
         bool ShowSongs { get; set; }
 
-        VisualObject<ISong> Next(VisualObject<ISong> song);
-        VisualObject<ISong> Prev(VisualObject<ISong> song);
+        ISong Next(ISong song);
+        ISong Prev(ISong song);
 
         LoopType LoopType { get; set; }
         ISong Current { get; set; }
-        VisualObject<ISong> GetDefault();
+        ISong GetDefault();
         void SwitchLoopType();
         void AddFromRoot(string path);
     }

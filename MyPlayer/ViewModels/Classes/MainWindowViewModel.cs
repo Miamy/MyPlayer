@@ -17,21 +17,21 @@ namespace MyPlayer.ViewModels
 {
     public class MainWindowViewModel : BaseViewModel
     {
-        private VisualObject<ISong> _current;
-        public VisualObject<ISong> Current
+        private ISong _current;
+        public ISong Current
         {
             get => _current;
             set
             {
                 Set(ref _current, value);
-                if (_initialized && Current?.Data.Container != null)
+                if (_initialized && Current?.Container != null)
                 {
                     //MediaPlayer.Media = null;
                     if (MediaPlayer.Media != null)
                     {
                         MediaPlayer.Media.ParsedChanged -= MediaPlayerMediaParsedChanged;
                     }
-                    MediaPlayer.Media = new Media(LibVLC, Current.Data.Container, FromType.FromPath);
+                    MediaPlayer.Media = new Media(LibVLC, Current.Container, FromType.FromPath);
                     MediaPlayer.Media.ParsedChanged += MediaPlayerMediaParsedChanged;
                     MediaPlayer.Media.Parse();
                 }
@@ -54,7 +54,7 @@ namespace MyPlayer.ViewModels
 
         public TimeSpan PositionTS
         {
-            get => MediaPlayer.Media.Duration == -1 ? TimeSpan.Zero : TimeSpan.FromMilliseconds(MediaPlayer.Position * MediaPlayer.Media.Duration);
+            get => MediaPlayer.Media?.Duration == -1 ? TimeSpan.Zero : TimeSpan.FromMilliseconds(MediaPlayer.Position * MediaPlayer.Media.Duration);
         }
 
         public string MediaInfo
@@ -92,7 +92,7 @@ namespace MyPlayer.ViewModels
                 {
                     return null;
                 }
-                return Current.Data.Album?.Cover;
+                return Current.Album?.Cover;
             }
         }
 
@@ -129,7 +129,7 @@ namespace MyPlayer.ViewModels
             Initialize();
             LoadMusicFolder();
             Storage.LoadQueue(QueueViewModel);
-            Current = (VisualObject<ISong>)QueueViewModel.GetDefault();
+            Current = QueueViewModel.GetDefault();
         }
 
 
@@ -216,9 +216,9 @@ namespace MyPlayer.ViewModels
 
         private async void ShowQueueAction(object obj)
         {
-            MessagingCenter.Subscribe(this, "SongSelected", (BaseViewModel sender, VisualObject<ISong> song) =>
+            MessagingCenter.Subscribe(this, "SongSelected", (BaseViewModel sender, ISong song) =>
             {
-                MessagingCenter.Unsubscribe<BaseViewModel, VisualObject<ISong>>(this, "SongSelected");
+                MessagingCenter.Unsubscribe<BaseViewModel, ISong>(this, "SongSelected");
                 Current = song;
             });
 
@@ -299,11 +299,11 @@ namespace MyPlayer.ViewModels
 
         private void PlayCurrent()
         {
-            if (Current?.Data.Container == null)
+            if (Current?.Container == null)
             {
                 return;
             }
-            if (!File.Exists(Current.Data.Container))
+            if (!File.Exists(Current.Container))
             {
                 return;
             }

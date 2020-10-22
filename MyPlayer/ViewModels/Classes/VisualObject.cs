@@ -115,7 +115,6 @@ namespace MyPlayer.ViewModels
         {
             if (e.PropertyName == "TotalHeight")
             {
-                //OnPropertyChanging(nameof(Height));
                 RaisePropertyChanged(nameof(Height));
             }
             if (e.PropertyName == "AllSelected")
@@ -123,6 +122,5 @@ namespace MyPlayer.ViewModels
                 IsSelected = _owner.AllSelected;
             }
         }
-   
     }
 }

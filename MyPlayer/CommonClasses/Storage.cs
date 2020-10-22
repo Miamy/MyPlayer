@@ -108,7 +108,7 @@ namespace MyPlayer.CommonClasses
             var value = File.ReadAllText(file);
             try
             {
-                var flattened = queue.Flattened;
+                var flattened = queue.Artists.Flatten(a => a.Children);
                 var queueData = JsonConvert.DeserializeObject<Dictionary<string, bool>>(value, GetSettings());
                 foreach (var data in queueData)
                 {
