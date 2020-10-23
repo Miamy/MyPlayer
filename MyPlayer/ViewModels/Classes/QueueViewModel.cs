@@ -33,13 +33,25 @@ namespace MyPlayer.ViewModels
             }
         }
 
-        private void RetreiveSongs()
+        public void UpdateSongs()
         {
-            //Songs = Artists.Flatten(a => a.Children).Where(s => s.Data.GetType() == typeof(Song) && s.IsSelected).Select(a => (ISong)a.Data).ToList();
+            _ = Songs.Count;
         }
 
-        //public IList<ISong> Songs { get; private set; }
-        public IList<ISong> Songs => Artists?.Flatten(a => a.Children).Where(s => s.Data.GetType() == typeof(Song) && s.IsSelected).Select(a => (ISong)a.Data).ToList();
+        private IList<ISong> _songs;
+
+        private IList<ISong> Songs
+        {
+            get
+            {
+                if (_songs == null)
+                {
+                    _songs = Artists.Flatten(a => a.Children).Where(s => s.Data.GetType() == typeof(Song) && s.IsSelected).Select(a => (ISong)a.Data).ToList();
+                }
+                return _songs;
+            }
+        }
+    
 
         private string _searchText;
 
@@ -153,11 +165,11 @@ namespace MyPlayer.ViewModels
 
         private async void PlayTappedAction(object obj)
         {
-            if (!(obj is VisualObject<ISong> selected))
+            if (!(obj is VisualObject<IMediaBase> selected))
             {
                 return;
             }
-            MessagingCenter.Send<BaseViewModel, ISong>(this, "SongSelected", selected.Data);
+            MessagingCenter.Send<BaseViewModel, ISong>(this, "SongSelected", (ISong)selected.Data);
             await Application.Current.MainPage.Navigation.PopAsync();
         }
 
@@ -193,7 +205,7 @@ namespace MyPlayer.ViewModels
         {
             _queue.AddFromRoot(path);
             RetreiveArtists(true);
-            RetreiveSongs();
+            //RetreiveSongs();
         }
 
         public ISong Next(ISong song)
@@ -202,7 +214,10 @@ namespace MyPlayer.ViewModels
             {
                 return song;
             }
-
+            if (song == null)
+            {
+                return null;
+            }
             var newSong = Songs.Next(song);
             if (newSong == null && LoopType == LoopType.All)
             {
@@ -216,7 +231,10 @@ namespace MyPlayer.ViewModels
             {
                 return song;
             }
-
+            if (song == null)
+            {
+                return null;
+            }
             var newSong = Songs.Previous(song);
             if (newSong == null && LoopType == LoopType.All)
             {
@@ -227,7 +245,11 @@ namespace MyPlayer.ViewModels
 
         public ISong GetDefault()
         {
-            return Songs.FirstOrDefault();
+            if (Songs != null)
+            {
+                return Songs.FirstOrDefault();
+            }
+            return Artists.FirstOrDefault().Children?.FirstOrDefault()?.Children?.FirstOrDefault()?.Data as ISong;
         }
 
         public void SwitchLoopType()

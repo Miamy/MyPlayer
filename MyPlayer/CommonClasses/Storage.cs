@@ -92,10 +92,16 @@ namespace MyPlayer.CommonClasses
                 return;
             }
 
-            using (var stream = new FileStream(zipFile, FileMode.Open))
+            try
             {
-                using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
-                zip.ExtractToDirectory(folder, true);
+                using (var stream = new FileStream(zipFile, FileMode.Open))
+                {
+                    using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
+                    zip.ExtractToDirectory(folder, true);
+                }
+            }
+            catch (Exception)
+            {
             }
 
             var filename = "query.json";

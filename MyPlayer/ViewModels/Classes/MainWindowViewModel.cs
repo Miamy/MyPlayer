@@ -30,6 +30,7 @@ namespace MyPlayer.ViewModels
                     if (MediaPlayer.Media != null)
                     {
                         MediaPlayer.Media.ParsedChanged -= MediaPlayerMediaParsedChanged;
+                        MediaPlayer.Media.Dispose();
                     }
                     MediaPlayer.Media = new Media(LibVLC, Current.Container, FromType.FromPath);
                     MediaPlayer.Media.ParsedChanged += MediaPlayerMediaParsedChanged;
@@ -39,7 +40,22 @@ namespace MyPlayer.ViewModels
         }
 
 
-        public TimeSpan Length => MediaPlayer.Media.Duration == -1 ? TimeSpan.Zero : TimeSpan.FromMilliseconds(MediaPlayer.Media.Duration);
+        public TimeSpan Length 
+        {
+            get 
+            {
+                if (MediaPlayer == null)
+                {
+                    return TimeSpan.Zero;
+                }
+                var media = MediaPlayer.Media;
+                if (media == null)
+                {
+                    return TimeSpan.Zero;
+                }
+                return media.Duration == -1 ? TimeSpan.Zero : TimeSpan.FromMilliseconds(media.Duration);
+            }
+        }
 
         private float _position = 0;
         public float Position
@@ -48,13 +64,28 @@ namespace MyPlayer.ViewModels
             set
             {
                 Set(ref _position, value);
-                MediaPlayer.Position = value;
+                if (Math.Abs(MediaPlayer.Position - value) > 1e-5)
+                {
+                    MediaPlayer.Position = value;
+                }
             }
         }
 
         public TimeSpan PositionTS
         {
-            get => MediaPlayer.Media?.Duration == -1 ? TimeSpan.Zero : TimeSpan.FromMilliseconds(MediaPlayer.Position * MediaPlayer.Media.Duration);
+            get
+            {
+                if (MediaPlayer == null)
+                {
+                    return TimeSpan.Zero;
+                }
+                var media = MediaPlayer.Media;
+                if (media == null)
+                {
+                    return TimeSpan.Zero;
+                }
+                return media.Duration == -1 ? TimeSpan.Zero : TimeSpan.FromMilliseconds(MediaPlayer.Position * media.Duration);
+            }
         }
 
         public string MediaInfo
@@ -84,27 +115,10 @@ namespace MyPlayer.ViewModels
         public ICommand PrevCommand { get; set; }
         public ICommand LoopCommand { get; set; }
 
-        public string Cover
-        {
-            get
-            {
-                if (Current == null)
-                {
-                    return null;
-                }
-                return Current.Album?.Cover;
-            }
-        }
-
+     
         public IQueueViewModel QueueViewModel { get; set; }
 
-        //private bool _isPlaying = false;
-
-        public bool IsPlaying
-        {
-            get => MediaPlayer.IsPlaying;  //_isPlaying;
-            //set => Set(ref _isPlaying, value);
-        }
+        public bool IsPlaying => MediaPlayer.IsPlaying;  
 
         private LibVLC LibVLC { get; set; }
 
@@ -220,6 +234,7 @@ namespace MyPlayer.ViewModels
             {
                 MessagingCenter.Unsubscribe<BaseViewModel, ISong>(this, "SongSelected");
                 Current = song;
+                PlayCurrent();
             });
 
             var page = new QueuePage(QueueViewModel);
@@ -271,7 +286,19 @@ namespace MyPlayer.ViewModels
             MediaPlayer = new MediaPlayer(LibVLC);
             MediaPlayer.MediaChanged += MediaPlayerMediaChanged;
             MediaPlayer.PositionChanged += MediaPlayerPositionChanged;
+            //MediaPlayer.Stopped += MediaPlayerStopped;
+            MediaPlayer.EndReached += MediaPlayerEndReached;
             _initialized = true;
+        }
+
+        private void MediaPlayerEndReached(object sender, EventArgs e)
+        {
+            NextAction(null);
+        }
+
+        private void MediaPlayerStopped(object sender, EventArgs e)
+        {
+            
         }
 
         private void MediaPlayerMediaParsedChanged(object sender, MediaParsedChangedEventArgs e)
@@ -283,11 +310,11 @@ namespace MyPlayer.ViewModels
         private TimeSpan lastPosition = TimeSpan.Zero;
         private void MediaPlayerPositionChanged(object sender, MediaPlayerPositionChangedEventArgs e)
         {
-            //Position = (long)(MediaPlayer.Length * e.Position);
-            Position = e.Position;
+            _position = e.Position;
             if ((PositionTS - lastPosition).Milliseconds >= 200)
             {
                 RaisePropertyChanged("PositionTS");
+                RaisePropertyChanged("Position");
             }
             lastPosition = PositionTS;
         }

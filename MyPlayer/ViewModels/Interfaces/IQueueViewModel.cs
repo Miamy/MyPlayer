@@ -10,7 +10,7 @@ namespace MyPlayer.Models.Interfaces
     {
         IReadOnlyCollection<VisualObject<IMediaBase>> Artists { get; }
         //IList<VisualObject<IMediaBase>> Flattened { get; }
-        IList<ISong> Songs { get; }
+        //IList<ISong> Songs { get; }
 
         bool ShowAlbums { get; set; }
         bool ShowSongs { get; set; }
@@ -23,5 +23,7 @@ namespace MyPlayer.Models.Interfaces
         ISong GetDefault();
         void SwitchLoopType();
         void AddFromRoot(string path);
+
+        void UpdateSongs();
     }
 }

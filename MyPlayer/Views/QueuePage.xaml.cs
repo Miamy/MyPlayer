@@ -29,6 +29,7 @@ namespace MyPlayer.Views
         protected override async void OnDisappearing()
         {
             await Task.Run(() => Storage.SaveQueue(_model));
+            _model.UpdateSongs();
             base.OnDisappearing();
         }
     }
