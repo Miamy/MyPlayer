@@ -10,7 +10,7 @@ using Xamarin.Forms;
 
 namespace MyPlayer.ViewModels
 {
-    public class VisualObject<T> : BaseViewModel where T : IMediaBase
+    public class VisualObject<T> : BaseModel where T : IMediaBase
     {
         private QueueViewModel _owner;
         public QueueViewModel Owner

@@ -6,7 +6,7 @@
              xmlns:model="clr-namespace:MyPlayer.ViewModels"
              mc:Ignorable="d" 
              x:Class="MyPlayer.MainPage"
-             BackgroundColor="Black"
+             BackgroundColor="#181818"
              >
 <!--
     <ContentPage.BindingContext>

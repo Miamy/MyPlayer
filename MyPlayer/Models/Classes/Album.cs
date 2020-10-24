@@ -82,10 +82,10 @@ namespace MyPlayer.Models.Classes
         public override string ToString()
         {
             var result = Name;
-            if (Year != 0)
-            {
-                result = Year + " - " + result;
-            }
+            //if (Year != 0)
+            //{
+            //    result = Year + " - " + result;
+            //}
             if (Artist != null)
             {
                 result = Artist.ToString() + " / " + result;

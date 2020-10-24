@@ -7,7 +7,7 @@
              mc:Ignorable="d"
              x:Class="MyPlayer.Views.BrowsePage"
              Title="Select root folder"
-             BackgroundColor="Black"
+             BackgroundColor="#181818"
              >
 
     <ContentPage.BindingContext>

@@ -7,7 +7,7 @@
              xmlns:trigger="clr-namespace:MyPlayer.Controls"
              mc:Ignorable="d"
              x:Class="MyPlayer.Views.SettingsPage"
-             BackgroundColor="Black"
+             BackgroundColor="#181818"
              >
 
 

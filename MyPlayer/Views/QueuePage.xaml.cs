@@ -21,9 +21,8 @@ namespace MyPlayer.Views
         public QueuePage(IQueueViewModel model)
         {
             InitializeComponent();
-            _model = model;
-            BindingContext = _model;
 
+            BindingContext = _model = model;
         }
 
         protected override async void OnDisappearing()

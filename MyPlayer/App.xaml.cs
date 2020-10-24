@@ -12,7 +12,7 @@ namespace MyPlayer
 
             MainPage = new NavigationPage(new MainPage())
             {
-                BarBackgroundColor = Color.Black,
+                BarBackgroundColor = Color.FromHex("#181818"),
             //BarTextColor = Color.White
             };
             ;

@@ -16,6 +16,7 @@ namespace MyPlayer.Models.Interfaces
         void AddFromRoot(string path);
         void Remove(IPathElement item);
 
+        void Clear();
 
     }
 }

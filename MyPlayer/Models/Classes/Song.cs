@@ -9,6 +9,15 @@ namespace MyPlayer.Models.Classes
 {
     public class Song : MediaBase, ISong
     {
+        public override string Name
+        {
+            get => base.Name;
+            set
+            {
+                base.Name = Path.GetFileNameWithoutExtension(value);
+            }
+        }
+
         public TimeSpan Duration { get; set; }
 
         private IAlbum _album;

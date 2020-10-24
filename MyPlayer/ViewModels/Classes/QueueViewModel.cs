@@ -19,22 +19,20 @@ namespace MyPlayer.ViewModels
 {
 
     [JsonObject(MemberSerialization.OptIn)]
-    public class QueueViewModel : BaseViewModel, IQueueViewModel
+    public class QueueViewModel : BaseModel, IQueueViewModel
     {
         private IQueue _queue;
 
         public IReadOnlyCollection<VisualObject<IMediaBase>> Artists { get; private set; } = null;
 
-        private void RetreiveArtists(bool force)
+        private void RetreiveArtists()
         {
-            if (Artists == null || force)
-            {
                 Artists = new ReadOnlyCollection<VisualObject<IMediaBase>>(_queue.Artists.Select(a => new VisualObject<IMediaBase>(a, this)).ToList());
-            }
         }
 
         public void UpdateSongs()
         {
+            _songs = null;
             _ = Songs.Count;
         }
 
@@ -104,7 +102,7 @@ namespace MyPlayer.ViewModels
         public string AlbumsToolItemText => ShowAlbums ? "Hide albums" : "Show albums";
         public string SongsToolItemText => ShowSongs ? "Hide songs" : "Show songs";
 
-        public int TotalHeight => Artists.Sum(artist => artist.Height);
+        public int TotalHeight => Artists == null ? 500 : Artists.Sum(artist => artist.Height);
 
         private bool _allSelected = true;
 
@@ -169,7 +167,7 @@ namespace MyPlayer.ViewModels
             {
                 return;
             }
-            MessagingCenter.Send<BaseViewModel, ISong>(this, "SongSelected", (ISong)selected.Data);
+            MessagingCenter.Send<BaseModel, ISong>(this, "SongSelected", (ISong)selected.Data);
             await Application.Current.MainPage.Navigation.PopAsync();
         }
 
@@ -203,9 +201,10 @@ namespace MyPlayer.ViewModels
 
         public void AddFromRoot(string path)
         {
+            _queue.Clear();
             _queue.AddFromRoot(path);
-            RetreiveArtists(true);
-            //RetreiveSongs();
+            RetreiveArtists();
+            UpdateSongs();
         }
 
         public ISong Next(ISong song)

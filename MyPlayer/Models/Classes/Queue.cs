@@ -1,5 +1,6 @@
 ﻿using MyPlayer.CommonClasses;
 using MyPlayer.Models.Interfaces;
+using MyPlayer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,7 +11,7 @@ using System.Text;
 
 namespace MyPlayer.Models.Classes
 {
-    public class Queue : IQueue, INotifyPropertyChanged 
+    public class Queue : BaseModel, IQueue
     {
         public IList<ISong> Songs { get; set; }
         public IList<IAlbum> Albums { get; set; }
@@ -40,7 +41,6 @@ namespace MyPlayer.Models.Classes
 
         public void AddFromRoot(string path)
         {
-            PathElements.Clear();
             if (string.IsNullOrWhiteSpace(path))
             {
                 throw new ArgumentException($"Bad path {path}");
@@ -203,11 +203,14 @@ namespace MyPlayer.Models.Classes
 
         }    
 
-       
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void RaisePropertyChanged([CallerMemberName] string name = "")
+
+        public void Clear()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }   
+            Songs.Clear();
+            Albums.Clear();
+            Artists.Clear();
+            PathElements.Clear();
+        }
+
     }
 }

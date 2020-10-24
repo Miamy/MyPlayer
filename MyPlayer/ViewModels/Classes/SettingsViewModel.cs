@@ -11,7 +11,7 @@ using Xamarin.Forms;
 
 namespace MyPlayer.ViewModels
 {
-    public class SettingsViewModel : BaseViewModel
+    public class SettingsViewModel : BaseModel
     {
         public ICommand SelectRootCommand { get; set; }
         public ISettings Settings { get; set; }

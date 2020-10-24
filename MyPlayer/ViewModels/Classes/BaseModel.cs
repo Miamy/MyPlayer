@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MyPlayer.ViewModels
 {
-    public class BaseViewModel : INotifyPropertyChanged
+    public class BaseModel : INotifyPropertyChanged
     {
         protected void Set<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
         {

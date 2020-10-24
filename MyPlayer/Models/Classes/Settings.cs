@@ -8,7 +8,7 @@ using System.Text;
 
 namespace MyPlayer.Models.Classes
 {
-    public class Settings : BaseViewModel, ISettings
+    public class Settings : BaseModel, ISettings
     {
         private string _rootFolder;
 

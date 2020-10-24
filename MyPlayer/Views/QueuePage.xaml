@@ -8,7 +8,7 @@
              xmlns:interfaces="clr-namespace:MyPlayer.Models.Interfaces"
              mc:Ignorable="d"
              x:Class="MyPlayer.Views.QueuePage"
-             BackgroundColor="Black"
+             BackgroundColor="#181818"
              >
     <!--
          <ContentPage.BindingContext>
@@ -64,7 +64,7 @@
             >
 
             <CollectionView  
-                x:Name="ArtistsView"
+                x:Name="ArtistsView" 
                 ItemsSource="{Binding Artists}"
                 IsGrouped="False"
                 ItemSizingStrategy="MeasureAllItems"
@@ -74,6 +74,16 @@
                 Margin="2,2,2,12"
                 >
 
+                <CollectionView.EmptyViewTemplate>
+                    <DataTemplate>
+                        <Label
+                            Text="No music data"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            />
+                    </DataTemplate>
+                </CollectionView.EmptyViewTemplate>
+                
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" />
                 </CollectionView.ItemsLayout>
@@ -106,9 +116,9 @@
                                 ItemsSource="{Binding Children}"
                                 
                                 IsVisible="{Binding ShowAlbums, 
-                                    Source={RelativeSource 
-                                    Mode=FindAncestorBindingContext, 
-                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                Source={RelativeSource 
+                                Mode=FindAncestorBindingContext, 
+                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                 HeightRequest="{Binding Height}"
                                 SelectionMode="None"
                                 >
@@ -139,9 +149,9 @@
                                                 Color="Orange"
                                                 HeightRequest="2"
                                                 IsVisible="{Binding ShowSongs, 
-                                                    Source={RelativeSource 
-                                                    Mode=FindAncestorBindingContext, 
-                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                Source={RelativeSource 
+                                                Mode=FindAncestorBindingContext, 
+                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                                 />
 
                                             <!--Songs-->
@@ -150,23 +160,23 @@
                                                 ItemsSource="{Binding Children}"
                                                 SelectionMode="Single"
                                                 IsVisible="{Binding ShowSongs, 
-                                                    Source={RelativeSource 
-                                                    Mode=FindAncestorBindingContext, 
-                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                Source={RelativeSource 
+                                                Mode=FindAncestorBindingContext, 
+                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                                 >
                                                 <!--
-                                                <CollectionView.Triggers>
-                                                    <DataTrigger 
-                                                        TargetType="CollectionView" 
-                                                        Binding="{Binding Path=ShowSongs, 
-                                                        Source={RelativeSource 
-                                                        Mode=FindAncestorBindingContext, 
-                                                        AncestorType={x:Type viewmodel:QueueViewModel}}}" 
-                                                        Value="False">
-                                                        
-                                                        <Setter Property="HeightRequest" Value="0"/>
-                                                    </DataTrigger>
-                                                </CollectionView.Triggers>                                                  
+                                                     <CollectionView.Triggers>
+                                                     <DataTrigger 
+                                                     TargetType="CollectionView" 
+                                                     Binding="{Binding Path=ShowSongs, 
+                                                     Source={RelativeSource 
+                                                     Mode=FindAncestorBindingContext, 
+                                                     AncestorType={x:Type viewmodel:QueueViewModel}}}" 
+                                                     Value="False">
+                                                     
+                                                     <Setter Property="HeightRequest" Value="0"/>
+                                                     </DataTrigger>
+                                                     </CollectionView.Triggers>                                                  
                                                 -->
                                                 <CollectionView.ItemsLayout>
                                                     <LinearItemsLayout Orientation="Vertical" />
@@ -195,10 +205,10 @@
                                                                 IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                                                 />
                                                             <!--Text="{Binding Index, StringFormat='{0}.', 
-                                                                Source={RelativeSource 
-                                                                Mode=FindAncestorBindingContext, 
-                                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
--->
+                                                                 Source={RelativeSource 
+                                                                 Mode=FindAncestorBindingContext, 
+                                                                 AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                            -->
                                                             <Label
                                                                 FontSize="Small"
                                                                 Margin="16,0,0,0"
@@ -234,33 +244,38 @@
                 >
                 <StackLayout
                     Orientation="Horizontal"
-                    BackgroundColor="Black"
+                    BackgroundColor="#181818"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill"
                     Margin="2"
                     >
                 
-                <Editor 
-                    Placeholder="Text to search"
-                    PlaceholderColor="Gray"
-                    Text="{Binding SearchText, Mode=TwoWay}"
-                    TextColor="White"
-                    HorizontalOptions="StartAndExpand"
-                    Margin="6,0,0,0"
-                    />
-                <Button
-                    ImageSource="baseline_clear_black_36dp.png"
-                    Style="{StaticResource ButtonStyle}"
-                    Command="{Binding ClearSearchTextCommand}"
-                    WidthRequest="24"
-                    HeightRequest="30"     
-                    HorizontalOptions="End"
-                    />
-                <Image
-                    Source="baseline_search_black_36dp.png"
-                    HorizontalOptions="End"
-                    Margin="6,0,0,0"
-                    />
+                    <Editor 
+                        Placeholder="Text to search"
+                        PlaceholderColor="Gray"
+                        Text="{Binding SearchText, Mode=TwoWay}"
+                        TextColor="White"
+                        HorizontalOptions="StartAndExpand"
+                        Margin="6,0,0,0"
+                        FontSize="Small"
+                        />               
+
+                    <Image
+                        Source="baseline_clear_black_36dp.png"
+                        HorizontalOptions="End"
+                        WidthRequest="24"
+                        HeightRequest="24"     
+                        >
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ClearSearchTextCommand}"/>
+                        </Image.GestureRecognizers>
+                    </Image> 
+
+                    <Image
+                        Source="baseline_search_black_36dp.png"
+                        HorizontalOptions="End"
+                        Margin="6,0,0,0"
+                        />
                 </StackLayout>
             </StackLayout>
         </StackLayout>

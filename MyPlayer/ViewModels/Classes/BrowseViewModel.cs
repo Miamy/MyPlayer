@@ -13,7 +13,7 @@ using Xamarin.Forms;
 
 namespace MyPlayer.ViewModels
 {
-    public class BrowseViewModel : BaseViewModel
+    public class BrowseViewModel : BaseModel
     {
         private bool _isRoot = true;
         public bool IsRoot

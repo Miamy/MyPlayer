@@ -15,7 +15,7 @@ using Xamarin.Forms;
 
 namespace MyPlayer.ViewModels
 {
-    public class MainWindowViewModel : BaseViewModel
+    public class MainWindowViewModel : BaseModel
     {
         private ISong _current;
         public ISong Current
@@ -24,17 +24,23 @@ namespace MyPlayer.ViewModels
             set
             {
                 Set(ref _current, value);
-                if (_initialized && Current?.Container != null)
+                if (_initialized)
                 {
-                    //MediaPlayer.Media = null;
-                    if (MediaPlayer.Media != null)
+                    if (MediaPlayer?.Media != null)
                     {
                         MediaPlayer.Media.ParsedChanged -= MediaPlayerMediaParsedChanged;
                         MediaPlayer.Media.Dispose();
                     }
-                    MediaPlayer.Media = new Media(LibVLC, Current.Container, FromType.FromPath);
-                    MediaPlayer.Media.ParsedChanged += MediaPlayerMediaParsedChanged;
-                    MediaPlayer.Media.Parse();
+                    MediaPlayer?.Dispose();
+
+                    if (Current?.Container != null)
+                    {
+                        CreatePlayer();
+
+                        MediaPlayer.Media = new Media(LibVLC, Current.Container, FromType.FromPath);
+                        MediaPlayer.Media.ParsedChanged += MediaPlayerMediaParsedChanged;
+                        MediaPlayer.Media.Parse();
+                    }
                 }
             }
         }
@@ -64,7 +70,7 @@ namespace MyPlayer.ViewModels
             set
             {
                 Set(ref _position, value);
-                if (Math.Abs(MediaPlayer.Position - value) > 1e-5)
+                if (MediaPlayer != null && Math.Abs(MediaPlayer.Position - value) > 1e-5)
                 {
                     MediaPlayer.Position = value;
                 }
@@ -118,7 +124,9 @@ namespace MyPlayer.ViewModels
      
         public IQueueViewModel QueueViewModel { get; set; }
 
-        public bool IsPlaying => MediaPlayer.IsPlaying;  
+        //public bool IsPlaying => MediaPlayer.IsPlaying;  
+
+        public bool IsPlaying { get; set; } = false;
 
         private LibVLC LibVLC { get; set; }
 
@@ -143,7 +151,6 @@ namespace MyPlayer.ViewModels
             Initialize();
             LoadMusicFolder();
             Storage.LoadQueue(QueueViewModel);
-            Current = QueueViewModel.GetDefault();
         }
 
 
@@ -152,6 +159,7 @@ namespace MyPlayer.ViewModels
             if (e.PropertyName.Equals("RootFolder"))
             {
                 LoadMusicFolder();
+                PlayCurrent(true);
             }
         }
 
@@ -166,6 +174,8 @@ namespace MyPlayer.ViewModels
                     //root = @"/storage/2743-1D07/Music/";
                 }
                 QueueViewModel.AddFromRoot(root);
+
+                Current = QueueViewModel.GetDefault();
             }
             catch (UnauthorizedAccessException)
             {
@@ -205,7 +215,7 @@ namespace MyPlayer.ViewModels
             Current = QueueViewModel.Prev(Current);
             if (IsPlaying)
             {
-                PlayCurrent();
+                PlayCurrent(true);
             }
         }
 
@@ -219,7 +229,7 @@ namespace MyPlayer.ViewModels
             Current = QueueViewModel.Next(Current);
             if (IsPlaying)
             {
-                PlayCurrent();
+                PlayCurrent(true);
             }
         }
 
@@ -230,11 +240,11 @@ namespace MyPlayer.ViewModels
 
         private async void ShowQueueAction(object obj)
         {
-            MessagingCenter.Subscribe(this, "SongSelected", (BaseViewModel sender, ISong song) =>
+            MessagingCenter.Subscribe(this, "SongSelected", (BaseModel sender, ISong song) =>
             {
-                MessagingCenter.Unsubscribe<BaseViewModel, ISong>(this, "SongSelected");
+                MessagingCenter.Unsubscribe<BaseModel, ISong>(this, "SongSelected");
                 Current = song;
-                PlayCurrent();
+                PlayCurrent(true);
             });
 
             var page = new QueuePage(QueueViewModel);
@@ -259,16 +269,15 @@ namespace MyPlayer.ViewModels
 
         private void PlayAction(object obj)
         {
-
             if (IsPlaying)
             {
-                MediaPlayer.Pause();
+                MediaPlayer?.Pause();
             }
             else
             {
-                PlayCurrent();
+                PlayCurrent(false);
             }
-            //IsPlaying = !IsPlaying;
+            IsPlaying = !IsPlaying;
             RaisePropertyChanged("IsPlaying");
         }
         #endregion
@@ -283,17 +292,21 @@ namespace MyPlayer.ViewModels
 
             Core.Initialize();
             LibVLC = new LibVLC();
+            _initialized = true;
+        }
+
+        private void CreatePlayer()
+        {
             MediaPlayer = new MediaPlayer(LibVLC);
             MediaPlayer.MediaChanged += MediaPlayerMediaChanged;
             MediaPlayer.PositionChanged += MediaPlayerPositionChanged;
             //MediaPlayer.Stopped += MediaPlayerStopped;
             MediaPlayer.EndReached += MediaPlayerEndReached;
-            _initialized = true;
         }
 
         private void MediaPlayerEndReached(object sender, EventArgs e)
         {
-            NextAction(null);
+            NextCommand.Execute(null);
         }
 
         private void MediaPlayerStopped(object sender, EventArgs e)
@@ -324,7 +337,7 @@ namespace MyPlayer.ViewModels
 
         }
 
-        private void PlayCurrent()
+        private void PlayCurrent(bool resetPosition)
         {
             if (Current?.Container == null)
             {
@@ -334,9 +347,13 @@ namespace MyPlayer.ViewModels
             {
                 return;
             }
-            if (MediaPlayer.Media == null)
+            //if (MediaPlayer.Media == null)
+            //{
+            //    return;
+            //}
+            if (resetPosition)
             {
-                return;
+                Position = 0;
             }
 
             MediaPlayer.Play();
