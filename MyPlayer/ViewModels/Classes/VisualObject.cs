@@ -81,11 +81,12 @@ namespace MyPlayer.ViewModels
                 if (_data?.Children != null)
                 {
                     Children = new ObservableCollection<VisualObject<IMediaBase>>(_data.Children.Select(child => new VisualObject<IMediaBase>(child, Owner)));
+                    //_childrenHeight = Children.Sum(child => child.Height);
                 }
             }
         }
 
-
+        //private int _childrenHeight = 0;
 
         public string Name => Data?.Name;
         public int Height

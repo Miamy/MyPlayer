@@ -10,16 +10,27 @@ namespace MyPlayer.Models.Classes
     {
         private string _name;
 
-        public virtual string Name 
-        { 
+        public virtual string Name
+        {
             get => _name;
             set
             {
                 _name = value;
             }
         }
-        public virtual int Count => Children == null ? 1 : Children.Count;
-        public IList<IMediaBase> Children { get; set; } = null;
+
+        public virtual int Count { get; protected set; }
+
+        private IList<IMediaBase> children = null;
+        public IList<IMediaBase> Children
+        {
+            get => children;
+            set
+            {
+                children = value;
+                Count = children == null ? 0 : children.Count;
+            }
+        }
         public string Container { get; set; }
 
         public MediaBase(string name, string container)
