@@ -33,6 +33,11 @@ namespace MyPlayer.CommonClasses
             Preferences.Set("ShowAlbums", queue.ShowAlbums);
             Preferences.Set("ShowSongs", queue.ShowSongs);
 
+            if (queue?.Artists == null)
+            {
+                return;
+            }
+
             var folder = DependencyService.Get<IFileSystem>().GetWorkFolder();
             if (!Directory.Exists(folder))
             {
@@ -94,11 +99,9 @@ namespace MyPlayer.CommonClasses
 
             try
             {
-                using (var stream = new FileStream(zipFile, FileMode.Open))
-                {
-                    using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
-                    zip.ExtractToDirectory(folder, true);
-                }
+                using var stream = new FileStream(zipFile, FileMode.Open);
+                using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
+                zip.ExtractToDirectory(folder, true);
             }
             catch (Exception)
             {

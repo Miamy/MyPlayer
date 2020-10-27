@@ -12,8 +12,8 @@ namespace MyPlayer.ViewModels
 {
     public class VisualObject<T> : BaseModel where T : IMediaBase
     {
-        private QueueViewModel _owner;
-        public QueueViewModel Owner
+        private IQueueViewModel _owner;
+        public IQueueViewModel Owner
         {
             get => _owner;
             set
@@ -96,17 +96,18 @@ namespace MyPlayer.ViewModels
                 var isSong = Children == null;
                 if (isSong)
                 {
-                    return Owner.ShowSongs ? ItemHeight : 0;
+                    return Owner.ShowSongs && Name.Contains(Owner.SearchText, StringComparison.InvariantCultureIgnoreCase) ? ItemHeight : 0;
                 }
                 else
                 {
-                    return Owner.ShowAlbums ? Children.Sum(child => child.Height) + HeaderHeight : 0;
+                    return //_childrenHeight;
+                        Owner.ShowAlbums ? Children.Sum(child => child.Height) + HeaderHeight : 0;
                 }
             }
         }
 
 
-        public VisualObject(T data, QueueViewModel owner)
+        public VisualObject(T data, IQueueViewModel owner)
         {
             Owner = owner;
             Data = data;

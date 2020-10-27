@@ -69,7 +69,6 @@
                 IsGrouped="False"
                 ItemSizingStrategy="MeasureAllItems"
                 SelectionMode="None"
-                HeightRequest="{Binding TotalHeight}"
                 VerticalOptions="FillAndExpand" 
                 Margin="2,2,2,12"
                 >
@@ -164,20 +163,7 @@
                                                 Mode=FindAncestorBindingContext, 
                                                 AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                                 >
-                                                <!--
-                                                     <CollectionView.Triggers>
-                                                     <DataTrigger 
-                                                     TargetType="CollectionView" 
-                                                     Binding="{Binding Path=ShowSongs, 
-                                                     Source={RelativeSource 
-                                                     Mode=FindAncestorBindingContext, 
-                                                     AncestorType={x:Type viewmodel:QueueViewModel}}}" 
-                                                     Value="False">
-                                                     
-                                                     <Setter Property="HeightRequest" Value="0"/>
-                                                     </DataTrigger>
-                                                     </CollectionView.Triggers>                                                  
-                                                -->
+
                                                 <CollectionView.ItemsLayout>
                                                     <LinearItemsLayout Orientation="Vertical" />
                                                 </CollectionView.ItemsLayout>

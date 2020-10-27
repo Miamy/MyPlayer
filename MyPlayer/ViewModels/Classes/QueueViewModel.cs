@@ -4,6 +4,7 @@ using MyPlayer.Models.Classes;
 using MyPlayer.Models.Interfaces;
 using MyPlayer.Views;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -22,12 +23,20 @@ namespace MyPlayer.ViewModels
     public class QueueViewModel : BaseModel, IQueueViewModel
     {
         private IQueue _queue;
+        private int _artistsHeight;
 
         public IReadOnlyCollection<VisualObject<IMediaBase>> Artists { get; private set; } = null;
 
         private void RetreiveArtists()
         {
-                Artists = new ReadOnlyCollection<VisualObject<IMediaBase>>(_queue.Artists.Select(a => new VisualObject<IMediaBase>(a, this)).ToList());
+            var inner = _queue.Artists.Select(a => new VisualObject<IMediaBase>(a, this));
+            if (!string.IsNullOrWhiteSpace(SearchText))
+            {
+                //inner = inner.Where(a => a.Children.Where(s => s.Name.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase)));
+            }
+            Artists = new ReadOnlyCollection<VisualObject<IMediaBase>>(inner.ToList());
+            RaisePropertyChanged(nameof(Artists));
+            _artistsHeight = Artists.Sum(artist => artist.Height);
         }
 
         public void UpdateSongs()
@@ -44,19 +53,32 @@ namespace MyPlayer.ViewModels
             {
                 if (_songs == null)
                 {
-                    _songs = Artists.Flatten(a => a.Children).Where(s => s.Data.GetType() == typeof(Song) && s.IsSelected).Select(a => (ISong)a.Data).ToList();
+                    Func<VisualObject<IMediaBase>, bool> predicate;
+                    //if (string.IsNullOrWhiteSpace(SearchText))
+                    {
+                        predicate = s => s.Data.GetType() == typeof(Song) && s.IsSelected;
+                    }
+                    //else
+                    //{
+                    //    predicate = s => s.Data.GetType() == typeof(Song) && s.IsSelected && s.Name.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase);
+                    //}
+                    _songs = Artists.Flatten(a => a.Children).Where(predicate).Select(a => (ISong)a.Data).ToList();
                 }
                 return _songs;
             }
         }
-    
+
 
         private string _searchText;
 
         public string SearchText
         {
             get => _searchText;
-            set => Set(ref _searchText, value);
+            set
+            {
+                Set(ref _searchText, value);
+                RetreiveArtists();
+            }
         }
 
         //private int _index = 0;
@@ -78,7 +100,7 @@ namespace MyPlayer.ViewModels
             set
             {
                 Set(ref _showAlbums, value);
-                RaisePropertyChanged("AlbumsToolItemText");
+                RaisePropertyChanged(nameof(AlbumsToolItemText));
             }
         }
 
@@ -90,7 +112,7 @@ namespace MyPlayer.ViewModels
             set
             {
                 Set(ref _showSongs, value);
-                RaisePropertyChanged("TotalHeight");
+                //RaisePropertyChanged("TotalHeight");
                 RaisePropertyChanged("SongsToolItemText");
                 //foreach (var artist in Artists)
                 //{
@@ -102,7 +124,8 @@ namespace MyPlayer.ViewModels
         public string AlbumsToolItemText => ShowAlbums ? "Hide albums" : "Show albums";
         public string SongsToolItemText => ShowSongs ? "Hide songs" : "Show songs";
 
-        public int TotalHeight => Artists == null ? 500 : Artists.Sum(artist => artist.Height);
+        public int TotalHeight => Artists == null ? 500 : _artistsHeight;
+        //Artists.Sum(artist => artist.Height);
 
         private bool _allSelected = true;
 
@@ -115,7 +138,8 @@ namespace MyPlayer.ViewModels
                 RaisePropertyChanged("AllSelectedImageSource");
             }
         }
-        public string AllSelectedImageSource => AllSelected ? "baseline_check_box_black_36dp.png" : "baseline_check_box_outline_blank_black_36dp.png";
+        public string AllSelectedImageSource => "baseline_check_box_outline_blank_black_36dp.png";
+        //AllSelected ? "baseline_check_box_black_36dp.png" : "baseline_check_box_outline_blank_black_36dp.png";
 
         public ICommand ClearSearchTextCommand { get; set; }
         public ICommand SelectAllCommand { get; set; }
@@ -152,7 +176,7 @@ namespace MyPlayer.ViewModels
         #region Commands
         private void CreateCommands()
         {
-            ClearSearchTextCommand = new Command(ClearSearchTextAction/*, CanClearSearchText*/);
+            ClearSearchTextCommand = new Command(ClearSearchTextAction, CanClearSearchText);
 
             ShowAlbumsCommand = new Command(ShowAlbumsAction);
             ShowSongsCommand = new Command(ShowSongsAction);

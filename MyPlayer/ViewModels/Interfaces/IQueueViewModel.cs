@@ -2,11 +2,12 @@
 using MyPlayer.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Input;
 
 namespace MyPlayer.Models.Interfaces
 {
-    public interface IQueueViewModel 
+    public interface IQueueViewModel : INotifyPropertyChanged
     {
         IReadOnlyCollection<VisualObject<IMediaBase>> Artists { get; }
         //IList<VisualObject<IMediaBase>> Flattened { get; }
@@ -14,6 +15,8 @@ namespace MyPlayer.Models.Interfaces
 
         bool ShowAlbums { get; set; }
         bool ShowSongs { get; set; }
+        bool AllSelected { get; set; }
+        string SearchText { get; set; }
 
         ISong Next(ISong song);
         ISong Prev(ISong song);
