@@ -60,6 +60,17 @@ namespace MyPlayer.ViewModels
             set => Set(ref _isExpanded, value);
         }
 
+
+        public bool IsVisible
+        {
+            get
+            {
+                var searchIsEmpty = string.IsNullOrWhiteSpace(Owner.SearchText);
+                return searchIsEmpty || Name.Contains(Owner.SearchText, StringComparison.InvariantCultureIgnoreCase) || 
+                    (Children != null && Children.Any(child => child.IsVisible));
+            }
+        }
+
         private ICollection<VisualObject<IMediaBase>> children;
         public ICollection<VisualObject<IMediaBase>> Children
         {
@@ -93,10 +104,14 @@ namespace MyPlayer.ViewModels
         {
             get
             {
+                if (!IsVisible)
+                {
+                    return 0;
+                }
                 var isSong = Children == null;
                 if (isSong)
                 {
-                    return Owner.ShowSongs && Name.Contains(Owner.SearchText, StringComparison.InvariantCultureIgnoreCase) ? ItemHeight : 0;
+                    return Owner.ShowSongs ? ItemHeight : 0;
                 }
                 else
                 {
@@ -115,13 +130,17 @@ namespace MyPlayer.ViewModels
 
         private void OwnerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "TotalHeight")
+            if (e.PropertyName == "Height")
             {
                 RaisePropertyChanged(nameof(Height));
             }
             if (e.PropertyName == "AllSelected")
             {
                 IsSelected = _owner.AllSelected;
+            }
+            if (e.PropertyName == "SearchText")
+            {
+                RaisePropertyChanged(nameof(IsVisible));
             }
         }
     }

@@ -65,12 +65,13 @@
 
             <CollectionView  
                 x:Name="ArtistsView" 
-                ItemsSource="{Binding Artists}"
+                ItemsSource="{Binding Artists, Mode=OneWay}"
                 IsGrouped="False"
                 ItemSizingStrategy="MeasureAllItems"
                 SelectionMode="None"
                 VerticalOptions="FillAndExpand" 
                 Margin="2,2,2,12"
+                HeightRequest="{Binding Height}"
                 >
 
                 <CollectionView.EmptyViewTemplate>
@@ -90,7 +91,8 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout
-                            Orientation="Vertical"       
+                            Orientation="Vertical"  
+                            HeightRequest="{Binding Height}"
                             >
 
                             <StackLayout
@@ -115,18 +117,20 @@
                                 ItemsSource="{Binding Children}"
                                 
                                 IsVisible="{Binding ShowAlbums, 
-                                Source={RelativeSource 
-                                Mode=FindAncestorBindingContext, 
-                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
-                                HeightRequest="{Binding Height}"
+                                    Source={RelativeSource 
+                                    Mode=FindAncestorBindingContext, 
+                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                
                                 SelectionMode="None"
+                                ItemSizingStrategy="MeasureAllItems"
+                                
                                 >
                                 
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
                                         <StackLayout 
                                             Orientation="Vertical"
-                                            HeightRequest="{Binding Height }"
+                                            HeightRequest="{Binding Height}"
                                             >                                       
                                             <StackLayout
                                                 Orientation="Horizontal"                                                
@@ -148,20 +152,22 @@
                                                 Color="Orange"
                                                 HeightRequest="2"
                                                 IsVisible="{Binding ShowSongs, 
-                                                Source={RelativeSource 
-                                                Mode=FindAncestorBindingContext, 
-                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                    Source={RelativeSource 
+                                                    Mode=FindAncestorBindingContext, 
+                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                                 />
 
                                             <!--Songs-->
                                             <CollectionView 
-                                                x:Name="InnerView"
                                                 ItemsSource="{Binding Children}"
-                                                SelectionMode="Single"
+
                                                 IsVisible="{Binding ShowSongs, 
-                                                Source={RelativeSource 
-                                                Mode=FindAncestorBindingContext, 
-                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                    Source={RelativeSource 
+                                                    Mode=FindAncestorBindingContext, 
+                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
+
+                                                SelectionMode="Single"
+                                                ItemSizingStrategy="MeasureAllItems"
                                                 >
 
                                                 <CollectionView.ItemsLayout>
@@ -173,15 +179,16 @@
                                                         <StackLayout
                                                             Orientation="Horizontal"
                                                             HeightRequest="{Binding Height}"
+                                                            IsVisible="{Binding IsVisible}"
                                                             >
 
                                                             <StackLayout.GestureRecognizers>
                                                                 <TapGestureRecognizer 
                                                                     NumberOfTapsRequired="2"    
                                                                     Command="{Binding PlayTappedCommand, 
-                                                                    Source={RelativeSource 
-                                                                    Mode=FindAncestorBindingContext, 
-                                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                                        Source={RelativeSource 
+                                                                        Mode=FindAncestorBindingContext, 
+                                                                        AncestorType={x:Type viewmodel:QueueViewModel}}}"
 
                                                                     CommandParameter="{Binding .}"
                                                                     />
@@ -190,11 +197,7 @@
                                                             <CheckBox
                                                                 IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                                                 />
-                                                            <!--Text="{Binding Index, StringFormat='{0}.', 
-                                                                 Source={RelativeSource 
-                                                                 Mode=FindAncestorBindingContext, 
-                                                                 AncestorType={x:Type viewmodel:QueueViewModel}}}"
-                                                            -->
+                                                            
                                                             <Label
                                                                 FontSize="Small"
                                                                 Margin="16,0,0,0"
@@ -204,10 +207,8 @@
                                                                 Text="{Binding Name}"
                                                                 FontSize="Small"
                                                                 Margin="4,0,0,0"
-                                                                >
+                                                                />
 
-
-                                                            </Label>
                                                         </StackLayout>
                                                     </DataTemplate>
                                                 </CollectionView.ItemTemplate>

@@ -23,6 +23,19 @@ namespace MyPlayer.Views
             InitializeComponent();
 
             BindingContext = _model = model;
+            _model.PropertyChanged += _modelPropertyChanged;            
+        }
+
+        private void _modelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Height" || e.PropertyName == "ShowSongs")
+            {
+                ArtistsView.Layout(ArtistsView.Bounds);
+                /*ArtistsView.BatchBegin();
+                BindingContext = null;
+                BindingContext = _model;
+                ArtistsView.BatchCommit();*/
+            }
         }
 
         protected override async void OnDisappearing()

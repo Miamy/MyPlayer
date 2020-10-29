@@ -55,6 +55,8 @@ namespace MyPlayer.Models.Classes
         {
             IPathElement pathElement;
 
+            try
+            {
             var folders = Directory.GetDirectories(path);
             foreach (var folder in folders)
             {
@@ -77,6 +79,14 @@ namespace MyPlayer.Models.Classes
                     pathElement = new PathElement(parent, file);
                 }
                 PathElements.Add(pathElement);
+            }
+            }
+            catch (IOException e)
+            {
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 

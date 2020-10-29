@@ -23,20 +23,25 @@ namespace MyPlayer.ViewModels
     public class QueueViewModel : BaseModel, IQueueViewModel
     {
         private IQueue _queue;
-        private int _artistsHeight;
+        private int _totalHeight;
 
         public IReadOnlyCollection<VisualObject<IMediaBase>> Artists { get; private set; } = null;
 
-        private void RetreiveArtists()
+        private void UpdateArtists()
         {
             var inner = _queue.Artists.Select(a => new VisualObject<IMediaBase>(a, this));
-            if (!string.IsNullOrWhiteSpace(SearchText))
+            //if (!string.IsNullOrWhiteSpace(SearchText))
             {
                 //inner = inner.Where(a => a.Children.Where(s => s.Name.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase)));
             }
             Artists = new ReadOnlyCollection<VisualObject<IMediaBase>>(inner.ToList());
             RaisePropertyChanged(nameof(Artists));
-            _artistsHeight = Artists.Sum(artist => artist.Height);
+            UpdateHeight();
+        }
+
+        private void UpdateHeight()
+        {
+            _totalHeight = Artists == null ? 0 : Artists.Sum(artist => artist.Height);
         }
 
         public void UpdateSongs()
@@ -77,20 +82,11 @@ namespace MyPlayer.ViewModels
             set
             {
                 Set(ref _searchText, value);
-                RetreiveArtists();
+                UpdateHeight();
+                RaisePropertyChanged(nameof(Height));
             }
         }
 
-        //private int _index = 0;
-
-        //public int Index
-        //{
-        //    get
-        //    {
-        //        _index++;
-        //        return _index;
-        //    }
-        //}
 
         private bool _showAlbums;
         [JsonProperty]
@@ -112,19 +108,16 @@ namespace MyPlayer.ViewModels
             set
             {
                 Set(ref _showSongs, value);
-                //RaisePropertyChanged("TotalHeight");
-                RaisePropertyChanged("SongsToolItemText");
-                //foreach (var artist in Artists)
-                //{
-                //    artist.DoPropertyChanged("Height");
-                //}
+                UpdateHeight();
+                RaisePropertyChanged(nameof(Height));
+                RaisePropertyChanged(nameof(SongsToolItemText));
             }
         }
 
         public string AlbumsToolItemText => ShowAlbums ? "Hide albums" : "Show albums";
         public string SongsToolItemText => ShowSongs ? "Hide songs" : "Show songs";
 
-        public int TotalHeight => Artists == null ? 500 : _artistsHeight;
+        public int Height => Artists == null ? 500 : _totalHeight;
         //Artists.Sum(artist => artist.Height);
 
         private bool _allSelected = true;
@@ -135,7 +128,7 @@ namespace MyPlayer.ViewModels
             set
             {
                 Set(ref _allSelected, value);
-                RaisePropertyChanged("AllSelectedImageSource");
+                RaisePropertyChanged(nameof(AllSelectedImageSource));
             }
         }
         public string AllSelectedImageSource => "baseline_check_box_outline_blank_black_36dp.png";
@@ -227,7 +220,7 @@ namespace MyPlayer.ViewModels
         {
             _queue.Clear();
             _queue.AddFromRoot(path);
-            RetreiveArtists();
+            UpdateArtists();
             UpdateSongs();
         }
 
