@@ -92,7 +92,7 @@
                     <DataTemplate>
                         <StackLayout
                             Orientation="Vertical"  
-                            HeightRequest="{Binding Height}"
+                            HeightRequest="{Binding Height, Mode=OneWay}"
                             >
 
                             <StackLayout
@@ -117,9 +117,9 @@
                                 ItemsSource="{Binding Children}"
                                 
                                 IsVisible="{Binding ShowAlbums, 
-                                    Source={RelativeSource 
-                                    Mode=FindAncestorBindingContext, 
-                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                Source={RelativeSource 
+                                Mode=FindAncestorBindingContext, 
+                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                 
                                 SelectionMode="None"
                                 ItemSizingStrategy="MeasureAllItems"
@@ -130,7 +130,7 @@
                                     <DataTemplate>
                                         <StackLayout 
                                             Orientation="Vertical"
-                                            HeightRequest="{Binding Height}"
+                                            HeightRequest="{Binding Height, Mode=OneWay}"
                                             >                                       
                                             <StackLayout
                                                 Orientation="Horizontal"                                                
@@ -152,9 +152,9 @@
                                                 Color="Orange"
                                                 HeightRequest="2"
                                                 IsVisible="{Binding ShowSongs, 
-                                                    Source={RelativeSource 
-                                                    Mode=FindAncestorBindingContext, 
-                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                Source={RelativeSource 
+                                                Mode=FindAncestorBindingContext, 
+                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                                 />
 
                                             <!--Songs-->
@@ -162,9 +162,9 @@
                                                 ItemsSource="{Binding Children}"
 
                                                 IsVisible="{Binding ShowSongs, 
-                                                    Source={RelativeSource 
-                                                    Mode=FindAncestorBindingContext, 
-                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                Source={RelativeSource 
+                                                Mode=FindAncestorBindingContext, 
+                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
 
                                                 SelectionMode="Single"
                                                 ItemSizingStrategy="MeasureAllItems"
@@ -178,17 +178,17 @@
                                                     <DataTemplate>
                                                         <StackLayout
                                                             Orientation="Horizontal"
-                                                            HeightRequest="{Binding Height}"
-                                                            IsVisible="{Binding IsVisible}"
+                                                            HeightRequest="{Binding Height, Mode=OneWay}"
+                                                            IsVisible="{Binding IsVisible, Mode=OneWay}"
                                                             >
 
                                                             <StackLayout.GestureRecognizers>
                                                                 <TapGestureRecognizer 
                                                                     NumberOfTapsRequired="2"    
                                                                     Command="{Binding PlayTappedCommand, 
-                                                                        Source={RelativeSource 
-                                                                        Mode=FindAncestorBindingContext, 
-                                                                        AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                                    Source={RelativeSource 
+                                                                    Mode=FindAncestorBindingContext, 
+                                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
 
                                                                     CommandParameter="{Binding .}"
                                                                     />
