@@ -16,7 +16,7 @@
          </ContentPage.BindingContext>
     -->
 
-    
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <model:ArtistHeightConverter x:Key="artistHeightConverter" MyArtist="{Binding Name}"/>
@@ -45,7 +45,7 @@
             CommandParameter="{Binding Source={x:Reference ShowAlbumsToolbarItem}}"
             Text="{Binding AlbumsToolItemText}" 
             Order="Secondary"/>
-        
+
         <ToolbarItem 
             x:Name="ShowSongsToolbarItem"
             Command="{Binding ShowSongsCommand}" 
@@ -58,7 +58,7 @@
     <ContentPage.Content>
         <StackLayout
             Orientation="Vertical"
-            VerticalOptions="StartAndExpand"
+            VerticalOptions="FillAndExpand"
             Margin="4"
             
             >
@@ -83,7 +83,7 @@
                             />
                     </DataTemplate>
                 </CollectionView.EmptyViewTemplate>
-                
+
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" />
                 </CollectionView.ItemsLayout>
@@ -93,6 +93,7 @@
                         <StackLayout
                             Orientation="Vertical"  
                             HeightRequest="{Binding Height, Mode=OneWay}"
+                            IsVisible="{Binding IsVisible, Mode=OneWay}"
                             >
 
                             <StackLayout
@@ -117,21 +118,22 @@
                                 ItemsSource="{Binding Children}"
                                 
                                 IsVisible="{Binding ShowAlbums, 
-                                Source={RelativeSource 
-                                Mode=FindAncestorBindingContext, 
-                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                    Source={RelativeSource 
+                                    Mode=FindAncestorBindingContext, 
+                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                 
                                 SelectionMode="None"
                                 ItemSizingStrategy="MeasureAllItems"
                                 
                                 >
-                                
+
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
                                         <StackLayout 
                                             Orientation="Vertical"
                                             HeightRequest="{Binding Height, Mode=OneWay}"
-                                            >                                       
+                                            IsVisible="{Binding IsVisible, Mode=OneWay}"
+                                            >
                                             <StackLayout
                                                 Orientation="Horizontal"                                                
                                                 HeightRequest="38"
@@ -162,9 +164,9 @@
                                                 ItemsSource="{Binding Children}"
 
                                                 IsVisible="{Binding ShowSongs, 
-                                                Source={RelativeSource 
-                                                Mode=FindAncestorBindingContext, 
-                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                    Source={RelativeSource 
+                                                    Mode=FindAncestorBindingContext, 
+                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
 
                                                 SelectionMode="Single"
                                                 ItemSizingStrategy="MeasureAllItems"
@@ -186,9 +188,9 @@
                                                                 <TapGestureRecognizer 
                                                                     NumberOfTapsRequired="2"    
                                                                     Command="{Binding PlayTappedCommand, 
-                                                                    Source={RelativeSource 
-                                                                    Mode=FindAncestorBindingContext, 
-                                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                                        Source={RelativeSource 
+                                                                        Mode=FindAncestorBindingContext, 
+                                                                        AncestorType={x:Type viewmodel:QueueViewModel}}}"
 
                                                                     CommandParameter="{Binding .}"
                                                                     />
@@ -197,7 +199,7 @@
                                                             <CheckBox
                                                                 IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                                                 />
-                                                            
+
                                                             <Label
                                                                 FontSize="Small"
                                                                 Margin="16,0,0,0"
@@ -227,7 +229,7 @@
                 VerticalOptions="End"
                 Padding="1"
                 Margin="1"
-                BackgroundColor="Olive"
+                BackgroundColor="DarkOrange"
                 >
                 <StackLayout
                     Orientation="Horizontal"
@@ -236,7 +238,7 @@
                     VerticalOptions="Fill"
                     Margin="2"
                     >
-                
+
                     <Editor 
                         Placeholder="Text to search"
                         PlaceholderColor="Gray"
@@ -245,7 +247,7 @@
                         HorizontalOptions="StartAndExpand"
                         Margin="6,0,0,0"
                         FontSize="Small"
-                        />               
+                        />
 
                     <Image
                         Source="baseline_clear_black_36dp.png"
@@ -256,7 +258,7 @@
                         <Image.GestureRecognizers>
                             <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ClearSearchTextCommand}"/>
                         </Image.GestureRecognizers>
-                    </Image> 
+                    </Image>
 
                     <Image
                         Source="baseline_search_black_36dp.png"

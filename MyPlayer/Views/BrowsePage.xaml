@@ -50,23 +50,24 @@
             <!--Toolbar-->
             <StackLayout
                 Orientation="Horizontal"
-                Margin="4,6,4,12"
+                Margin="4,6,4,12" 
                 >
                 <Image
-                    Source="baseline_subdirectory_arrow_left_black_36dp.png"
+                    Source="baseline_subdirectory_arrow_left_black_36dp_d.png"
+                    HeightRequest="24"
+                    WidthRequest="24"
+                    Aspect="AspectFit"
                     >
                     <Image.GestureRecognizers>
                         <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding GotoParentCommand}"/>
                     </Image.GestureRecognizers>
-                    <Image.Triggers>
-                        <Trigger TargetType="Image" Property="IsEnabled" Value="False">
-                            <Setter Property="Source" Value="baseline_subdirectory_arrow_left_black_36dp_d.png"/>
-                        </Trigger>
-                    </Image.Triggers>
                 </Image>
 
                 <Image
                     Source="baseline_home_black_36dp.png"
+                    HeightRequest="24"
+                    WidthRequest="24"
+                    Aspect="AspectFit"
                     >
                     <Image.GestureRecognizers>
                         <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding GotoRootCommand}"/>
@@ -75,6 +76,9 @@
 
                 <Image
                     Source="baseline_refresh_black_36dp.png"
+                    HeightRequest="24"
+                    WidthRequest="24"
+                    Aspect="AspectFit"
                     >
                     <Image.GestureRecognizers>
                         <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding RefreshCommand}"/>

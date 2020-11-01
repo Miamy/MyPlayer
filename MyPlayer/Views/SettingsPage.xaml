@@ -8,6 +8,7 @@
              mc:Ignorable="d"
              x:Class="MyPlayer.Views.SettingsPage"
              BackgroundColor="#181818"
+             Title="Settings"
              >
 
 
@@ -20,61 +21,36 @@
 
     <ContentPage.Content>
         <StackLayout>
-                <StackLayout
-                    Orientation="Horizontal"
-                    VerticalOptions="Start"
-                    HorizontalOptions="FillAndExpand"
-                    Margin="40,20,10,2"
-                    >
-                    <Label Text="Root  "
-                           VerticalOptions="Center" 
-                           HorizontalOptions="Start"
-                           FontSize="Small"
-                           />
-                    <StackLayout 
-                        Orientation="Vertical"
-                        Padding="0"
-                        Spacing="0"
-                        HorizontalOptions="FillAndExpand"
-                        >
-                        <Entry
-                            Text="{Binding Settings.RootFolder}"
-                            TextColor="White"
-                            BackgroundColor="Transparent"
-                            HorizontalOptions="FillAndExpand"
-                            VerticalTextAlignment="Center"
-                            HorizontalTextAlignment="Start"
-                            FontSize="Small"
-                            >
-                            <Entry.Triggers>
-                                <Trigger TargetType="Entry" Property="Entry.IsFocused" Value="True">
-                                    <Trigger.EnterActions>
-                                        <trigger:UnderlineTrigger Control="{x:Reference Underliner}" Value="True" />
-                                    </Trigger.EnterActions>
+            <StackLayout
+                Orientation="Vertical"
+                VerticalOptions="Start"
+                HorizontalOptions="FillAndExpand"
+                Margin="20,20,10,2"
+                >
 
-                                    <Trigger.ExitActions>
-                                        <trigger:UnderlineTrigger Control="{x:Reference Underliner}" Value="False"/>
-                                    </Trigger.ExitActions>
-
-                                </Trigger>
-                            </Entry.Triggers>
-                        </Entry>
-                        
-                        <BoxView 
-                            x:Name="Underliner"
-                            BackgroundColor="DarkGray"
-                            HorizontalOptions="FillAndExpand"
-                            HeightRequest="2"
-                            VerticalOptions="End"
-                            >
-                        </BoxView>
-                    </StackLayout>
-                    <Button
-                        ImageSource="baseline_sd_storage_black_36dp.png"
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer 
+                        NumberOfTapsRequired="1"    
                         Command="{Binding SelectRootCommand}"
-                        HorizontalOptions="End"
                         />
-                </StackLayout>
+                </StackLayout.GestureRecognizers>
+
+
+                <Label Text="Root folder "
+                       VerticalOptions="Center" 
+                       HorizontalOptions="Start"
+                       FontSize="Body"
+                       TextColor="LightGray"
+                       />
+                <Label 
+                    Text="{Binding Settings.RootFolder}"
+                    TextColor="Gray"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center" 
+                    FontSize="Caption"
+                    />
+
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

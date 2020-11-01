@@ -42,12 +42,13 @@ namespace MyPlayer.ViewModels
         private void UpdateHeight()
         {
             _totalHeight = Artists == null ? 0 : Artists.Sum(artist => artist.Height);
+            RaisePropertyChanged(nameof(Height));
         }
 
         public void UpdateSongs()
         {
             _songs = null;
-            _ = Songs.Count;
+            _ = Songs?.Count;
         }
 
         private IList<ISong> _songs;
@@ -56,7 +57,7 @@ namespace MyPlayer.ViewModels
         {
             get
             {
-                if (_songs == null)
+                if (_songs == null && Artists != null)
                 {
                     Func<VisualObject<IMediaBase>, bool> predicate;
                     //if (string.IsNullOrWhiteSpace(SearchText))
@@ -83,7 +84,6 @@ namespace MyPlayer.ViewModels
             {
                 Set(ref _searchText, value);
                 UpdateHeight();
-                RaisePropertyChanged(nameof(Height));
             }
         }
 
@@ -96,6 +96,7 @@ namespace MyPlayer.ViewModels
             set
             {
                 Set(ref _showAlbums, value);
+                UpdateHeight();
                 RaisePropertyChanged(nameof(AlbumsToolItemText));
             }
         }
@@ -109,7 +110,6 @@ namespace MyPlayer.ViewModels
             {
                 Set(ref _showSongs, value);
                 UpdateHeight();
-                RaisePropertyChanged(nameof(Height));
                 RaisePropertyChanged(nameof(SongsToolItemText));
             }
         }
@@ -131,7 +131,7 @@ namespace MyPlayer.ViewModels
                 RaisePropertyChanged(nameof(AllSelectedImageSource));
             }
         }
-        public string AllSelectedImageSource => "baseline_check_box_outline_blank_black_36dp.png";
+        public string AllSelectedImageSource => "baseline_check_box_black_36dp.png";
         //AllSelected ? "baseline_check_box_black_36dp.png" : "baseline_check_box_outline_blank_black_36dp.png";
 
         public ICommand ClearSearchTextCommand { get; set; }

@@ -18,7 +18,7 @@ using MyPlayer.Droid;
 
 namespace MyPlayer.Droid
 {
-    [Activity(Label = "MyPlayer", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "MyPlayer", Icon = "@drawable/note", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : Xamarin.Forms.Platform.Android.FormsAppCompatActivity 
     {
         protected override void OnCreate(Bundle savedInstanceState)
