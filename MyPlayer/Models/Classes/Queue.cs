@@ -99,10 +99,10 @@ namespace MyPlayer.Models.Classes
 
             var shift = 0;
             var songPath = song.Container;
-            var albumName = songPath.GetLevelUp(1, true);
+            var albumName = songPath.GetLevelUp(1, false);
             if (albumName.IndexOf("CD") == 0)
             {
-                albumName = songPath.GetLevelUp(2, true);
+                albumName = songPath.GetLevelUp(2, false);
                 shift = 1;
             }
 
@@ -116,7 +116,7 @@ namespace MyPlayer.Models.Classes
                 }
                 if (album == null)
                 {
-                    album = new Album(albumName, songPath.GetLevelUp(1 + shift, false));
+                    album = new Album(albumName, songPath.GetLevelUp(1 + shift, true));
                     Albums.Add(album);
                 }
                 song.Album = album;
@@ -134,7 +134,7 @@ namespace MyPlayer.Models.Classes
 
                 if (artist == null)
                 {
-                    artist = new Artist(artistName, songPath.GetLevelUp(2 + shift, false));
+                    artist = new Artist(artistName, songPath.GetLevelUp(2 + shift, true));
                     Artists.Add(artist);
                 }
                 if (song.Album != null)
