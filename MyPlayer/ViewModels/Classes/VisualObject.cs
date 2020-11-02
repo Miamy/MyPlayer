@@ -116,7 +116,7 @@ namespace MyPlayer.ViewModels
                 else
                 {
                     return //_childrenHeight;
-                        Owner.ShowAlbums ? Children.Sum(child => child.Height) + HeaderHeight : 0;
+                        Owner.ShowAlbums || Data is IArtist ? Children.Sum(child => child.Height) + HeaderHeight : 0;
                 }
             }
         }

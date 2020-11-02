@@ -70,24 +70,15 @@ namespace MyPlayer.Models.Classes
         }
 
 
-        public static string GetParent(string path)
+        public static string GetLevelUp(string path, int count)
         {
             var parts = PathElement.Split(path);
-            if (parts.Length < 2)
+            if (parts.Length < count + 1)
             {
                 return "";
             }
-            return parts[^2];
+            return parts[^(count + 1)];
 
-        }
-        public static string GetGrandParent(string path)
-        {
-            var parts = PathElement.Split(path);
-            if (parts.Length < 3)
-            {
-                return "";
-            }
-            return parts[^3];
         }
 
         public override string ToString()

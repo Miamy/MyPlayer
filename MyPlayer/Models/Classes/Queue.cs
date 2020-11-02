@@ -23,7 +23,7 @@ namespace MyPlayer.Models.Classes
         private LoopType _loopType = LoopType.All;
         public LoopType LoopType
         {
-            get => _loopType;  
+            get => _loopType;
             set
             {
                 _loopType = value;
@@ -57,29 +57,29 @@ namespace MyPlayer.Models.Classes
 
             try
             {
-            var folders = Directory.GetDirectories(path);
-            foreach (var folder in folders)
-            {
-                pathElement = new PathElement(parent, folder);
-                PathElements.Add(pathElement);
-
-                ProceedPath(pathElement, folder);
-            }
-
-            var files = Directory.GetFiles(path);
-            foreach (var file in files)
-            {
-                if (PathElement.IsMusicFile(file))
+                var folders = Directory.GetDirectories(path);
+                foreach (var folder in folders)
                 {
-                    pathElement = new PathElement(parent, file);
-                    Add(pathElement);
+                    pathElement = new PathElement(parent, folder);
+                    PathElements.Add(pathElement);
+
+                    ProceedPath(pathElement, folder);
                 }
-                else
+
+                var files = Directory.GetFiles(path);
+                foreach (var file in files)
                 {
-                    pathElement = new PathElement(parent, file);
+                    if (PathElement.IsMusicFile(file))
+                    {
+                        pathElement = new PathElement(parent, file);
+                        Add(pathElement);
+                    }
+                    else
+                    {
+                        pathElement = new PathElement(parent, file);
+                    }
+                    PathElements.Add(pathElement);
                 }
-                PathElements.Add(pathElement);
-            }
             }
             catch (IOException e)
             {
@@ -97,9 +97,15 @@ namespace MyPlayer.Models.Classes
         {
             Songs.Add(song);
 
+            var shift = 0;
             var songPath = song.Container;
-            var albumName = PathElement.GetParent(songPath);
-       
+            var albumName = PathElement.GetLevelUp(songPath, 1);
+            if (albumName.IndexOf("CD") == 0)
+            {
+                albumName = PathElement.GetLevelUp(songPath, 2);
+                shift = 1;
+            }
+
 
             if (!string.IsNullOrWhiteSpace(albumName))
             {
@@ -110,14 +116,14 @@ namespace MyPlayer.Models.Classes
                 }
                 if (album == null)
                 {
-                    album = new Album(albumName, songPath.GetOneLevelUp());
+                    album = new Album(albumName, songPath.GetLevelUp(1 + shift));
                     Albums.Add(album);
                 }
                 song.Album = album;
                 lastAlbum = album;
             }
 
-            var artistName = PathElement.GetGrandParent(songPath);
+            var artistName = PathElement.GetLevelUp(songPath, 2 + shift);
             if (!string.IsNullOrWhiteSpace(artistName))
             {
                 var artist = lastArtist;
@@ -125,10 +131,10 @@ namespace MyPlayer.Models.Classes
                 {
                     artist = Artists.FirstOrDefault(a => a.Name == artistName);
                 }
-                
+
                 if (artist == null)
                 {
-                    artist = new Artist(artistName, songPath.GetLevelUp(2));
+                    artist = new Artist(artistName, songPath.GetLevelUp(2 + shift));
                     Artists.Add(artist);
                 }
                 if (song.Album != null)
@@ -206,12 +212,12 @@ namespace MyPlayer.Models.Classes
                     Songs[i].Duration = Songs[i + 1].OffcetInContainer - Songs[i].OffcetInContainer;
                 }
             }
-        }      
+        }
 
         public void Remove(IPathElement item)
         {
 
-        }    
+        }
 
 
         public void Clear()
