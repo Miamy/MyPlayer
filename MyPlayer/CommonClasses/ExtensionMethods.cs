@@ -60,21 +60,24 @@ namespace MyPlayer.CommonClasses
         }
 
 
-        private static readonly char[] Splitters = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
-        public static string GetOneLevelUp(this string path)
-        {
-            return path.GetLevelUp(1);
-        }
+        public static readonly char[] Splitters = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
 
-        public static string GetLevelUp(this string path, int count)
+        public static string GetLevelUp(this string path, int count, bool concat)
         {
             var parts = path.Split(Splitters, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length < count + 1)
             {
                 return "";
             }
-            Array.Resize(ref parts, parts.Length - count);
-            return "/" + string.Concat(parts.Select(s => s + "/"));
+            if (concat)
+            {
+                Array.Resize(ref parts, parts.Length - count);
+                return "/" + string.Concat(parts.Select(s => s + "/"));
+            }
+            else
+            {
+                return parts[^(count + 1)];
+            }
         }
 
 

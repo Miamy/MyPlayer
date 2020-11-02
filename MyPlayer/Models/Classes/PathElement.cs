@@ -1,4 +1,5 @@
-﻿using MyPlayer.Models.Interfaces;
+﻿using MyPlayer.CommonClasses;
+using MyPlayer.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,24 +63,11 @@ namespace MyPlayer.Models.Classes
             Init();
         }
 
-        private static readonly char[] Splitters = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
-
         private static string[] Split(string path)
         {
-            return path.Split(Splitters, StringSplitOptions.RemoveEmptyEntries);
+            return path.Split(ExtensionMethods.Splitters, StringSplitOptions.RemoveEmptyEntries);
         }
 
-
-        public static string GetLevelUp(string path, int count)
-        {
-            var parts = PathElement.Split(path);
-            if (parts.Length < count + 1)
-            {
-                return "";
-            }
-            return parts[^(count + 1)];
-
-        }
 
         public override string ToString()
         {
