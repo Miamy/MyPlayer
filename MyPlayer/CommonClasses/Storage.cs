@@ -128,7 +128,7 @@ namespace MyPlayer.CommonClasses
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
             finally

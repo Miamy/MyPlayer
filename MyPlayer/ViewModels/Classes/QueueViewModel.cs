@@ -2,19 +2,12 @@
 using MyPlayer.Models;
 using MyPlayer.Models.Classes;
 using MyPlayer.Models.Interfaces;
-using MyPlayer.Views;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 
 namespace MyPlayer.ViewModels
 {
@@ -22,10 +15,10 @@ namespace MyPlayer.ViewModels
     [JsonObject(MemberSerialization.OptIn)]
     public class QueueViewModel : BaseModel, IQueueViewModel
     {
-        private IQueue _queue;
+        private readonly IQueue _queue;
         private int _totalHeight;
 
-        public IReadOnlyCollection<VisualObject<IMediaBase>> Artists { get; private set; } = null;
+        public IList<VisualObject<IMediaBase>> Artists { get; private set; } = null;
 
         private void UpdateArtists()
         {
@@ -34,7 +27,7 @@ namespace MyPlayer.ViewModels
             {
                 //inner = inner.Where(a => a.Children.Where(s => s.Name.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase)));
             }
-            Artists = new ReadOnlyCollection<VisualObject<IMediaBase>>(inner.ToList());
+            Artists = inner.ToList();
             RaisePropertyChanged(nameof(Artists));
             UpdateHeight();
         }
@@ -140,6 +133,7 @@ namespace MyPlayer.ViewModels
         public ICommand ShowAlbumsCommand { get; set; }
         public ICommand ShowSongsCommand { get; set; }
         public ICommand PlayTappedCommand { get; set; }
+        public ICommand PlayFirstChildCommand { get; set; }
 
         private LoopType _loopType = LoopType.All;
 
@@ -176,6 +170,26 @@ namespace MyPlayer.ViewModels
 
             SelectAllCommand = new Command(SelectAllAction);
             PlayTappedCommand = new Command(PlayTappedAction);
+            PlayFirstChildCommand = new Command(PlayFirstChildAction);
+        }
+
+        private async void PlayFirstChildAction(object obj)
+        {
+            if (!(obj is VisualObject<IMediaBase> selected))
+            {
+                return;
+            }
+            ISong song = null;
+            if (selected.Data is IAlbum album)
+            {
+                song = (ISong)album.Children.FirstOrDefault();
+            }
+            else if (selected.Data is IArtist artist)
+            {
+                song = (ISong)artist.Children.FirstOrDefault()?.Children.FirstOrDefault();
+            }
+            MessagingCenter.Send<BaseModel, ISong>(this, "SongSelected", song);
+            await Application.Current.MainPage.Navigation.PopAsync();
         }
 
         private async void PlayTappedAction(object obj)

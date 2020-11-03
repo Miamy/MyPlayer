@@ -51,13 +51,13 @@ namespace MyPlayer.Models.Classes
             Children = new List<IMediaBase>();
         }
 
-        private void Clear()
+        /*private void Clear()
         {
             Cover = null;
             Year = 0;
             Duration = Consts.ZeroTimeSpan;
             Children.Clear();
-        }
+        }*/
 
         public void AddSong(ISong song)
         {

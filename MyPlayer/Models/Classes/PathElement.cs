@@ -9,7 +9,11 @@ namespace MyPlayer.Models.Classes
 {
     public class PathElement : IPathElement
     {
-        public static string[] MusicExtentions => new string[] { ".mp3", ".flac" };
+        public static string[] GetMusicExtentions()
+        {
+            return new string[] { ".mp3", ".flac" };
+        }
+
         //public static Dictionary<IPathElement, string> Hierarhy = new Dictionary<IPathElement, string>();
         public string Name { get; set; }
 
@@ -77,7 +81,7 @@ namespace MyPlayer.Models.Classes
         public static bool IsMusicFile(string name)
         {
             var extention = Path.GetExtension(name);
-            return (MusicExtentions.Any(ext => ext == extention));
+            return (GetMusicExtentions().Any(ext => ext == extention));
         }
 
         private void Init()

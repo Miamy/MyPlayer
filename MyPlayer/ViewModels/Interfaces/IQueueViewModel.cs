@@ -9,7 +9,7 @@ namespace MyPlayer.Models.Interfaces
 {
     public interface IQueueViewModel : INotifyPropertyChanged
     {
-        IReadOnlyCollection<VisualObject<IMediaBase>> Artists { get; }
+        IList<VisualObject<IMediaBase>> Artists { get; }
         //IList<VisualObject<IMediaBase>> Flattened { get; }
         //IList<ISong> Songs { get; }
 

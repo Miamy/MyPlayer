@@ -63,167 +63,188 @@
             
             >
 
-            <CollectionView  
+            <ListView  
                 x:Name="ArtistsView" 
                 ItemsSource="{Binding Artists, Mode=OneWay}"
-                IsGrouped="False"
-                ItemSizingStrategy="MeasureAllItems"
                 SelectionMode="None"
                 VerticalOptions="FillAndExpand" 
                 Margin="2,2,2,12"
-                HeightRequest="{Binding Height}"
+                HasUnevenRows="True"
                 >
 
-                <CollectionView.EmptyViewTemplate>
+                <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Label
-                            Text="No music data"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center"
-                            />
-                    </DataTemplate>
-                </CollectionView.EmptyViewTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <StackLayout
+                                    Orientation="Vertical"  
+                                    IsVisible="{Binding IsVisible, Mode=OneWay}"
+                                    VerticalOptions="FillAndExpand"
+                                    HeightRequest="{Binding Height, Mode=OneWay}"
+                                    >
 
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" />
-                </CollectionView.ItemsLayout>
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                            NumberOfTapsRequired="2"    
+                                            Command="{Binding PlayFirstChildCommand, 
+                                            Source={RelativeSource 
+                                            Mode=FindAncestorBindingContext, 
+                                            AncestorType={x:Type viewmodel:QueueViewModel}}}"
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout
-                            Orientation="Vertical"  
-                            HeightRequest="{Binding Height, Mode=OneWay}"
-                            IsVisible="{Binding IsVisible, Mode=OneWay}"
-                            >
+                                            CommandParameter="{Binding .}"
+                                            />
+                                    </StackLayout.GestureRecognizers>
 
-                            <StackLayout
-                                Orientation="Horizontal"
-                                HeightRequest="40"
-                                VerticalOptions="Center"
-                                >
 
-                                <CheckBox
-                                    IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                    Color="OrangeRed"      
-                                    />
-                                <Label 
-                                    Text="{Binding Name}"
-                                    TextColor="OrangeRed"
-                                    FontSize="Medium"
-                                    />
-                            </StackLayout>
+                                    <StackLayout
+                                        Orientation="Horizontal"
+                                        HeightRequest="40"
+                                        VerticalOptions="Center"
+                                        >
 
-                            <!--Albums-->
-                            <CollectionView
-                                ItemsSource="{Binding Children}"
+                                        <CheckBox
+                                            IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                            Color="OrangeRed"      
+                                            />
+                                        <Label 
+                                            Text="{Binding Name}"
+                                            TextColor="OrangeRed"
+                                            FontSize="Medium"
+                                            />
+                                    </StackLayout>
+
+                                    <!--Albums-->
+                                    <ListView
+                                        ItemsSource="{Binding Children}"
                                 
-                                IsVisible="{Binding ShowAlbums, 
-                                    Source={RelativeSource 
-                                    Mode=FindAncestorBindingContext, 
-                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                        IsVisible="{Binding ShowAlbums, 
+                                        Source={RelativeSource 
+                                        Mode=FindAncestorBindingContext, 
+                                        AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                 
-                                SelectionMode="None"
-                                ItemSizingStrategy="MeasureAllItems"
-                                HeightRequest="{Binding Height, Mode=OneWay}"                                
-                                >
+                                        SelectionMode="None"
+                                        VerticalOptions="FillAndExpand"
+                                        HasUnevenRows="True"
+                                        >
 
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackLayout 
-                                            Orientation="Vertical"
-                                            HeightRequest="{Binding Height, Mode=OneWay}"
-                                            IsVisible="{Binding IsVisible, Mode=OneWay}"
-                                            >
-                                            <StackLayout
-                                                Orientation="Horizontal"                                                
-                                                HeightRequest="38"
-                                                >
-                                                <CheckBox
-                                                    IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                                    Color="Orange"
-                                                    />
-                                                <Label
-                                                    Text="{Binding Name}"
-                                                    TextColor="Orange"
-                                                    FontSize="Small"
-                                                    Margin="10,0,0,0"
-                                                    />
-                                            </StackLayout>
-                                            <BoxView 
-                                                HorizontalOptions="FillAndExpand" 
-                                                Color="Orange"
-                                                HeightRequest="2"
-                                                IsVisible="{Binding ShowSongs, 
-                                                Source={RelativeSource 
-                                                Mode=FindAncestorBindingContext, 
-                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
-                                                />
-
-                                            <!--Songs-->
-                                            <CollectionView 
-                                                ItemsSource="{Binding Children}"
-
-                                                IsVisible="{Binding ShowSongs, 
-                                                    Source={RelativeSource 
-                                                    Mode=FindAncestorBindingContext, 
-                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
-
-                                                SelectionMode="Single"
-                                                ItemSizingStrategy="MeasureAllItems"
-                                                >
-
-                                                <CollectionView.ItemsLayout>
-                                                    <LinearItemsLayout Orientation="Vertical" />
-                                                </CollectionView.ItemsLayout>
-
-                                                <CollectionView.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <StackLayout
-                                                            Orientation="Horizontal"
-                                                            HeightRequest="{Binding Height, Mode=OneWay}"
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <ViewCell>
+                                                    <ViewCell.View>
+                                                        <StackLayout 
+                                                            Orientation="Vertical"                                                            
                                                             IsVisible="{Binding IsVisible, Mode=OneWay}"
+                                                            VerticalOptions="FillAndExpand"
+                                                            HeightRequest="{Binding Height, Mode=OneWay}"
                                                             >
 
                                                             <StackLayout.GestureRecognizers>
                                                                 <TapGestureRecognizer 
                                                                     NumberOfTapsRequired="2"    
-                                                                    Command="{Binding PlayTappedCommand, 
-                                                                        Source={RelativeSource 
-                                                                        Mode=FindAncestorBindingContext, 
-                                                                        AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                                                    Command="{Binding PlayFirstChildCommand, 
+                                                                    Source={RelativeSource 
+                                                                    Mode=FindAncestorBindingContext, 
+                                                                    AncestorType={x:Type viewmodel:QueueViewModel}}}"
 
                                                                     CommandParameter="{Binding .}"
                                                                     />
                                                             </StackLayout.GestureRecognizers>
 
-                                                            <CheckBox
-                                                                IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                            <StackLayout
+                                                                Orientation="Horizontal"                                                
+                                                                HeightRequest="38"
+                                                                >
+                                                                <CheckBox
+                                                                    IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                                    Color="Orange"
+                                                                    />
+                                                                <Label
+                                                                    Text="{Binding Name}"
+                                                                    TextColor="Orange"
+                                                                    FontSize="Small"
+                                                                    Margin="10,0,0,0"
+                                                                    />
+                                                            </StackLayout>
+                                                            <BoxView 
+                                                                HorizontalOptions="FillAndExpand" 
+                                                                Color="Orange"
+                                                                HeightRequest="2"
+                                                                IsVisible="{Binding ShowSongs, 
+                                                                Source={RelativeSource 
+                                                                Mode=FindAncestorBindingContext, 
+                                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
                                                                 />
 
-                                                            <Label
-                                                                FontSize="Small"
-                                                                Margin="16,0,0,0"
-                                                                />
+                                                            <!--Songs-->
+                                                            <ListView 
+                                                                ItemsSource="{Binding Children}"
 
-                                                            <Label
-                                                                Text="{Binding Name}"
-                                                                FontSize="Small"
-                                                                Margin="4,0,0,0"
-                                                                />
+                                                                IsVisible="{Binding ShowSongs, 
+                                                                Source={RelativeSource 
+                                                                Mode=FindAncestorBindingContext, 
+                                                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
+
+                                                                SelectionMode="Single"
+                                                                VerticalOptions="FillAndExpand"
+                                                                HasUnevenRows="True"
+                                                                >
+
+                                                                <ListView.ItemTemplate>
+                                                                    <DataTemplate >
+                                                                        <ViewCell >
+                                                                            <ViewCell.View>
+                                                                                <StackLayout
+                                                                                    Orientation="Horizontal"
+                                                                                    IsVisible="{Binding IsVisible, Mode=OneWay}"
+                                                                                    HeightRequest="{Binding Height, Mode=OneWay}"
+                                                                                    >
+
+                                                                                    <StackLayout.GestureRecognizers>
+                                                                                        <TapGestureRecognizer 
+                                                                                            NumberOfTapsRequired="2"    
+                                                                                            Command="{Binding PlayTappedCommand, 
+                                                                                            Source={RelativeSource 
+                                                                                            Mode=FindAncestorBindingContext, 
+                                                                                            AncestorType={x:Type viewmodel:QueueViewModel}}}"
+
+                                                                                            CommandParameter="{Binding .}"
+                                                                                            />
+                                                                                    </StackLayout.GestureRecognizers>
+
+                                                                                    <CheckBox
+                                                                                        IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                                                        />
+
+                                                                                    <Label
+                                                                                        FontSize="Small"
+                                                                                        Margin="16,0,0,0"
+                                                                                        />
+
+                                                                                    <Label
+                                                                                        Text="{Binding Name}"
+                                                                                        FontSize="Small"
+                                                                                        Margin="4,0,0,0"
+                                                                                        />
+
+                                                                                </StackLayout>
+                                                                            </ViewCell.View>
+                                                                        </ViewCell>
+                                                                    </DataTemplate>
+                                                                </ListView.ItemTemplate>
+                                                            </ListView>
 
                                                         </StackLayout>
-                                                    </DataTemplate>
-                                                </CollectionView.ItemTemplate>
-                                            </CollectionView>
-
-                                        </StackLayout>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-                        </StackLayout>
+                                                    </ViewCell.View>
+                                                </ViewCell>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </StackLayout>
+                            </ViewCell.View>
+                        </ViewCell>
                     </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                </ListView.ItemTemplate>
+            </ListView>
 
             <StackLayout
                 VerticalOptions="End"

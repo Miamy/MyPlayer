@@ -81,7 +81,7 @@ namespace MyPlayer.Models.Classes
                     PathElements.Add(pathElement);
                 }
             }
-            catch (IOException e)
+            catch (IOException)
             {
             }
             catch (Exception)
