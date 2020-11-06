@@ -43,5 +43,7 @@ namespace MyPlayer.Models.Classes
         {
             return Container;
         }
+
+        public bool HasChildren => Children != null;
     }
 }

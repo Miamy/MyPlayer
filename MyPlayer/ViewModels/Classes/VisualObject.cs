@@ -42,7 +42,7 @@ namespace MyPlayer.ViewModels
             set
             {
                 Set(ref _isSelected, value);
-                if (Children != null)
+                if (Data.HasChildren)
                 {
                     foreach (var child in Children)
                     {
@@ -65,21 +65,12 @@ namespace MyPlayer.ViewModels
         {
             get
             {
-                var searchIsEmpty = string.IsNullOrWhiteSpace(Owner.SearchText);
-                return searchIsEmpty || Name.Contains(Owner.SearchText, StringComparison.InvariantCultureIgnoreCase) || 
-                    (Children != null && Children.Any(child => child.IsVisible));
+                return Owner.SearchIsEmpty || Name.Contains(Owner.SearchText, StringComparison.InvariantCultureIgnoreCase) || 
+                    (Data.HasChildren && Children.Any(child => child.IsVisible));
             }
         }
 
-        private ICollection<VisualObject<IMediaBase>> children;
-        public ICollection<VisualObject<IMediaBase>> Children
-        {
-            get => children;
-            set
-            {
-                children = value;
-            }
-        }
+        public ICollection<VisualObject<IMediaBase>> Children { get; set; }
 
         private T _data;
 
@@ -92,12 +83,14 @@ namespace MyPlayer.ViewModels
                 if (_data?.Children != null)
                 {
                     Children = new ObservableCollection<VisualObject<IMediaBase>>(_data.Children.Select(child => new VisualObject<IMediaBase>(child, Owner)));
-                    //_childrenHeight = Children.Sum(child => child.Height);
+                    UpdateHeight();
                 }
             }
         }
 
-        //private int _childrenHeight = 0;
+      
+
+        private int _childrenHeight = 0;
 
         public string Name => Data?.Name;
         public int Height
@@ -108,15 +101,17 @@ namespace MyPlayer.ViewModels
                 {
                     return 0;
                 }
-                var isSong = Children == null;
-                if (isSong)
+
+                if (Data.HasChildren)
                 {
-                    return Owner.ShowSongs ? ItemHeight : 0;
+                    return Owner.ShowAlbums || Data is IArtist ?
+                        //Children.Sum(child => child.Height) 
+                        _childrenHeight
+                        + HeaderHeight : 0;
                 }
                 else
                 {
-                    return //_childrenHeight;
-                        Owner.ShowAlbums || Data is IArtist ? Children.Sum(child => child.Height) + HeaderHeight : 0;
+                    return Owner.ShowSongs ? ItemHeight : 0;
                 }
             }
         }
@@ -130,9 +125,9 @@ namespace MyPlayer.ViewModels
 
         private void OwnerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Height")
+            if (e.PropertyName == "Height" || e.PropertyName == "ShowAlbums" || e.PropertyName == "ShowSongs")
             {
-                RaisePropertyChanged(nameof(Height));
+                UpdateHeight();
             }
             if (e.PropertyName == "AllSelected")
             {
@@ -141,7 +136,14 @@ namespace MyPlayer.ViewModels
             if (e.PropertyName == "SearchText")
             {
                 RaisePropertyChanged(nameof(IsVisible));
+                UpdateHeight();
             }
+        }
+
+        private void UpdateHeight()
+        {
+            _childrenHeight = Data.HasChildren ? Children.Sum(child => child.Height) : 0;
+            RaisePropertyChanged(nameof(Height));
         }
     }
 }

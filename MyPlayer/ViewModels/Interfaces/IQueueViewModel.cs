@@ -17,6 +17,7 @@ namespace MyPlayer.Models.Interfaces
         bool ShowSongs { get; set; }
         bool AllSelected { get; set; }
         string SearchText { get; set; }
+        bool SearchIsEmpty { get; }
 
         ISong Next(ISong song);
         ISong Prev(ISong song);

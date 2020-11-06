@@ -14,5 +14,6 @@ namespace MyPlayer.Models.Interfaces
         string Container { get; set; }
 
         string GetUniqueName();
+        bool HasChildren { get; }
     }
 }

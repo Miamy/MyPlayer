@@ -86,7 +86,7 @@ namespace MyPlayer.CommonClasses
             var itemsToYield = new Queue<T>(sequence);
             while (itemsToYield.Count > 0)
             {
-                var item = itemsToYield.Dequeue();
+                var item = itemsToYield.Dequeue(); 
                 yield return item;
 
                 var children = childFetcher(item);

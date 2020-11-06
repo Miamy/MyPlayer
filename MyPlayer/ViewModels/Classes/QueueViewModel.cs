@@ -56,7 +56,7 @@ namespace MyPlayer.ViewModels
                     Func<VisualObject<IMediaBase>, bool> predicate;
                     //if (string.IsNullOrWhiteSpace(SearchText))
                     {
-                        predicate = s => s.Data.GetType() == typeof(Song) && s.IsSelected;
+                        predicate = s => !s.Data.HasChildren && s.IsSelected;
                     }
                     //else
                     //{
@@ -76,11 +76,13 @@ namespace MyPlayer.ViewModels
             get => _searchText;
             set
             {
+                SearchIsEmpty = string.IsNullOrWhiteSpace(value);
                 Set(ref _searchText, value);
                 UpdateHeight();
             }
         }
 
+        public bool SearchIsEmpty { get; private set; }
 
         private bool _showAlbums;
         [JsonProperty]
@@ -164,7 +166,7 @@ namespace MyPlayer.ViewModels
         #region Commands
         private void CreateCommands()
         {
-            ClearSearchTextCommand = new Command(ClearSearchTextAction, CanClearSearchText);
+            ClearSearchTextCommand = new Command(ClearSearchTextAction);
 
             ShowAlbumsCommand = new Command(ShowAlbumsAction);
             ShowSongsCommand = new Command(ShowSongsAction);
@@ -215,11 +217,7 @@ namespace MyPlayer.ViewModels
 
 
 
-        private bool CanClearSearchText(object arg)
-        {
-            return !string.IsNullOrWhiteSpace(SearchText);
-        }
-
+    
         private void ClearSearchTextAction(object obj)
         {
             SearchText = "";
