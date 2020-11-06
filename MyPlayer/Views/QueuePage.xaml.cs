@@ -23,14 +23,14 @@ namespace MyPlayer.Views
             InitializeComponent();
 
             BindingContext = _model = model;
-            _model.PropertyChanged += _modelPropertyChanged;            
+            _model.PropertyChanged += ModelPropertyChanged;            
         }
 
-        private void _modelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void ModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Height" || e.PropertyName == "ShowSongs")
+            //if (e.PropertyName == "Height" || e.PropertyName == "ShowSongs")
             {
-                ArtistsView.Layout(ArtistsView.Bounds);
+                //ArtistsView.Layout(ArtistsView.Bounds);
                 /*ArtistsView.BatchBegin();
                 BindingContext = null;
                 BindingContext = _model;
