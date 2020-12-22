@@ -70,7 +70,7 @@ namespace MyPlayer.ViewModels
             }
         }
 
-        public ICollection<VisualObject<IMediaBase>> Children { get; set; }
+        public IList<VisualObject<IMediaBase>> Children { get; set; }
 
         private T _data;
 
@@ -82,7 +82,7 @@ namespace MyPlayer.ViewModels
                 _data = value;
                 if (_data?.Children != null)
                 {
-                    Children = new ObservableCollection<VisualObject<IMediaBase>>(_data.Children.Select(child => new VisualObject<IMediaBase>(child, Owner)));
+                    Children = new List<VisualObject<IMediaBase>>(_data.Children.Select(child => new VisualObject<IMediaBase>(child, Owner)));
                     UpdateHeight();
                 }
             }
