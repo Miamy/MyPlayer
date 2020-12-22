@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyPlayer.Views.OtherQueuePage"
+             xmlns:model="clr-namespace:MyPlayer.Models"
+             xmlns:viewmodel="clr-namespace:MyPlayer.ViewModels"
+             BackgroundColor="Black"
+             >
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <model:ArtistHeightConverter x:Key="artistHeightConverter" MyArtist="{Binding Name}"/>
+
+            <Style TargetType="CheckBox" BasedOn="{StaticResource CheckBoxStyle}"/>
+            <Style TargetType="Label" BasedOn="{StaticResource LabelStyle}"/>
+
+            <Style TargetType="StackLayout">
+                <Setter Property="Spacing" Value="0"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="Margin" Value="0"/>
+            </Style>
+
+            <DataTemplate
+                x:Key="DataTemplate">
+                <ViewCell>
+                    <ViewCell.View>
+                        <StackLayout
+                            Orientation="Vertical">
+
+                            <StackLayout
+                                Orientation="Horizontal">
+
+                                <Image
+                                    Source="baseline_plus_black_36dp.png"                                                                    
+                                    />
+
+                                <CheckBox
+                                    IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                    Color="Red"
+                                    />
+                                <Label
+                                    Text="{Binding Name}"
+                                    TextColor="Red"
+                                    FontSize="Medium"
+                                    Margin="10,0,0,0"
+                                    />
+                            </StackLayout>
+                            <BoxView 
+                                HorizontalOptions="FillAndExpand" 
+                                Color="Red"
+                                HeightRequest="2"
+                                IsVisible="{Binding ShowSongs, 
+                                Source={RelativeSource 
+                                Mode=FindAncestorBindingContext, 
+                                AncestorType={x:Type viewmodel:QueueViewModel}}}"
+                                />
+
+                        </StackLayout>
+                    </ViewCell.View>
+                </ViewCell>
+
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+
+        <ToolbarItem 
+            Command="{Binding SelectAllCommand}" 
+            IconImageSource="{Binding AllSelectedImageSource}"/>
+
+        <ToolbarItem 
+            x:Name="ShowAlbumsToolbarItem"
+            Command="{Binding ShowAlbumsCommand}" 
+            CommandParameter="{Binding Source={x:Reference ShowAlbumsToolbarItem}}"
+            Text="{Binding AlbumsToolItemText}" 
+            Order="Secondary"/>
+
+        <ToolbarItem 
+            x:Name="ShowSongsToolbarItem"
+            Command="{Binding ShowSongsCommand}" 
+            CommandParameter="{Binding Source={x:Reference ShowSongsToolbarItem}}"
+            Text="{Binding SongsToolItemText}" 
+            Order="Secondary" />
+    </ContentPage.ToolbarItems>
+
+
+    <ContentPage.Content>
+        <StackLayout
+            Orientation="Vertical"
+            VerticalOptions="FillAndExpand"
+            Margin="4"
+            
+            >
+
+            <ListView  
+                ItemTemplate="{StaticResource DataTemplate}" 
+                x:Name="ArtistsView" 
+                ItemsSource="{Binding Artists, Mode=OneWay}"
+                SelectionMode="None"
+                VerticalOptions="FillAndExpand" 
+                Margin="2,2,2,12"
+                HasUnevenRows="False"
+                >             
+      
+            </ListView>
+
+            <StackLayout
+                VerticalOptions="End"
+                Padding="1"
+                Margin="1"
+                BackgroundColor="DarkOrange"
+                >
+                <StackLayout
+                    Orientation="Horizontal"
+                    BackgroundColor="#181818"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Margin="2"
+                    >
+
+                    <Editor 
+                        Placeholder="Text to search"
+                        PlaceholderColor="Gray"
+                        Text="{Binding SearchText, Mode=TwoWay}"
+                        TextColor="White"
+                        HorizontalOptions="StartAndExpand"
+                        Margin="6,0,0,0"
+                        FontSize="Small"
+                        />
+
+                    <Image
+                        Source="baseline_clear_black_36dp.png"
+                        HorizontalOptions="End"
+                        WidthRequest="24"
+                        HeightRequest="24"     
+                        >
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ClearSearchTextCommand}"/>
+                        </Image.GestureRecognizers>
+                    </Image>
+
+                    <Image
+                        Source="baseline_search_black_36dp.png"
+                        HorizontalOptions="End"
+                        Margin="6,0,0,0"
+                        />
+                </StackLayout>
+            </StackLayout>
+        </StackLayout>
+
+    </ContentPage.Content>
+</ContentPage>    
+    
+    

@@ -80,7 +80,7 @@
     <Compile Include="FileSystemClass.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resource.designer.cs" />
+    <Compile Include="Resources\Resource.designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -219,11 +219,17 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\note.png" />
-	<AndroidResource Include="Resources\drawable-hdpi\note.png" />
-	<AndroidResource Include="Resources\drawable-mdpi\note.png" />
-	<AndroidResource Include="Resources\drawable-xhdpi\note.png" />
-	<AndroidResource Include="Resources\drawable-xxhdpi\note.png" />
-	<AndroidResource Include="Resources\drawable-xxxhdpi\note.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\note.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\note.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\note.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\note.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\note.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\baseline_minus_black_36dp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\baseline_plus_black_36dp.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

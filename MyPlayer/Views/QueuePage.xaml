@@ -5,7 +5,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:model="clr-namespace:MyPlayer.Models"
              xmlns:viewmodel="clr-namespace:MyPlayer.ViewModels"
-             xmlns:interfaces="clr-namespace:MyPlayer.Models.Interfaces"
              mc:Ignorable="d"
              x:Class="MyPlayer.Views.QueuePage"
              BackgroundColor="#181818"
@@ -154,6 +153,11 @@
                                                                 Orientation="Horizontal"                                                
                                                                 HeightRequest="38"
                                                                 >
+                                                                <Image
+                                                                    Source="baseline_plus_black_36dp.png"
+                                                                    
+                                                                    />
+
                                                                 <CheckBox
                                                                     IsChecked="{Binding IsSelected, Mode=TwoWay}"
                                                                     Color="Orange"
