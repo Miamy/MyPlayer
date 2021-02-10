@@ -27,7 +27,6 @@ namespace MyPlayer.Models.Classes
             }
         }
 
-        public TimeSpan Duration { get; set; }
 
         private IArtist _artist;
         public IArtist Artist

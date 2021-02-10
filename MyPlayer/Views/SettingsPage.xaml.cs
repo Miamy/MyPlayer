@@ -26,12 +26,12 @@ namespace MyPlayer.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            Storage.LoadSettings(_model.Settings);
+            //Storage.LoadSettings(_model.Settings);
         }
 
         protected override void OnDisappearing()
         {
-            Storage.SaveSettings(_model.Settings);
+            //Storage.SaveSettings(_model.Settings);
             base.OnDisappearing();
         }
     }

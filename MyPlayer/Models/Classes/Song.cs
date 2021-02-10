@@ -18,7 +18,6 @@ namespace MyPlayer.Models.Classes
             }
         }
 
-        public TimeSpan Duration { get; set; }
 
         private IAlbum _album;
         public IAlbum Album 

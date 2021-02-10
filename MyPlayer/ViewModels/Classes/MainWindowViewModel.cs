@@ -247,7 +247,7 @@ namespace MyPlayer.ViewModels
                 PlayCurrent(true);
             });
 
-            var page = new OtherQueuePage(QueueViewModel);
+            var page = new QueuePage(QueueViewModel);
             await Application.Current.MainPage.Navigation.PushAsync(page, false);
         }
         private bool CanShowSettings(object arg)

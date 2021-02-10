@@ -9,6 +9,8 @@ namespace MyPlayer.Models.Interfaces
         string Name { get; set; }
         int Count { get; }
 
+        TimeSpan Duration { get; set; }
+
         IList<IMediaBase> Children { get; set; }
 
         string Container { get; set; }

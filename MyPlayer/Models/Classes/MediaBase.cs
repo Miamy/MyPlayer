@@ -19,6 +19,7 @@ namespace MyPlayer.Models.Classes
             }
         }
 
+        public TimeSpan Duration { get; set; }
         public virtual int Count { get; protected set; }
 
         private IList<IMediaBase> children = null;

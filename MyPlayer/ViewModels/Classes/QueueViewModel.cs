@@ -17,7 +17,6 @@ namespace MyPlayer.ViewModels
     public class QueueViewModel : BaseModel, IQueueViewModel
     {
         private readonly IQueue _queue;
-        private int _totalHeight;
 
         public IList<VisualObject<IMediaBase>> Artists { get; private set; } = null;
 
@@ -30,14 +29,8 @@ namespace MyPlayer.ViewModels
             }
             Artists = inner.ToList();
             RaisePropertyChanged(nameof(Artists));
-            UpdateHeight();
         }
 
-        private void UpdateHeight()
-        {
-            _totalHeight = Artists == null ? 0 : Artists.Sum(artist => artist.Height);
-            RaisePropertyChanged(nameof(Height));
-        }
 
         public void UpdateSongs()
         {
@@ -78,7 +71,6 @@ namespace MyPlayer.ViewModels
             {
                 SearchIsEmpty = string.IsNullOrWhiteSpace(value);
                 Set(ref _searchText, value);
-                UpdateHeight();
             }
         }
 
@@ -91,8 +83,14 @@ namespace MyPlayer.ViewModels
             get => _showAlbums;
             set
             {
+                if (Artists != null)
+                {
+                    foreach (var artist in Artists)
+                    {
+                        artist.IsExpanded = value;
+                    }
+                }
                 Set(ref _showAlbums, value);
-                UpdateHeight();
                 RaisePropertyChanged(nameof(AlbumsToolItemText));
             }
         }
@@ -104,17 +102,23 @@ namespace MyPlayer.ViewModels
             get => _showSongs;
             set
             {
+                if (Artists != null)
+                {
+                    foreach (var artist in Artists)
+                    {
+                        foreach (var album in artist.Children)
+                        {
+                            album.IsExpanded = value;
+                        }
+                    }
+                }
                 Set(ref _showSongs, value);
-                UpdateHeight();
                 RaisePropertyChanged(nameof(SongsToolItemText));
             }
         }
 
         public string AlbumsToolItemText => ShowAlbums ? "Hide albums" : "Show albums";
         public string SongsToolItemText => ShowSongs ? "Hide songs" : "Show songs";
-
-        public int Height => Artists == null ? 500 : _totalHeight;
-        //Artists.Sum(artist => artist.Height);
 
         private bool _allSelected = true;
 
@@ -160,7 +164,7 @@ namespace MyPlayer.ViewModels
             _queue = new Queue();
             SearchText = "";
             ShowAlbums = true;
-            ShowSongs = true;
+            ShowSongs = false;
         }
 
         #region Commands
@@ -217,7 +221,7 @@ namespace MyPlayer.ViewModels
 
 
 
-    
+
         private void ClearSearchTextAction(object obj)
         {
             SearchText = "";

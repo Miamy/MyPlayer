@@ -1,4 +1,5 @@
-﻿using MyPlayer.Models.Classes;
+﻿using MyPlayer.Models;
+using MyPlayer.Models.Classes;
 using MyPlayer.Models.Interfaces;
 using MyPlayer.ViewModels;
 using Newtonsoft.Json;
@@ -77,6 +78,10 @@ namespace MyPlayer.CommonClasses
             {
                 return;
             }
+            
+            queue.LoopType = (LoopType)Preferences.Get("LoopType", (int)LoopType.All);
+            queue.ShowAlbums = Preferences.Get("ShowAlbums", true);
+            queue.ShowSongs = Preferences.Get("ShowSongs", false);
 
             var folder = DependencyService.Get<IFileSystem>().GetWorkFolder();
             if (!Directory.Exists(folder))

@@ -85,6 +85,7 @@ namespace MyPlayer.ViewModels
                     Children = new List<VisualObject<IMediaBase>>(_data.Children.Select(child => new VisualObject<IMediaBase>(child, Owner)));
                     UpdateHeight();
                 }
+                IsExpanded = _data is IArtist;
             }
         }
 
