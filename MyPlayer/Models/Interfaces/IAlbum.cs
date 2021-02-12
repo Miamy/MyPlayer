@@ -6,7 +6,6 @@ namespace MyPlayer.Models.Interfaces
     public interface IAlbum : IMediaBase
     {
         IArtist Artist { get; set; }
-        TimeSpan Duration { get; set; }
 
         int Year { get; set; }
 
