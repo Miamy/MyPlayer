@@ -1,6 +1,7 @@
 ﻿using MyPlayer.CommonClasses;
 using MyPlayer.Models.Interfaces;
 using MyPlayer.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,12 +16,13 @@ namespace MyPlayer.Models.Classes
     {
         public IList<ISong> Songs { get; set; }
         public IList<IAlbum> Albums { get; set; }
-        public IList<IArtist> Artists { get; set; }
+        public IList<IMediaBase> Artists { get; set; }
 
         public IList<IPathElement> PathElements { get; set; }
 
-
         private LoopType _loopType = LoopType.All;
+
+        [JsonProperty]
         public LoopType LoopType
         {
             get => _loopType;
@@ -31,11 +33,14 @@ namespace MyPlayer.Models.Classes
             }
         }
 
+        [JsonProperty]
+        public ISong Current { get; set; }
+
         public Queue()
         {
             Songs = new List<ISong>();
             Albums = new List<IAlbum>();
-            Artists = new List<IArtist>();
+            Artists = new List<IMediaBase>();
             PathElements = new List<IPathElement>();
         }
 
@@ -91,7 +96,7 @@ namespace MyPlayer.Models.Classes
         }
 
         private static IAlbum lastAlbum = null;
-        private static IArtist lastArtist = null;
+        private static IMediaBase lastArtist = null;
 
         private void AddSong(ISong song)
         {
@@ -126,7 +131,7 @@ namespace MyPlayer.Models.Classes
             var artistName = songPath.GetLevelUp(2 + shift, false);
             if (!string.IsNullOrWhiteSpace(artistName))
             {
-                var artist = lastArtist;
+                IMediaBase artist = lastArtist;
                 if (artist?.Name != artistName)
                 {
                     artist = Artists.FirstOrDefault(a => a.Name == artistName);
@@ -139,7 +144,7 @@ namespace MyPlayer.Models.Classes
                 }
                 if (song.Album != null)
                 {
-                    song.Album.Artist = artist;
+                    song.Album.Artist = artist as IArtist;
                 }
                 lastArtist = artist;
             }
@@ -227,6 +232,66 @@ namespace MyPlayer.Models.Classes
             Artists.Clear();
             PathElements.Clear();
         }
+     
 
+        public ISong Next(ISong song)
+        {
+            if (LoopType == LoopType.One)
+            {
+                return song;
+            }
+            if (song == null)
+            {
+                return null;
+            }
+            var newSong = Songs.Next(song);
+            if (newSong == null && LoopType == LoopType.All)
+            {
+                newSong = Songs.FirstOrDefault();
+            }
+            return newSong;
+        }
+        public ISong Prev(ISong song)
+        {
+            if (LoopType == LoopType.One)
+            {
+                return song;
+            }
+            if (song == null)
+            {
+                return null;
+            }
+            var newSong = Songs.Previous(song);
+            if (newSong == null && LoopType == LoopType.All)
+            {
+                newSong = Songs.LastOrDefault();
+            }
+            return newSong;
+        }
+
+        public ISong GetDefault()
+        {
+            if (Songs != null)
+            {
+                return Songs.FirstOrDefault();
+            }
+            return Artists.FirstOrDefault().Children?.FirstOrDefault()?.Children?.FirstOrDefault() as ISong;
+        }
+
+        public void SwitchLoopType()
+        {
+            switch (LoopType)
+            {
+                case LoopType.None:
+                    LoopType = LoopType.One;
+                    break;
+                case LoopType.One:
+                    LoopType = LoopType.All;
+                    break;
+                case LoopType.All:
+                    LoopType = LoopType.None;
+                    break;
+            }
+        }
     }
 }

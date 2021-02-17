@@ -10,7 +10,7 @@ namespace MyPlayer.Models.Interfaces
     {
         IList<ISong> Songs { get; }
         IList<IAlbum> Albums { get; set; }
-        IList<IArtist> Artists { get; set; }
+        IList<IMediaBase> Artists { get; set; }
 
         void Add(IPathElement item);
         void AddFromRoot(string path);
@@ -18,5 +18,12 @@ namespace MyPlayer.Models.Interfaces
 
         void Clear();
 
+        ISong Next(ISong song);
+        ISong Prev(ISong song);
+
+        LoopType LoopType { get; set; }
+        ISong Current { get; set; }
+        ISong GetDefault();
+        void SwitchLoopType();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using LibVLCSharp.Shared;
 using MyPlayer.CommonClasses;
+using MyPlayer.Models;
 using MyPlayer.Models.Classes;
 using MyPlayer.Models.Interfaces;
 using MyPlayer.Views;
@@ -122,7 +123,7 @@ namespace MyPlayer.ViewModels
         public ICommand LoopCommand { get; set; }
 
      
-        public IQueueViewModel QueueViewModel { get; set; }
+        public IQueue Queue { get; set; }
 
         //public bool IsPlaying => MediaPlayer.IsPlaying;  
 
@@ -145,12 +146,12 @@ namespace MyPlayer.ViewModels
 
             Settings.Instance.PropertyChanged += SettingsPropertyChanged;
 
-            QueueViewModel = new QueueViewModel();
+            Queue = new Queue();
             //Queue.PropertyChanged += PropertyChanged;
 
             Initialize();
             LoadMusicFolder();
-            Storage.LoadQueue(QueueViewModel);
+            Storage.LoadQueue(Queue);
         }
 
 
@@ -173,9 +174,9 @@ namespace MyPlayer.ViewModels
                     root = @"/storage/emulated/0/Music/";
                     //root = @"/storage/2743-1D07/Music/";
                 }
-                QueueViewModel.AddFromRoot(root);
+                Queue.AddFromRoot(root);
 
-                Current = QueueViewModel.GetDefault();
+                Current = Queue.GetDefault();
             }
             catch (UnauthorizedAccessException)
             {
@@ -203,7 +204,7 @@ namespace MyPlayer.ViewModels
 
         private void LoopAction(object obj)
         {
-            QueueViewModel.SwitchLoopType();
+            Queue.SwitchLoopType();
         }
         private bool CanPrev(object arg)
         {
@@ -212,7 +213,7 @@ namespace MyPlayer.ViewModels
 
         private void PrevAction(object obj)
         {
-            Current = QueueViewModel.Prev(Current);
+            Current = Queue.Prev(Current);
             if (IsPlaying)
             {
                 PlayCurrent(true);
@@ -226,7 +227,7 @@ namespace MyPlayer.ViewModels
 
         private void NextAction(object obj)
         {
-            Current = QueueViewModel.Next(Current);
+            Current = Queue.Next(Current);
             if (IsPlaying)
             {
                 PlayCurrent(true);
@@ -247,7 +248,7 @@ namespace MyPlayer.ViewModels
                 PlayCurrent(true);
             });
 
-            var page = new QueuePage(QueueViewModel);
+            var page = new QueuePage(Queue);
             await Application.Current.MainPage.Navigation.PushAsync(page, false);
         }
         private bool CanShowSettings(object arg)

@@ -28,11 +28,11 @@ namespace MyPlayer.CommonClasses
             settings.RootFolder = Preferences.Get("RootFolder", "");
         }
 
-        public static void SaveQueue(IQueueViewModel queue)
+        public static void SaveQueue(IQueue queue)
         {
             Preferences.Set("LoopType", (int)queue.LoopType);
-            Preferences.Set("ShowAlbums", queue.ShowAlbums);
-            Preferences.Set("ShowSongs", queue.ShowSongs);
+            //Preferences.Set("ShowAlbums", queue.ShowAlbums);
+            //Preferences.Set("ShowSongs", queue.ShowSongs);
 
             if (queue?.Artists == null)
             {
@@ -52,7 +52,7 @@ namespace MyPlayer.CommonClasses
                 File.Delete(file);
             }
 
-            var queueData = queue.Artists.Flatten(a => a.Children).Where(a => !a.IsSelected).ToDictionary(a => a.Data.GetUniqueName(), a => a.IsSelected);
+            var queueData = queue.Artists.Flatten(a => a.Children).Where(a => !a.IsSelected).ToDictionary(a => a.GetUniqueName(), a => a.IsSelected);
 
             var formatter = Formatting.Indented;
             var value = JsonConvert.SerializeObject(queueData, formatter, GetSettings());
@@ -72,7 +72,7 @@ namespace MyPlayer.CommonClasses
             File.Delete(file);
         }
 
-        public static void LoadQueue(IQueueViewModel queue)
+        public static void LoadQueue(IQueue queue)
         {
             if (queue == null)
             {
@@ -80,8 +80,8 @@ namespace MyPlayer.CommonClasses
             }
             
             queue.LoopType = (LoopType)Preferences.Get("LoopType", (int)LoopType.All);
-            queue.ShowAlbums = Preferences.Get("ShowAlbums", true);
-            queue.ShowSongs = Preferences.Get("ShowSongs", false);
+            //queue.ShowAlbums = Preferences.Get("ShowAlbums", true);
+            //queue.ShowSongs = Preferences.Get("ShowSongs", false);
 
             var folder = DependencyService.Get<IFileSystem>().GetWorkFolder();
             if (!Directory.Exists(folder))
@@ -126,7 +126,7 @@ namespace MyPlayer.CommonClasses
                 var queueData = JsonConvert.DeserializeObject<Dictionary<string, bool>>(value, GetSettings());
                 foreach (var data in queueData)
                 {
-                    var item = flattened.FirstOrDefault(d => d.Data.GetUniqueName() == data.Key);
+                    var item = flattened.FirstOrDefault(d => d.GetUniqueName() == data.Key);
                     if (item != null)
                     {
                         item.IsSelected = data.Value;

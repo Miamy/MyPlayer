@@ -31,6 +31,16 @@ namespace MyPlayer.ViewModels
             RaisePropertyChanged(nameof(Artists));
         }
 
+        public LoopType LoopType
+        {
+            get => _queue.LoopType;
+            set
+            {
+                _queue.LoopType = value;
+                RaisePropertyChanged();
+            }
+        }
+
 
         public void UpdateSongs()
         {
@@ -49,7 +59,7 @@ namespace MyPlayer.ViewModels
                     Func<VisualObject<IMediaBase>, bool> predicate;
                     //if (string.IsNullOrWhiteSpace(SearchText))
                     {
-                        predicate = s => !s.Data.HasChildren && s.IsSelected;
+                        predicate = s => !s.Data.HasChildren && s.Data.IsSelected;
                     }
                     //else
                     //{
@@ -142,26 +152,11 @@ namespace MyPlayer.ViewModels
         public ICommand PlayTappedCommand { get; set; }
         public ICommand PlayFirstChildCommand { get; set; }
 
-        private LoopType _loopType = LoopType.All;
 
-        [JsonProperty]
-        public LoopType LoopType
-        {
-            get => _loopType;
-            set
-            {
-                _loopType = value;
-                RaisePropertyChanged();
-            }
-        }
-        [JsonProperty]
-        public ISong Current { get; set; }
-        //public int Id { get; set; }
-
-        public QueueViewModel()
+        public QueueViewModel(IQueue queue)
         {
             CreateCommands();
-            _queue = new Queue();
+            _queue = queue;
             SearchText = "";
             ShowAlbums = true;
             ShowSongs = false;
@@ -241,65 +236,7 @@ namespace MyPlayer.ViewModels
             UpdateSongs();
         }
 
-        public ISong Next(ISong song)
-        {
-            if (LoopType == LoopType.One)
-            {
-                return song;
-            }
-            if (song == null)
-            {
-                return null;
-            }
-            var newSong = Songs.Next(song);
-            if (newSong == null && LoopType == LoopType.All)
-            {
-                newSong = Songs.FirstOrDefault();
-            }
-            return newSong;
-        }
-        public ISong Prev(ISong song)
-        {
-            if (LoopType == LoopType.One)
-            {
-                return song;
-            }
-            if (song == null)
-            {
-                return null;
-            }
-            var newSong = Songs.Previous(song);
-            if (newSong == null && LoopType == LoopType.All)
-            {
-                newSong = Songs.LastOrDefault();
-            }
-            return newSong;
-        }
-
-        public ISong GetDefault()
-        {
-            if (Songs != null)
-            {
-                return Songs.FirstOrDefault();
-            }
-            return Artists.FirstOrDefault().Children?.FirstOrDefault()?.Children?.FirstOrDefault()?.Data as ISong;
-        }
-
-        public void SwitchLoopType()
-        {
-            switch (LoopType)
-            {
-                case LoopType.None:
-                    LoopType = LoopType.One;
-                    break;
-                case LoopType.One:
-                    LoopType = LoopType.All;
-                    break;
-                case LoopType.All:
-                    LoopType = LoopType.None;
-                    break;
-            }
-        }
+      
     }
 
 

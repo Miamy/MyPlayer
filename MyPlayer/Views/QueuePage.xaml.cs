@@ -17,11 +17,13 @@ namespace MyPlayer.Views
     public partial class QueuePage : ContentPage
     {
         private readonly IQueueViewModel _model;
-        public QueuePage(IQueueViewModel model)
+        private readonly IQueue _data;
+        public QueuePage(IQueue data)
         {
             InitializeComponent();
 
-            BindingContext = _model = model;
+            _data = data;
+            BindingContext = _model = new QueueViewModel(data);
             _model.PropertyChanged += ModelPropertyChanged;
 
             BuildTree();
@@ -121,7 +123,7 @@ namespace MyPlayer.Views
             var checkbox = new CheckBox()
             {
                 Margin = new Thickness(2, 0, offcet, 0),
-                IsChecked = data.IsSelected,
+                IsChecked = data.Data.IsSelected,
                 BindingContext = data,
                 Color = color,
             };
@@ -129,7 +131,7 @@ namespace MyPlayer.Views
             {
                 var checkbox = (CheckBox)s;
                 var data = (VisualObject<IMediaBase>)checkbox.BindingContext;
-                data.IsSelected = !data.IsSelected;
+                data.Data.IsSelected = !data.Data.IsSelected;
             };
 
             return checkbox;
@@ -199,7 +201,7 @@ namespace MyPlayer.Views
 
         protected override async void OnDisappearing()
         {
-            await Task.Run(() => Storage.SaveQueue(_model));
+            await Task.Run(() => Storage.SaveQueue(_data));
             _model.UpdateSongs();
             base.OnDisappearing();
         }

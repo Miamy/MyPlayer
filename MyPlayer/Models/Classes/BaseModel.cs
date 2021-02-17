@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace MyPlayer.ViewModels
+namespace MyPlayer.Models
 {
     public class BaseModel : INotifyPropertyChanged
     {

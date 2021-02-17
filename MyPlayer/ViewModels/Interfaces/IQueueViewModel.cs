@@ -19,13 +19,7 @@ namespace MyPlayer.Models.Interfaces
         string SearchText { get; set; }
         bool SearchIsEmpty { get; }
 
-        ISong Next(ISong song);
-        ISong Prev(ISong song);
 
-        LoopType LoopType { get; set; }
-        ISong Current { get; set; }
-        ISong GetDefault();
-        void SwitchLoopType();
         void AddFromRoot(string path);
 
         void UpdateSongs();

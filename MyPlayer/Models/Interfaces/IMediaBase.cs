@@ -17,5 +17,8 @@ namespace MyPlayer.Models.Interfaces
 
         string GetUniqueName();
         bool HasChildren { get; }
+
+        bool IsSelected{ get; set; }
+
     }
 }

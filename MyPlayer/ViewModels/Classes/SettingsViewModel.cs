@@ -1,4 +1,5 @@
-﻿using MyPlayer.Models.Classes;
+﻿using MyPlayer.Models;
+using MyPlayer.Models.Classes;
 using MyPlayer.Models.Interfaces;
 using MyPlayer.Views;
 using System;
