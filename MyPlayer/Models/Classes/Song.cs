@@ -83,9 +83,9 @@ namespace MyPlayer.Models.Classes
 
         public string Name { get; }
 
-        public Stream ReadStream => new FileStream(Name, FileMode.Open);
+        public Stream ReadStream => new FileStream(Name, FileMode.Open, FileAccess.Read);
 
-        public Stream WriteStream => new FileStream(Name, FileMode.Open);
+        public Stream WriteStream => new FileStream(Name, FileMode.Open, FileAccess.Read);
 
         public void CloseStream(Stream stream)
         {

@@ -1,7 +1,9 @@
 ﻿using MyPlayer.CommonClasses;
 using MyPlayer.Models.Interfaces;
 using MyPlayer.ViewModels;
+
 using Newtonsoft.Json;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,7 +20,7 @@ namespace MyPlayer.Models.Classes
         public IList<IAlbum> Albums { get; set; }
         public IList<IMediaBase> Artists { get; set; }
 
-        public IList<IPathElement> PathElements { get; set; }
+        //public IList<IPathElement> PathElements { get; set; }
 
         private LoopType _loopType = LoopType.All;
 
@@ -41,9 +43,9 @@ namespace MyPlayer.Models.Classes
             Songs = new List<ISong>();
             Albums = new List<IAlbum>();
             Artists = new List<IMediaBase>();
-            PathElements = new List<IPathElement>();
+            //PathElements = new List<IPathElement>();
         }
-
+        /*
         public void AddFromRoot(string path)
         {
             if (string.IsNullOrWhiteSpace(path))
@@ -89,7 +91,7 @@ namespace MyPlayer.Models.Classes
             catch (IOException)
             {
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 throw;
             }
@@ -223,21 +225,65 @@ namespace MyPlayer.Models.Classes
                 }
             }
         }
-
-        public void Remove(IPathElement item)
+        */
+        public void FillFromRoot(string path)
         {
+            Clear();
+            if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path))
+            {
+                return;
+            }
 
+            var folders = Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly);
+            foreach (var folder in folders)
+            {
+                var name = folder.Substring(folder.LastIndexOf("/") + 1);
+                var artist = new Artist(name, folder);
+                Artists.Add(artist);
+
+                FillAlbums(artist);
+            }
         }
 
+        private void FillAlbums(IArtist artist)
+        {
+            var folders = Directory.GetDirectories(artist.Container, "*", SearchOption.TopDirectoryOnly);
+            foreach (var folder in folders)
+            {
+                var name = folder.Substring(folder.LastIndexOf("/") + 1);
+                var album = new Album(name, folder)
+                {
+                    Artist = artist
+                };
+                artist.AddAlbum(album);
+
+                FillSongs(album);
+            }
+        }
+
+        private void FillSongs(Album album)
+        {
+            var folders = Directory.GetDirectories(album.Container, "*", SearchOption.TopDirectoryOnly);
+            foreach (var folder in folders)
+            {
+                var name = folder.Substring(folder.LastIndexOf("/") + 1);
+                var song = new Song(name, folder)
+                {
+                    Album = album
+                };
+                album.AddSong(song);
+
+            }
+        }
 
         public void Clear()
         {
             Songs.Clear();
             Albums.Clear();
             Artists.Clear();
-            PathElements.Clear();
+            //PathElements.Clear();
         }
-     
+
         public ISong Next(ISong song)
         {
             if (LoopType == LoopType.One)

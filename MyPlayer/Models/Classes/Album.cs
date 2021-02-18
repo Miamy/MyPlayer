@@ -48,6 +48,16 @@ namespace MyPlayer.Models.Classes
         public Album(string name, string container) : base(name, container)
         {
             Children = new List<IMediaBase>();
+
+            //if (Cover == null)
+            {
+                var dir = Path.GetDirectoryName(container);
+                var files = PathScanner.GetCovers(dir);
+                if (files.Length > 0)
+                {
+                    Cover = files[0];
+                }
+            }
         }
 
         /*private void Clear()
@@ -67,15 +77,7 @@ namespace MyPlayer.Models.Classes
             Children.Add(song);
             //Duration += song.Duration;
 
-            if (Cover == null)
-            {
-                var dir = Path.GetDirectoryName(song.Container);
-                var files = PathScanner.GetCovers(dir);
-                if (files.Length > 0)
-                {
-                    Cover = files[0];
-                }
-            }
+     
         }
 
         public override string ToString()

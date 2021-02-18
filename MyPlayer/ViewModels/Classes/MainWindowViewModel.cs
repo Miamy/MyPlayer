@@ -189,7 +189,7 @@ namespace MyPlayer.ViewModels
                     root = @"/storage/emulated/0/Music/";
                     //root = @"/storage/2743-1D07/Music/";
                 }
-                Queue.AddFromRoot(root);
+                Queue.FillFromRoot(root);
 
                 Current = Queue.GetDefault();
             }

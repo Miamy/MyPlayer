@@ -8,8 +8,7 @@ namespace MyPlayer.Models.Classes
 {
     public class Artist : MediaBase, IArtist
     {
-        //public override int Count { get; protected set; }
-
+        
         public Artist(string name, string container) : base(name, container)
         {
             Children = new List<IMediaBase>();
