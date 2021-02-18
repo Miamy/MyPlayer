@@ -6,6 +6,7 @@ namespace MyPlayer
 {
     public partial class App : Application
     {
+        public static INavigation Navigation => Application.Current.MainPage.Navigation;
         public App()
         {
             InitializeComponent();

@@ -15,15 +15,14 @@ namespace MyPlayer.ViewModels
     public class SettingsViewModel : BaseModel
     {
         public ICommand SelectRootCommand { get; set; }
-        public ISettings Settings { get; set; }
+        public ISettings Settings { get; private set; }
 
         public SettingsViewModel(ISettings settings)
         {
-            //if (settings == null)
-            //    settings = Settings.Instance;
-            Settings = settings;
+            Settings = settings ?? throw new ArgumentNullException("settings");
             CreateCommands();
         }
+
 
         #region Commands
         private void CreateCommands()
@@ -38,8 +37,8 @@ namespace MyPlayer.ViewModels
 
         private async void SelectRootAction(object obj)
         {
-            var page = new BrowsePage();
-            await Application.Current.MainPage.Navigation.PushAsync(page, false);
+            var page = new BrowsePage(Settings);
+            await App.Navigation.PushAsync(page, false);
         }
         #endregion
 

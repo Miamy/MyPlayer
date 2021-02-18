@@ -16,6 +16,8 @@ namespace MyPlayer.ViewModels
 {
     public class BrowseViewModel : BaseModel
     {
+        private readonly ISettings _settings;
+
         private bool _isRoot = true;
         public bool IsRoot
         {
@@ -39,13 +41,11 @@ namespace MyPlayer.ViewModels
             set
             {
                 _selectedItem = value;
-
                 if (_selectedItem == null)
+                {
                     return;
-
+                }
                 OpenFolderCommand.Execute(_selectedItem);
-
-                //_selectedItem = null;
             }
         }
         public ICommand OpenFolderCommand { get; set; }
@@ -53,8 +53,9 @@ namespace MyPlayer.ViewModels
         public ICommand GotoParentCommand { get; set; }
         public ICommand RefreshCommand { get; set; }
         public ICommand SelectFolderCommand { get; set; }
-        public BrowseViewModel()
+        public BrowseViewModel(ISettings settings)
         {
+            _settings = settings ?? throw new ArgumentNullException("settings");
             Data = new ObservableCollection<IPathElement>();
             BuildRoot();
             CreateCommands();
@@ -100,9 +101,8 @@ namespace MyPlayer.ViewModels
 
         private async void SelectFolderAction(object obj)
         {
-            Settings.Instance.RootFolder = SelectedItem.FullPath;
-            Storage.SaveSettings(Settings.Instance);
-            await Application.Current.MainPage.Navigation.PopAsync();
+            _settings.RootFolder = SelectedItem.FullPath;
+            await App.Navigation.PopAsync();
         }
 
         private bool CanGotoParent(object arg)

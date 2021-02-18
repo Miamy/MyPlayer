@@ -1,5 +1,6 @@
 ﻿using MyPlayer.CommonClasses;
 using MyPlayer.Models.Classes;
+using MyPlayer.Models.Interfaces;
 using MyPlayer.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,11 @@ namespace MyPlayer.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingsPage : ContentPage
     {
-        private SettingsViewModel _model;
 
-        public SettingsPage()
+        public SettingsPage(ISettings settings)
         {
             InitializeComponent();
-            BindingContext = _model = new SettingsViewModel(Settings.Instance);
+            BindingContext = new SettingsViewModel(settings);
         }
 
         protected override void OnAppearing()

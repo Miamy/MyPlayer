@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPlayer.Android", "MyPlaye
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPlayer.iOS", "MyPlayer.iOS\MyPlayer.iOS.csproj", "{51253F5C-8BEE-4340-AF4D-624D5F9385E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPlayer", "MyPlayer\MyPlayer.csproj", "{28B56474-EEF8-4F06-AB66-EC42871FA2BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyPlayer", "MyPlayer\MyPlayer.csproj", "{28B56474-EEF8-4F06-AB66-EC42871FA2BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,7 +38,6 @@ Global
 		{13EB43D3-1B3B-499A-81D9-6DD5CB32A393}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{13EB43D3-1B3B-499A-81D9-6DD5CB32A393}.Release|iPhoneSimulator.Deploy.0 = Release|Any CPU
 		{51253F5C-8BEE-4340-AF4D-624D5F9385E0}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
-		{51253F5C-8BEE-4340-AF4D-624D5F9385E0}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
 		{51253F5C-8BEE-4340-AF4D-624D5F9385E0}.Debug|Any CPU.Deploy.0 = Debug|iPhoneSimulator
 		{51253F5C-8BEE-4340-AF4D-624D5F9385E0}.Debug|iPhone.ActiveCfg = Debug|iPhone
 		{51253F5C-8BEE-4340-AF4D-624D5F9385E0}.Debug|iPhone.Build.0 = Debug|iPhone

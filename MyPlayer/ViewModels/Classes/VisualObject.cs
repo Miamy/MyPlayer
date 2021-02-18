@@ -77,7 +77,7 @@ namespace MyPlayer.ViewModels
 
         private void OwnerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Height" || e.PropertyName == "ShowAlbums" || e.PropertyName == "ShowSongs")
+            if (e.PropertyName == "Height" || e.PropertyName == "ExpandAlbums" || e.PropertyName == "ExpandSongs")
             {
             }
             if (e.PropertyName == "AllSelected")

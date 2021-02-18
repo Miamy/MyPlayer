@@ -13,7 +13,6 @@ namespace MyPlayer.Models.Classes
         public Artist(string name, string container) : base(name, container)
         {
             Children = new List<IMediaBase>();
-            Count = 0;
         }
 
 
@@ -24,7 +23,6 @@ namespace MyPlayer.Models.Classes
                 return;
             }
             Children.Add(album);
-          //  Count += album.Count;
         }
 
         public override string ToString()

@@ -47,9 +47,9 @@ namespace MyPlayer.ViewModels
         }
 
 
-        public TimeSpan Length 
+        public TimeSpan Length
         {
-            get 
+            get
             {
                 if (MediaPlayer == null)
                 {
@@ -122,12 +122,20 @@ namespace MyPlayer.ViewModels
         public ICommand PrevCommand { get; set; }
         public ICommand LoopCommand { get; set; }
 
-     
+
         public IQueue Queue { get; set; }
+        private IStorage Storage { get; set; }
+        private ISettings Settings { get; set; }
 
-        //public bool IsPlaying => MediaPlayer.IsPlaying;  
+        //public bool IsPlaying => MediaPlayer.State == VLCState.;  
 
-        public bool IsPlaying { get; set; } = false;
+        private bool _isPlaying = false;
+        public bool IsPlaying
+        { 
+            get => _isPlaying; 
+            set => Set(ref _isPlaying, value);
+        }
+        public LoopType LoopType => Queue.LoopType;
 
         private LibVLC LibVLC { get; set; }
 
@@ -142,16 +150,19 @@ namespace MyPlayer.ViewModels
 
         public MainWindowViewModel()
         {
+            Initialize();
+
             CreateCommands();
 
-            Settings.Instance.PropertyChanged += SettingsPropertyChanged;
+            Settings = new Settings();
+            Settings.PropertyChanged += SettingsPropertyChanged;
 
             Queue = new Queue();
-            //Queue.PropertyChanged += PropertyChanged;
 
-            Initialize();
-            LoadMusicFolder();
+            Storage = new Storage();
             Storage.LoadQueue(Queue);
+            Storage.LoadSettings(Settings);
+            //Queue.PropertyChanged += PropertyChanged;
         }
 
 
@@ -159,8 +170,12 @@ namespace MyPlayer.ViewModels
         {
             if (e.PropertyName.Equals("RootFolder"))
             {
+                Storage.SaveSettings(Settings);
                 LoadMusicFolder();
-                PlayCurrent(true);
+                if (IsPlaying)
+                {
+                    PlayCurrent(true);
+                }
             }
         }
 
@@ -168,7 +183,7 @@ namespace MyPlayer.ViewModels
         {
             try
             {
-                var root = Settings.Instance.RootFolder;
+                var root = Settings.RootFolder;
                 if (string.IsNullOrWhiteSpace(root))
                 {
                     root = @"/storage/emulated/0/Music/";
@@ -205,6 +220,7 @@ namespace MyPlayer.ViewModels
         private void LoopAction(object obj)
         {
             Queue.SwitchLoopType();
+            RaisePropertyChanged(nameof(LoopType));
         }
         private bool CanPrev(object arg)
         {
@@ -248,8 +264,8 @@ namespace MyPlayer.ViewModels
                 PlayCurrent(true);
             });
 
-            var page = new QueuePage(Queue);
-            await Application.Current.MainPage.Navigation.PushAsync(page, false);
+            var page = new QueuePage(Queue, Storage);
+            await App.Navigation.PushAsync(page, false);
         }
         private bool CanShowSettings(object arg)
         {
@@ -258,8 +274,8 @@ namespace MyPlayer.ViewModels
 
         private async void ShowSettingsAction(object obj)
         {
-            var page = new SettingsPage();
-            await Application.Current.MainPage.Navigation.PushAsync(page, false);
+            var page = new SettingsPage(Settings);
+            await App.Navigation.PushAsync(page, false);
         }
 
         private bool CanPlay(object arg)
@@ -279,7 +295,6 @@ namespace MyPlayer.ViewModels
                 PlayCurrent(false);
             }
             IsPlaying = !IsPlaying;
-            RaisePropertyChanged("IsPlaying");
         }
         #endregion
 
@@ -312,23 +327,24 @@ namespace MyPlayer.ViewModels
 
         private void MediaPlayerStopped(object sender, EventArgs e)
         {
-            
+
         }
 
         private void MediaPlayerMediaParsedChanged(object sender, MediaParsedChangedEventArgs e)
         {
-            RaisePropertyChanged("Length");
-            RaisePropertyChanged("MediaInfo");
+            RaisePropertyChanged(nameof(Length));
+            RaisePropertyChanged(nameof(MediaInfo));
         }
 
         private TimeSpan lastPosition = TimeSpan.Zero;
+
         private void MediaPlayerPositionChanged(object sender, MediaPlayerPositionChangedEventArgs e)
         {
             _position = e.Position;
             if ((PositionTS - lastPosition).Milliseconds >= 200)
             {
-                RaisePropertyChanged("PositionTS");
-                RaisePropertyChanged("Position");
+                RaisePropertyChanged(nameof(PositionTS));
+                RaisePropertyChanged(nameof(Position));
             }
             lastPosition = PositionTS;
         }
@@ -348,16 +364,13 @@ namespace MyPlayer.ViewModels
             {
                 return;
             }
-            //if (MediaPlayer.Media == null)
-            //{
-            //    return;
-            //}
             if (resetPosition)
             {
                 Position = 0;
             }
 
             MediaPlayer.Play();
+            RaisePropertyChanged(nameof(IsPlaying));
         }
     }
 }

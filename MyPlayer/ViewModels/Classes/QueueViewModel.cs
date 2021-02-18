@@ -16,13 +16,26 @@ namespace MyPlayer.ViewModels
     [JsonObject(MemberSerialization.OptIn)]
     public class QueueViewModel : BaseModel, IQueueViewModel
     {
-        private readonly IQueue _queue;
+        private IQueue _queue;
+        public IQueue Queue
+        {
+            get => _queue;
+            set
+            {
+                _queue = value;
+                UpdateArtists();
+            }
+        }
 
         public IList<VisualObject<IMediaBase>> Artists { get; private set; } = null;
 
         private void UpdateArtists()
         {
-            var inner = _queue.Artists.Select(a => new VisualObject<IMediaBase>(a, this));
+            if (Queue == null)
+            {
+                return;
+            }
+            var inner = Queue.Artists.Select(a => new VisualObject<IMediaBase>(a, this));
             //if (!string.IsNullOrWhiteSpace(SearchText))
             {
                 //inner = inner.Where(a => a.Children.Where(s => s.Name.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase)));
@@ -42,11 +55,6 @@ namespace MyPlayer.ViewModels
         }
 
 
-        public void UpdateSongs()
-        {
-            _songs = null;
-            _ = Songs?.Count;
-        }
 
         private IList<ISong> _songs;
 
@@ -74,6 +82,7 @@ namespace MyPlayer.ViewModels
 
         private string _searchText;
 
+
         public string SearchText
         {
             get => _searchText;
@@ -86,11 +95,11 @@ namespace MyPlayer.ViewModels
 
         public bool SearchIsEmpty { get; private set; }
 
-        private bool _showAlbums;
+        private bool _expandAlbums;
         [JsonProperty]
-        public bool ShowAlbums
+        public bool ExpandAlbums
         {
-            get => _showAlbums;
+            get => _expandAlbums;
             set
             {
                 if (Artists != null)
@@ -100,16 +109,16 @@ namespace MyPlayer.ViewModels
                         artist.IsExpanded = value;
                     }
                 }
-                Set(ref _showAlbums, value);
+                Set(ref _expandAlbums, value);
                 RaisePropertyChanged(nameof(AlbumsToolItemText));
             }
         }
 
-        private bool _showSongs;
+        private bool _expandSongs;
         [JsonProperty]
-        public bool ShowSongs
+        public bool ExpandSongs
         {
-            get => _showSongs;
+            get => _expandSongs;
             set
             {
                 if (Artists != null)
@@ -122,13 +131,13 @@ namespace MyPlayer.ViewModels
                         }
                     }
                 }
-                Set(ref _showSongs, value);
+                Set(ref _expandSongs, value);
                 RaisePropertyChanged(nameof(SongsToolItemText));
             }
         }
 
-        public string AlbumsToolItemText => ShowAlbums ? "Hide albums" : "Show albums";
-        public string SongsToolItemText => ShowSongs ? "Hide songs" : "Show songs";
+        public string AlbumsToolItemText => ExpandAlbums ? "Collapse albums" : "Expand albums";
+        public string SongsToolItemText => ExpandSongs ? "Collapse songs" : "Expand songs";
 
         private bool _allSelected = true;
 
@@ -147,19 +156,18 @@ namespace MyPlayer.ViewModels
         public ICommand ClearSearchTextCommand { get; set; }
         public ICommand SelectAllCommand { get; set; }
 
-        public ICommand ShowAlbumsCommand { get; set; }
-        public ICommand ShowSongsCommand { get; set; }
+        public ICommand ExpandAlbumsCommand { get; set; }
+        public ICommand ExpandSongsCommand { get; set; }
         public ICommand PlayTappedCommand { get; set; }
-        public ICommand PlayFirstChildCommand { get; set; }
 
 
         public QueueViewModel(IQueue queue)
         {
             CreateCommands();
-            _queue = queue;
+            Queue = queue;
             SearchText = "";
-            ShowAlbums = true;
-            ShowSongs = false;
+            ExpandAlbums = true;
+            ExpandSongs = false;
         }
 
         #region Commands
@@ -167,51 +175,47 @@ namespace MyPlayer.ViewModels
         {
             ClearSearchTextCommand = new Command(ClearSearchTextAction);
 
-            ShowAlbumsCommand = new Command(ShowAlbumsAction);
-            ShowSongsCommand = new Command(ShowSongsAction);
+            ExpandAlbumsCommand = new Command(ExpandAlbumsAction);
+            ExpandSongsCommand = new Command(ExpandSongsAction);
 
             SelectAllCommand = new Command(SelectAllAction);
             PlayTappedCommand = new Command(PlayTappedAction);
-            PlayFirstChildCommand = new Command(PlayFirstChildAction);
         }
 
-        private async void PlayFirstChildAction(object obj)
-        {
-            if (!(obj is VisualObject<IMediaBase> selected))
-            {
-                return;
-            }
-            ISong song = null;
-            if (selected.Data is IAlbum album)
-            {
-                song = (ISong)album.Children.FirstOrDefault();
-            }
-            else if (selected.Data is IArtist artist)
-            {
-                song = (ISong)artist.Children.FirstOrDefault()?.Children.FirstOrDefault();
-            }
-            MessagingCenter.Send<BaseModel, ISong>(this, "SongSelected", song);
-            await Application.Current.MainPage.Navigation.PopAsync();
-        }
-
+   
         private async void PlayTappedAction(object obj)
         {
-            if (!(obj is VisualObject<IMediaBase> selected))
+            if (!(obj is VisualObject<IMediaBase> data))
             {
                 return;
             }
-            MessagingCenter.Send<BaseModel, ISong>(this, "SongSelected", (ISong)selected.Data);
-            await Application.Current.MainPage.Navigation.PopAsync();
+
+            ISong newSong = null;
+            if (data.Data is Song song)
+            {
+                newSong = song;
+            }
+            else if (data.Data is Album album)
+            {
+                newSong = (ISong)album.Children.FirstOrDefault();
+            }
+            else if (data.Data is Artist artist)
+            {
+                newSong = (ISong)((IAlbum)artist.Children.FirstOrDefault()).Children.FirstOrDefault();
+            }
+
+            MessagingCenter.Send<BaseModel, ISong>(this, "SongSelected", newSong);
+            await App.Navigation.PopAsync();
         }
 
-        private void ShowSongsAction(object obj)
+        private void ExpandSongsAction(object obj)
         {
-            ShowSongs = !ShowSongs;
+            ExpandSongs = !ExpandSongs;
         }
 
-        private void ShowAlbumsAction(object obj)
+        private void ExpandAlbumsAction(object obj)
         {
-            ShowAlbums = !ShowAlbums;
+            ExpandAlbums = !ExpandAlbums;
         }
 
 
@@ -227,16 +231,9 @@ namespace MyPlayer.ViewModels
             AllSelected = !AllSelected;
         }
         #endregion
+    
 
-        public void AddFromRoot(string path)
-        {
-            _queue.Clear();
-            _queue.AddFromRoot(path);
-            UpdateArtists();
-            UpdateSongs();
-        }
 
-      
     }
 
 

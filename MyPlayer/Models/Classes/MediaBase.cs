@@ -3,6 +3,7 @@ using MyPlayer.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace MyPlayer.Models.Classes
@@ -20,19 +21,14 @@ namespace MyPlayer.Models.Classes
             }
         }
 
-        public TimeSpan Duration { get; set; }
-        public virtual int Count { get; protected set; }
-
-        private IList<IMediaBase> children = null;
-        public IList<IMediaBase> Children
+        public virtual TimeSpan Duration
         {
-            get => children;
-            set
-            {
-                children = value;
-                Count = children == null ? 0 : children.Count;
-            }
+            get => TimeSpan.FromSeconds(Children.Sum(child => child.Duration.TotalSeconds));
+            set => _ = value;
         }
+        public virtual int Count => Children == null ? 0 : Children.Count;
+
+        public IList<IMediaBase> Children { get; set; } = null;
         public string Container { get; set; }
 
         public MediaBase(string name, string container)

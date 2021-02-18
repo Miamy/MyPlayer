@@ -19,22 +19,10 @@ namespace MyPlayer.Models.Classes
         }
 
 
-        private Settings()
+        public Settings()
         {
-            Storage.LoadSettings(this);
+            
         }
 
-        private static ISettings _instance;
-        public static ISettings Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new Settings();
-                }
-                return _instance;
-            }
-        }
     }
 }

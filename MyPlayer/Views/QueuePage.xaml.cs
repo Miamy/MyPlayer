@@ -17,13 +17,15 @@ namespace MyPlayer.Views
     public partial class QueuePage : ContentPage
     {
         private readonly IQueueViewModel _model;
-        private readonly IQueue _data;
-        public QueuePage(IQueue data)
+        private readonly IQueue _queue;
+        private readonly IStorage _storage;
+        public QueuePage(IQueue queue, IStorage storage)
         {
             InitializeComponent();
 
-            _data = data;
-            BindingContext = _model = new QueueViewModel(data);
+            _storage = storage ?? throw new ArgumentNullException("storage");
+            _queue = queue ?? throw new ArgumentNullException("queue");
+            BindingContext = _model = new QueueViewModel(_queue);
             _model.PropertyChanged += ModelPropertyChanged;
 
             BuildTree();
@@ -44,25 +46,24 @@ namespace MyPlayer.Views
                 {
                     var artistLayout = CreateWholeStackLayout(artist, Color.Red, 0, 6, 14);
 
-                    if (artist.IsExpanded)
+                    //if (artist.IsExpanded)
                     {
                         foreach (var album in artist.Children)
                         {
-                            var albumLayout = CreateWholeStackLayout(album, Color.Orange, 20, 0, 13); 
-
-                            if (album.IsExpanded)
+                            var albumLayout = CreateWholeStackLayout(album, Color.Orange, 20, 0, 13);
+                            albumLayout.IsVisible = artist.IsExpanded;
+                            //if (album.IsExpanded)
                             {
                                 foreach (var song in album.Children)
                                 {
-                                    var songLayout = CreateWholeStackLayout(song, Color.Yellow, 60, 0, 12); 
+                                    var songLayout = CreateWholeStackLayout(song, Color.Yellow, 60, 0, 12);
+                                    songLayout.IsVisible = album.IsExpanded;
                                     albumLayout.Children.Add(songLayout);
                                 }
                             }
-
                             artistLayout.Children.Add(albumLayout);
                         }
                     }
-
                     ParentLayout.Children.Add(artistLayout);
                 }
             }
@@ -74,7 +75,8 @@ namespace MyPlayer.Views
 
         private StackLayout CreateWholeStackLayout(VisualObject<IMediaBase> data, Color color, int horizontalOffcet, int verticalOffcet, int fontSize)
         {
-            var layout = CreateCommonStackLayout(verticalOffcet);
+            var layout = CreateCommonStackLayout(data, verticalOffcet);
+
             var title = CreateTitleStackLayout();
 
             var checkbox = CreateCheckBox(data, color, horizontalOffcet);
@@ -93,17 +95,18 @@ namespace MyPlayer.Views
             title.Children.Add(label);
 
             layout.Children.Add(title);
-            
+
             return layout;
         }
 
-        private StackLayout CreateCommonStackLayout(int offcet)
+        private StackLayout CreateCommonStackLayout(VisualObject<IMediaBase> data, int offcet)
         {
             var layout = new StackLayout()
             {
                 Orientation = StackOrientation.Vertical,
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 Margin = new Thickness(0, offcet, 0, 0),
+                BindingContext = data
             };
             return layout;
         }
@@ -138,9 +141,14 @@ namespace MyPlayer.Views
         }
         private Image CreateImage(VisualObject<IMediaBase> data)
         {
+            string GetSource()
+            {
+                return data.IsExpanded ? "expanded.png" : "collapsed.png";
+            }
+
             var image = new Image()
             {
-                Source = data.IsExpanded ? "expanded.png" : "collapsed.png",
+                Source = GetSource(),
                 Margin = new Thickness(12, 0, 8, 0),
                 Aspect = Aspect.AspectFit,
                 HeightRequest = 20,
@@ -156,12 +164,15 @@ namespace MyPlayer.Views
                 var image = (Image)s;
                 var data = (VisualObject<IMediaBase>)image.BindingContext;
                 data.IsExpanded = !data.IsExpanded;
-                BuildTree();
+                ExpandNode(ParentLayout, data);
+                image.Source = GetSource();
             };
             image.GestureRecognizers.Add(gesture);
 
             return image;
         }
+
+
 
         private Label CreateNameLabel(VisualObject<IMediaBase> data, Color color, double size)
         {
@@ -172,6 +183,15 @@ namespace MyPlayer.Views
                 TextColor = color,
             };
 
+            var gesture = new TapGestureRecognizer()
+            {
+                NumberOfTapsRequired = 1
+            };
+
+            gesture.Command = _model.PlayTappedCommand;
+            gesture.CommandParameter = data;
+            label.GestureRecognizers.Add(gesture);
+
             return label;
         }
 
@@ -180,7 +200,7 @@ namespace MyPlayer.Views
         {
             var label = new Label()
             {
-                Text = ((MediaBase)data.Data).Duration.ToString("hh\\:mm\\:ss"),
+                Text = data.Data.Duration.ToString("hh\\:mm\\:ss"),
                 FontSize = size,
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 WidthRequest = 100,
@@ -193,16 +213,64 @@ namespace MyPlayer.Views
 
         private void ModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "AllSelected" || e.PropertyName == "ShowAlbums" || e.PropertyName == "ShowSongs")
+            if (e.PropertyName == "ExpandAlbums" || e.PropertyName == "ExpandSongs")
             {
                 BuildTree();
+            }
+            if (e.PropertyName == "AllSelected")
+            {
+                ParentLayout.BatchBegin();
+                try
+                {
+                    SelectTree(ParentLayout, _model.AllSelected);
+                }
+                finally
+                {
+                    ParentLayout.BatchCommit();
+                }
+            }
+        }
+
+        private void SelectTree(Layout parent, bool selected)
+        {
+            foreach (var child in parent.Children)
+            {
+                if (child is CheckBox checkBox)
+                {
+                    checkBox.IsChecked = selected;
+                }
+                else if (child is Layout layout)
+                {
+                    SelectTree(layout, selected);
+                }
+            }
+        }
+
+        private void ExpandNode(Layout parent, VisualObject<IMediaBase> data)
+        {
+            foreach (var child in parent.Children)
+            {
+                if (child is Layout layout)
+                {
+                    if (layout.BindingContext == data)
+                    {
+                        foreach (Layout child2 in layout.Children.OfType<Layout>())
+                        {
+                            child2.IsVisible = data.IsExpanded;
+                        }
+                        return;
+                    }
+                    else
+                    {
+                        ExpandNode(layout, data);
+                    }
+                }
             }
         }
 
         protected override async void OnDisappearing()
         {
-            await Task.Run(() => Storage.SaveQueue(_data));
-            _model.UpdateSongs();
+            await Task.Run(() => _storage.SaveQueue(_queue));
             base.OnDisappearing();
         }
     }

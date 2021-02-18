@@ -8,11 +8,7 @@
              x:Class="MyPlayer.MainPage"
              BackgroundColor="#181818"
              >
-<!--
-    <ContentPage.BindingContext>
-        <model:MainWindowViewModel />
-    </ContentPage.BindingContext>
--->
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Image" BasedOn="{StaticResource ImageStyle}"/>
@@ -166,13 +162,13 @@
                 </Image.GestureRecognizers>
 
                 <Image.Triggers>
-                    <DataTrigger TargetType="Image" Binding="{Binding QueueViewModel.LoopType}" Value="None">
+                    <DataTrigger TargetType="Image" Binding="{Binding LoopType}" Value="None">
                         <Setter Property="Source" Value="baseline_keyboard_backspace_black_36dp.png"/>
                     </DataTrigger>
-                    <DataTrigger TargetType="Image" Binding="{Binding QueueViewModel.LoopType}" Value="All">
+                    <DataTrigger TargetType="Image" Binding="{Binding LoopType}" Value="All">
                         <Setter Property="Source" Value="baseline_repeat_black_36dp.png"/>
                     </DataTrigger>
-                    <DataTrigger TargetType="Image" Binding="{Binding QueueViewModel.LoopType}" Value="One">
+                    <DataTrigger TargetType="Image" Binding="{Binding LoopType}" Value="One">
                         <Setter Property="Source" Value="baseline_repeat_one_black_36dp.png"/>
                     </DataTrigger>
                 </Image.Triggers>

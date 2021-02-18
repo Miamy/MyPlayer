@@ -10,10 +10,6 @@
              BackgroundColor="#181818"
              >
 
-    <ContentPage.BindingContext>
-        <model:BrowseViewModel />
-    </ContentPage.BindingContext>
-
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Image" BasedOn="{StaticResource ImageStyle}"/>

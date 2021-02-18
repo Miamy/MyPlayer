@@ -5,6 +5,7 @@
              xmlns:model="clr-namespace:MyPlayer.Models"
              xmlns:viewmodel="clr-namespace:MyPlayer.ViewModels"
              BackgroundColor="Black"
+             Title="Playlist"
              >
 
     <ContentPage.Resources>
@@ -49,7 +50,7 @@
                                 HorizontalOptions="FillAndExpand" 
                                 Color="Red"
                                 HeightRequest="2"
-                                IsVisible="{Binding ShowSongs, 
+                                IsVisible="{Binding ExpandSongs, 
                                 Source={RelativeSource 
                                 Mode=FindAncestorBindingContext, 
                                 AncestorType={x:Type viewmodel:QueueViewModel}}}"
@@ -70,27 +71,26 @@
             IconImageSource="{Binding AllSelectedImageSource}"/>
 
         <ToolbarItem 
-            x:Name="ShowAlbumsToolbarItem"
-            Command="{Binding ShowAlbumsCommand}" 
-            CommandParameter="{Binding Source={x:Reference ShowAlbumsToolbarItem}}"
+            x:Name="ExpandAlbumsToolbarItem"
+            Command="{Binding ExpandAlbumsCommand}" 
+            CommandParameter="{Binding Source={x:Reference ExpandAlbumsToolbarItem}}"
             Text="{Binding AlbumsToolItemText}" 
             Order="Secondary"/>
 
         <ToolbarItem 
-            x:Name="ShowSongsToolbarItem"
-            Command="{Binding ShowSongsCommand}" 
-            CommandParameter="{Binding Source={x:Reference ShowSongsToolbarItem}}"
+            x:Name="ExpandSongsToolbarItem"
+            Command="{Binding ExpandSongsCommand}" 
+            CommandParameter="{Binding Source={x:Reference ExpandSongsToolbarItem}}"
             Text="{Binding SongsToolItemText}" 
             Order="Secondary" />
     </ContentPage.ToolbarItems>
 
 
     <ContentPage.Content>
-        <StackLayout
+        <StackLayout 
             Orientation="Vertical"
             VerticalOptions="FillAndExpand"
             Margin="4"
-            
             >
 
             <ScrollView

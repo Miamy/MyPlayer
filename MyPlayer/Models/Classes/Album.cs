@@ -65,7 +65,7 @@ namespace MyPlayer.Models.Classes
                 return;
             }
             Children.Add(song);
-            Duration += song.Duration;
+            //Duration += song.Duration;
 
             if (Cover == null)
             {

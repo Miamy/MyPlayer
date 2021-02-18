@@ -16,23 +16,21 @@ using Xamarin.Forms;
 
 namespace MyPlayer.CommonClasses
 {
-    public static class Storage
+    public class Storage : IStorage
     {
-        public static void SaveSettings(ISettings settings)
+        public void SaveSettings(ISettings settings)
         {
             Preferences.Set("RootFolder", settings.RootFolder);
         }
 
-        public static void LoadSettings(ISettings settings)
+        public void LoadSettings(ISettings settings)
         {
             settings.RootFolder = Preferences.Get("RootFolder", "");
         }
 
-        public static void SaveQueue(IQueue queue)
+        public void SaveQueue(IQueue queue)
         {
             Preferences.Set("LoopType", (int)queue.LoopType);
-            //Preferences.Set("ShowAlbums", queue.ShowAlbums);
-            //Preferences.Set("ShowSongs", queue.ShowSongs);
 
             if (queue?.Artists == null)
             {
@@ -72,7 +70,7 @@ namespace MyPlayer.CommonClasses
             File.Delete(file);
         }
 
-        public static void LoadQueue(IQueue queue)
+        public void LoadQueue(IQueue queue)
         {
             if (queue == null)
             {
@@ -80,8 +78,6 @@ namespace MyPlayer.CommonClasses
             }
             
             queue.LoopType = (LoopType)Preferences.Get("LoopType", (int)LoopType.All);
-            //queue.ShowAlbums = Preferences.Get("ShowAlbums", true);
-            //queue.ShowSongs = Preferences.Get("ShowSongs", false);
 
             var folder = DependencyService.Get<IFileSystem>().GetWorkFolder();
             if (!Directory.Exists(folder))

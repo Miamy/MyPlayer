@@ -20,8 +20,8 @@ namespace MyPlayer.Models.Classes
 
 
         private IAlbum _album;
-        public IAlbum Album 
-        { 
+        public IAlbum Album
+        {
             get => _album;
             set
             {
@@ -35,6 +35,13 @@ namespace MyPlayer.Models.Classes
 
         public TimeSpan OffcetInContainer { get; set; }
 
+        private TimeSpan _duration = TimeSpan.Zero;
+        public override TimeSpan Duration
+        {
+            get => _duration;
+            set => _duration = value;
+        }
+
 
         public Song(string name, string container) : this(name, container, Consts.ZeroTimeSpan)
         {
@@ -42,8 +49,13 @@ namespace MyPlayer.Models.Classes
 
         public Song(string name, string container, TimeSpan offcet) : base(name, container)
         {
-            Duration = Consts.ZeroTimeSpan;
             OffcetInContainer = offcet;
+
+            var tagFile = TagLib.File.Create(new FileAbstraction(container));
+            if (!tagFile.Properties.Description.Contains("Flac"))
+            {
+                Duration = tagFile.Properties.Duration;
+            }
         }
 
         public override string ToString()
@@ -59,6 +71,25 @@ namespace MyPlayer.Models.Classes
         public override string GetUniqueName()
         {
             return Container + ":::" + OffcetInContainer.ToString();
+        }
+    }
+
+    public class FileAbstraction : TagLib.File.IFileAbstraction
+    {
+        public FileAbstraction(string file)
+        {
+            Name = file;
+        }
+
+        public string Name { get; }
+
+        public Stream ReadStream => new FileStream(Name, FileMode.Open);
+
+        public Stream WriteStream => new FileStream(Name, FileMode.Open);
+
+        public void CloseStream(Stream stream)
+        {
+            stream.Close();
         }
     }
 }

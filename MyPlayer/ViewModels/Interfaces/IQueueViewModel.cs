@@ -13,15 +13,13 @@ namespace MyPlayer.Models.Interfaces
         //IList<VisualObject<IMediaBase>> Flattened { get; }
         //IList<ISong> Songs { get; }
 
-        bool ShowAlbums { get; set; }
-        bool ShowSongs { get; set; }
+        bool ExpandAlbums { get; set; }
+        bool ExpandSongs { get; set; }
         bool AllSelected { get; set; }
         string SearchText { get; set; }
         bool SearchIsEmpty { get; }
 
+        ICommand PlayTappedCommand { get; set; }
 
-        void AddFromRoot(string path);
-
-        void UpdateSongs();
     }
 }

@@ -204,6 +204,11 @@ namespace MyPlayer.Models.Classes
                         }
                     }
                 }
+                if (song != null)
+                {
+                    AddSong(song);
+                }
+
             }
             if (song != null)
             {
@@ -233,7 +238,6 @@ namespace MyPlayer.Models.Classes
             PathElements.Clear();
         }
      
-
         public ISong Next(ISong song)
         {
             if (LoopType == LoopType.One)
@@ -244,7 +248,7 @@ namespace MyPlayer.Models.Classes
             {
                 return null;
             }
-            var newSong = Songs.Next(song);
+            var newSong = Songs.Where(song => song.IsSelected).ToList().Next(song);
             if (newSong == null && LoopType == LoopType.All)
             {
                 newSong = Songs.FirstOrDefault();
@@ -261,7 +265,7 @@ namespace MyPlayer.Models.Classes
             {
                 return null;
             }
-            var newSong = Songs.Previous(song);
+            var newSong = Songs.Where(song => song.IsSelected).ToList().Previous(song);
             if (newSong == null && LoopType == LoopType.All)
             {
                 newSong = Songs.LastOrDefault();
