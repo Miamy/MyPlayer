@@ -164,7 +164,7 @@ namespace MyPlayer.ViewModels
         public QueueViewModel(IQueue queue)
         {
             CreateCommands();
-            Queue = queue;
+            Queue = queue ?? throw new ArgumentNullException("queue"); 
             SearchText = "";
             ExpandAlbums = true;
             ExpandSongs = false;
@@ -230,8 +230,13 @@ namespace MyPlayer.ViewModels
         {
             AllSelected = !AllSelected;
         }
+
+        public bool SearchTextPresent(string name)
+        {
+            return SearchIsEmpty || name.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase);
+        }
         #endregion
-    
+
 
 
     }

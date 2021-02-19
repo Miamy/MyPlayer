@@ -26,10 +26,7 @@ namespace MyPlayer.Models.Classes
             set
             {
                 _album = value;
-                if (_album != null)
-                {
-                    _album.AddSong(this);
-                }
+                _album.AddSong(this);
             }
         }
 
@@ -43,29 +40,17 @@ namespace MyPlayer.Models.Classes
         }
 
 
-        public Song(string name, string container) : this(name, container, Consts.ZeroTimeSpan)
+        public Song(IAlbum album, string name, string container) : base(name, container)
         {
-        }
-
-        public Song(string name, string container, TimeSpan offcet) : base(name, container)
-        {
-            OffcetInContainer = offcet;
+            Album = album ?? throw new ArgumentNullException("album");
 
             var tagFile = TagLib.File.Create(new FileAbstraction(container));
-            if (!tagFile.Properties.Description.Contains("Flac"))
-            {
-                Duration = tagFile.Properties.Duration;
-            }
+            Duration = tagFile.Properties.Duration;
         }
 
         public override string ToString()
         {
-            var result = Name;
-            if (Album != null)
-            {
-                result = Album.ToString() + " / " + result;
-            }
-            return result;
+            return Album.ToString() + " / " + Name;
         }
 
         public override string GetUniqueName()

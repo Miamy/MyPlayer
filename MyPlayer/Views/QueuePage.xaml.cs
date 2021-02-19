@@ -17,15 +17,17 @@ namespace MyPlayer.Views
     public partial class QueuePage : ContentPage
     {
         private readonly IQueueViewModel _model;
-        private readonly IQueue _queue;
         private readonly IStorage _storage;
         public QueuePage(IQueue queue, IStorage storage)
         {
             InitializeComponent();
 
             _storage = storage ?? throw new ArgumentNullException("storage");
-            _queue = queue ?? throw new ArgumentNullException("queue");
-            BindingContext = _model = new QueueViewModel(_queue);
+            if (queue == null)
+            {
+                throw new ArgumentNullException("queue");
+            }
+            BindingContext = _model = new QueueViewModel(queue);
             _model.PropertyChanged += ModelPropertyChanged;
 
             BuildTree();
@@ -45,24 +47,21 @@ namespace MyPlayer.Views
                 foreach (var artist in _model.Artists)
                 {
                     var artistLayout = CreateWholeStackLayout(artist, Color.Red, 0, 6, 14);
+                    artistLayout.IsVisible = _model.SearchTextPresent(artist.Name);
 
-                    //if (artist.IsExpanded)
+                    foreach (var album in artist.Children)
                     {
-                        foreach (var album in artist.Children)
+                        var albumLayout = CreateWholeStackLayout(album, Color.Orange, 20, 0, 13);
+                        albumLayout.IsVisible = artist.IsExpanded && _model.SearchTextPresent(album.Name); 
+
+                        foreach (var song in album.Children)
                         {
-                            var albumLayout = CreateWholeStackLayout(album, Color.Orange, 20, 0, 13);
-                            albumLayout.IsVisible = artist.IsExpanded;
-                            //if (album.IsExpanded)
-                            {
-                                foreach (var song in album.Children)
-                                {
-                                    var songLayout = CreateWholeStackLayout(song, Color.Yellow, 60, 0, 12);
-                                    songLayout.IsVisible = album.IsExpanded;
-                                    albumLayout.Children.Add(songLayout);
-                                }
-                            }
-                            artistLayout.Children.Add(albumLayout);
+                            var songLayout = CreateWholeStackLayout(song, Color.Yellow, 60, 0, 12);
+                            songLayout.IsVisible = album.IsExpanded && _model.SearchTextPresent(song.Name);
+                            
+                            albumLayout.Children.Add(songLayout);
                         }
+                        artistLayout.Children.Add(albumLayout);
                     }
                     ParentLayout.Children.Add(artistLayout);
                 }
@@ -213,7 +212,7 @@ namespace MyPlayer.Views
 
         private void ModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ExpandAlbums" || e.PropertyName == "ExpandSongs")
+            if (e.PropertyName == "ExpandAlbums" || e.PropertyName == "ExpandSongs" || e.PropertyName == "SearchText")
             {
                 BuildTree();
             }
@@ -270,7 +269,7 @@ namespace MyPlayer.Views
 
         protected override async void OnDisappearing()
         {
-            await Task.Run(() => _storage.SaveQueue(_queue));
+            await Task.Run(() => _storage.SaveQueue(_model.Queue));
             base.OnDisappearing();
         }
     }

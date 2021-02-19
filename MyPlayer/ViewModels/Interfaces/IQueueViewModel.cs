@@ -10,9 +10,8 @@ namespace MyPlayer.Models.Interfaces
     public interface IQueueViewModel : INotifyPropertyChanged
     {
         IList<VisualObject<IMediaBase>> Artists { get; }
-        //IList<VisualObject<IMediaBase>> Flattened { get; }
-        //IList<ISong> Songs { get; }
 
+        IQueue Queue { get; set; }
         bool ExpandAlbums { get; set; }
         bool ExpandSongs { get; set; }
         bool AllSelected { get; set; }
@@ -21,5 +20,6 @@ namespace MyPlayer.Models.Interfaces
 
         ICommand PlayTappedCommand { get; set; }
 
+        bool SearchTextPresent(string name);
     }
 }

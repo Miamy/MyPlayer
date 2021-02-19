@@ -35,38 +35,24 @@ namespace MyPlayer.Models.Classes
             set
             {
                 _artist = value;
-                if (_artist != null)
-                { 
-                    _artist.AddAlbum(this);
-                }
+                _artist.AddAlbum(this);
             }
         }
 
         public int Year { get; set; }
         public string Cover { get; set; }
 
-        public Album(string name, string container) : base(name, container)
+        public Album(IArtist artist, string name, string container) : base(name, container)
         {
+            Artist = artist ?? throw new ArgumentNullException("artist");
             Children = new List<IMediaBase>();
 
-            //if (Cover == null)
+            var files = PathScanner.GetCovers(container);
+            if (files.Length > 0)
             {
-                var dir = Path.GetDirectoryName(container);
-                var files = PathScanner.GetCovers(dir);
-                if (files.Length > 0)
-                {
-                    Cover = files[0];
-                }
+                Cover = files[0];
             }
         }
-
-        /*private void Clear()
-        {
-            Cover = null;
-            Year = 0;
-            Duration = Consts.ZeroTimeSpan;
-            Children.Clear();
-        }*/
 
         public void AddSong(ISong song)
         {
@@ -75,23 +61,12 @@ namespace MyPlayer.Models.Classes
                 return;
             }
             Children.Add(song);
-            //Duration += song.Duration;
-
-     
+            //_duration += song.Duration;
         }
 
         public override string ToString()
         {
-            var result = Name;
-            //if (Year != 0)
-            //{
-            //    result = Year + " - " + result;
-            //}
-            if (Artist != null)
-            {
-                result = Artist.ToString() + " / " + result;
-            }
-            return result;
+            return Artist.ToString() + " / " + Name;
         }
 
         public static int ExtractYear(string name)

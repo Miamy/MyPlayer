@@ -21,11 +21,13 @@ namespace MyPlayer.Models.Classes
             }
         }
 
-        public virtual TimeSpan Duration
+        public virtual TimeSpan Duration 
         {
             get => TimeSpan.FromSeconds(Children.Sum(child => child.Duration.TotalSeconds));
             set => _ = value;
         }
+
+
         public virtual int Count => Children == null ? 0 : Children.Count;
 
         public IList<IMediaBase> Children { get; set; } = null;

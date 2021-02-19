@@ -31,6 +31,7 @@ namespace MyPlayer.CommonClasses
         public void SaveQueue(IQueue queue)
         {
             Preferences.Set("LoopType", (int)queue.LoopType);
+            Preferences.Set("Current", queue.Current.GetUniqueName());
 
             if (queue?.Artists == null)
             {
@@ -78,6 +79,11 @@ namespace MyPlayer.CommonClasses
             }
             
             queue.LoopType = (LoopType)Preferences.Get("LoopType", (int)LoopType.All);
+            var currentName = Preferences.Get("Current", null);
+            if (currentName != null)
+            {
+                queue.Current = queue.Songs.FirstOrDefault(song => song.GetUniqueName() == currentName);
+            }
 
             var folder = DependencyService.Get<IFileSystem>().GetWorkFolder();
             if (!Directory.Exists(folder))

@@ -189,9 +189,9 @@ namespace MyPlayer.ViewModels
                     root = @"/storage/emulated/0/Music/";
                     //root = @"/storage/2743-1D07/Music/";
                 }
-                Queue.FillFromRoot(root);
+                Queue.Fill(root);
 
-                Current = Queue.GetDefault();
+                Current = Queue.Current;
             }
             catch (UnauthorizedAccessException)
             {

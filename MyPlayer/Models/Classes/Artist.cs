@@ -8,7 +8,6 @@ namespace MyPlayer.Models.Classes
 {
     public class Artist : MediaBase, IArtist
     {
-        
         public Artist(string name, string container) : base(name, container)
         {
             Children = new List<IMediaBase>();
@@ -22,6 +21,7 @@ namespace MyPlayer.Models.Classes
                 return;
             }
             Children.Add(album);
+            //_duration += album.Duration;
         }
 
         public override string ToString()

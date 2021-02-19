@@ -1,4 +1,5 @@
-﻿using MyPlayer.CommonClasses;
+﻿using CueSharp;
+using MyPlayer.CommonClasses;
 using MyPlayer.Models.Interfaces;
 using MyPlayer.ViewModels;
 
@@ -16,11 +17,9 @@ namespace MyPlayer.Models.Classes
 {
     public class Queue : BaseModel, IQueue
     {
-        public IList<ISong> Songs { get; set; }
-        public IList<IAlbum> Albums { get; set; }
+        private IList<ISong> _songs;
+        public IList<ISong> Songs => _songs;
         public IList<IMediaBase> Artists { get; set; }
-
-        //public IList<IPathElement> PathElements { get; set; }
 
         private LoopType _loopType = LoopType.All;
 
@@ -40,193 +39,16 @@ namespace MyPlayer.Models.Classes
 
         public Queue()
         {
-            Songs = new List<ISong>();
-            Albums = new List<IAlbum>();
             Artists = new List<IMediaBase>();
-            //PathElements = new List<IPathElement>();
         }
-        /*
-        public void AddFromRoot(string path)
+
+        private void UpdateSongs()
         {
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                throw new ArgumentException($"Bad path {path}");
-            }
-
-            var pathElement = new PathElement("", path);
-            PathElements.Add(pathElement);
-            ProceedPath(pathElement, path);
+            Func<IMediaBase, bool> predicate = s => !s.HasChildren && s.IsSelected;
+            _songs = Artists.Flatten(a => a.Children).Where(predicate).Select(a => (ISong)a).ToList();
         }
 
-        private void ProceedPath(IPathElement parent, string path)
-        {
-            IPathElement pathElement;
-
-            try
-            {
-                var folders = Directory.GetDirectories(path);
-                foreach (var folder in folders)
-                {
-                    pathElement = new PathElement(parent, folder);
-                    PathElements.Add(pathElement);
-
-                    ProceedPath(pathElement, folder);
-                }
-
-                var files = Directory.GetFiles(path);
-                foreach (var file in files)
-                {
-                    if (PathElement.IsMusicFile(file))
-                    {
-                        pathElement = new PathElement(parent, file);
-                        Add(pathElement);
-                    }
-                    else
-                    {
-                        pathElement = new PathElement(parent, file);
-                    }
-                    PathElements.Add(pathElement);
-                }
-            }
-            catch (IOException)
-            {
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
-        }
-
-        private static IAlbum lastAlbum = null;
-        private static IMediaBase lastArtist = null;
-
-        private void AddSong(ISong song)
-        {
-            Songs.Add(song);
-
-            var shift = 0;
-            var songPath = song.Container;
-            var albumName = songPath.GetLevelUp(1, false);
-            if (albumName.IndexOf("CD") == 0)
-            {
-                albumName = songPath.GetLevelUp(2, false);
-                shift = 1;
-            }
-
-
-            if (!string.IsNullOrWhiteSpace(albumName))
-            {
-                var album = lastAlbum;
-                if (album?.Name != albumName)
-                {
-                    album = Albums.FirstOrDefault(a => a.Name == albumName);
-                }
-                if (album == null)
-                {
-                    album = new Album(albumName, songPath.GetLevelUp(1 + shift, true));
-                    Albums.Add(album);
-                }
-                song.Album = album;
-                lastAlbum = album;
-            }
-
-            var artistName = songPath.GetLevelUp(2 + shift, false);
-            if (!string.IsNullOrWhiteSpace(artistName))
-            {
-                IMediaBase artist = lastArtist;
-                if (artist?.Name != artistName)
-                {
-                    artist = Artists.FirstOrDefault(a => a.Name == artistName);
-                }
-
-                if (artist == null)
-                {
-                    artist = new Artist(artistName, songPath.GetLevelUp(2 + shift, true));
-                    Artists.Add(artist);
-                }
-                if (song.Album != null)
-                {
-                    song.Album.Artist = artist as IArtist;
-                }
-                lastArtist = artist;
-            }
-        }
-
-        public void Add(IPathElement item)
-        {
-            if (item.IsComposite && item.HasDescription)
-            {
-                AddSeveralSongs(item);
-            }
-            else
-            {
-                var song = new Song(item.Name, item.FullPath);
-                AddSong(song);
-            }
-        }
-
-        private void AddSeveralSongs(IPathElement item)
-        {
-            ISong song = null;
-            var content = File.ReadAllLines(item.DescriptionFilename);
-            for (var i = 0; i < content.Length; i++)
-            {
-                var line = content[i].Trim();
-
-                if (line.StartsWith("TRACK"))
-                {
-                    if (song != null)
-                    {
-                        AddSong(song);
-                    }
-                    song = new Song(item.Name, item.FullPath);
-                }
-
-                if (line.StartsWith("TITLE"))
-                {
-                    if (song != null)
-                    {
-                        song.Name = line.Replace("TITLE", "").Replace("\"", "").Trim();
-                    }
-                }
-
-                if (line.StartsWith("INDEX 01"))
-                {
-                    var offcet = line.Replace("INDEX 01", "").Trim();
-                    var parts = offcet.Split(':');
-                    if (parts.Length == 3)
-                    {
-                        try
-                        {
-                            song.OffcetInContainer = new TimeSpan(0, 0, int.Parse(parts[0]), int.Parse(parts[1]), (int)(float.Parse(parts[2]) / 75 * 1000));
-                        }
-                        catch
-                        {
-                            song.OffcetInContainer = Consts.ZeroTimeSpan;
-                        }
-                    }
-                }
-                if (song != null)
-                {
-                    AddSong(song);
-                }
-
-            }
-            if (song != null)
-            {
-                AddSong(song);
-            }
-
-            for (var i = 0; i < Songs.Count - 2; i++)
-            {
-                if (Songs[i + 1].OffcetInContainer > Consts.ZeroTimeSpan)
-                {
-                    Songs[i].Duration = Songs[i + 1].OffcetInContainer - Songs[i].OffcetInContainer;
-                }
-            }
-        }
-        */
-        public void FillFromRoot(string path)
+        public void Fill(string path)
         {
             Clear();
             if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path))
@@ -234,54 +56,111 @@ namespace MyPlayer.Models.Classes
                 return;
             }
 
+            FillArtists(path);
+            Current = Songs.FirstOrDefault();
+        }
+
+        private static string GetName(string path)
+        {
+            return path[(path.LastIndexOf("/") + 1)..];
+        }
+
+        private void FillArtists(string path)
+        {
             var folders = Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly);
             foreach (var folder in folders)
             {
-                var name = folder.Substring(folder.LastIndexOf("/") + 1);
+                var name = GetName(folder);
                 var artist = new Artist(name, folder);
                 Artists.Add(artist);
 
                 FillAlbums(artist);
             }
+
+            UpdateSongs();
         }
+
 
         private void FillAlbums(IArtist artist)
         {
             var folders = Directory.GetDirectories(artist.Container, "*", SearchOption.TopDirectoryOnly);
             foreach (var folder in folders)
             {
-                var name = folder.Substring(folder.LastIndexOf("/") + 1);
-                var album = new Album(name, folder)
-                {
-                    Artist = artist
-                };
-                artist.AddAlbum(album);
+                var name = GetName(folder);
+                var album = new Album(artist, name, folder);
 
                 FillSongs(album);
             }
         }
 
-        private void FillSongs(Album album)
+        private void FillSongs(IAlbum album)
         {
-            var folders = Directory.GetDirectories(album.Container, "*", SearchOption.TopDirectoryOnly);
-            foreach (var folder in folders)
-            {
-                var name = folder.Substring(folder.LastIndexOf("/") + 1);
-                var song = new Song(name, folder)
-                {
-                    Album = album
-                };
-                album.AddSong(song);
+            FillMp3Songs(album);
+            FillFlacSongs(album);
+        }
 
+        private void FillMp3Songs(IAlbum album)
+        {
+            var files = Directory.GetFiles(album.Container, "*.mp3", SearchOption.TopDirectoryOnly);
+            foreach (var file in files)
+            {
+                var name = GetName(file);
+                _ = new Song(album, name, file);
+            }
+        }
+        private void FillFlacSongs(IAlbum album)
+        {
+            var files = Directory.GetFiles(album.Container, "*.flac", SearchOption.TopDirectoryOnly);
+            foreach (var file in files)
+            {
+                var descriptionFilename = Path.Combine(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file) + ".cue");
+                if (File.Exists(descriptionFilename))
+                {
+                    var tagFile = TagLib.File.Create(new FileAbstraction(file));
+                    var totalDuration = tagFile.Properties.Duration;
+
+                    var cueSheet = new CueSheet(descriptionFilename);
+                    for (var i = 0; i < cueSheet.Tracks.Length; i++)
+                    {
+                        var track = cueSheet.Tracks[i];
+                        var song = new Song(album, track.Title, file)
+                        {
+                            Duration = TimeSpan.Zero
+                        };
+                        if (track.Indices.Length > 0)
+                        {
+                            var index = track.Indices[0];
+                            song.OffcetInContainer = new TimeSpan(0, 0, index.Minutes, index.Seconds, index.Frames / 75 * 1000);
+                            if (i == cueSheet.Tracks.Length - 1)
+                            {
+                                song.Duration = totalDuration - song.OffcetInContainer;
+                            }
+                            else
+                            {
+                                var nextTrack = cueSheet.Tracks[i + 1];
+                                if (nextTrack.Indices.Length > 0)
+                                {
+                                    index = nextTrack.Indices[0];
+                                    var nextOffcet = new TimeSpan(0, 0, index.Minutes, index.Seconds, index.Frames / 75 * 1000);
+                                    song.Duration = nextOffcet - song.OffcetInContainer;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    var name = GetName(file);
+                    _ = new Song(album, name, file);
+                }
             }
         }
 
+
         public void Clear()
         {
-            Songs.Clear();
-            Albums.Clear();
             Artists.Clear();
-            //PathElements.Clear();
+            UpdateSongs();
         }
 
         public ISong Next(ISong song)
@@ -319,14 +198,6 @@ namespace MyPlayer.Models.Classes
             return newSong;
         }
 
-        public ISong GetDefault()
-        {
-            if (Songs != null)
-            {
-                return Songs.FirstOrDefault();
-            }
-            return Artists.FirstOrDefault().Children?.FirstOrDefault()?.Children?.FirstOrDefault() as ISong;
-        }
 
         public void SwitchLoopType()
         {
