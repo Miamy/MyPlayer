@@ -94,7 +94,7 @@
             >
 
             <ScrollView
-                VerticalOptions="StartAndExpand"
+                VerticalOptions="StartAndExpand" 
                 >
                 <StackLayout
                     x:Name="ParentLayout"
@@ -106,8 +106,7 @@
 
             <StackLayout
                 VerticalOptions="End"
-                Padding="1"
-                Margin="1"
+                Margin="2,10,2,2"
                 BackgroundColor="DarkOrange"
                 >
                 <StackLayout
@@ -133,6 +132,7 @@
                         HorizontalOptions="End"
                         WidthRequest="24"
                         HeightRequest="24"     
+                        IsVisible="{Binding SearchIsNotEmpty}"
                         >
                         <Image.GestureRecognizers>
                             <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ClearSearchTextCommand}"/>
@@ -143,6 +143,9 @@
                         Source="baseline_search_black_36dp.png"
                         HorizontalOptions="End"
                         Margin="6,0,0,0"
+                        WidthRequest="24"
+                        HeightRequest="24"     
+                        IsVisible="{Binding SearchIsEmpty}"
                         />
                 </StackLayout>
             </StackLayout>

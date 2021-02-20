@@ -88,12 +88,14 @@ namespace MyPlayer.ViewModels
             get => _searchText;
             set
             {
-                SearchIsEmpty = string.IsNullOrWhiteSpace(value);
                 Set(ref _searchText, value);
+                RaisePropertyChanged(nameof(SearchIsEmpty));
+                RaisePropertyChanged(nameof(SearchIsNotEmpty));
             }
         }
 
-        public bool SearchIsEmpty { get; private set; }
+        public bool SearchIsEmpty => string.IsNullOrWhiteSpace(SearchText);
+        public bool SearchIsNotEmpty =>!SearchIsEmpty;
 
         private bool _expandAlbums;
         [JsonProperty]
@@ -230,14 +232,7 @@ namespace MyPlayer.ViewModels
         {
             AllSelected = !AllSelected;
         }
-
-        public bool SearchTextPresent(string name)
-        {
-            return SearchIsEmpty || name.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase);
-        }
         #endregion
-
-
 
     }
 

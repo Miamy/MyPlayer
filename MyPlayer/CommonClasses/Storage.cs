@@ -30,10 +30,14 @@ namespace MyPlayer.CommonClasses
 
         public void SaveQueue(IQueue queue)
         {
+            if (queue == null)
+            {
+                return;
+            }
             Preferences.Set("LoopType", (int)queue.LoopType);
             Preferences.Set("Current", queue.Current.GetUniqueName());
 
-            if (queue?.Artists == null)
+            if (queue.Artists == null)
             {
                 return;
             }
@@ -77,12 +81,12 @@ namespace MyPlayer.CommonClasses
             {
                 return;
             }
-            
+
             queue.LoopType = (LoopType)Preferences.Get("LoopType", (int)LoopType.All);
             var currentName = Preferences.Get("Current", null);
             if (currentName != null)
             {
-                queue.Current = queue.Songs.FirstOrDefault(song => song.GetUniqueName() == currentName);
+                queue.Current = queue.Songs?.FirstOrDefault(song => song.GetUniqueName() == currentName);
             }
 
             var folder = DependencyService.Get<IFileSystem>().GetWorkFolder();

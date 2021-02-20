@@ -27,12 +27,14 @@ namespace MyPlayer.Views
             {
                 throw new ArgumentNullException("queue");
             }
-            BindingContext = _model = new QueueViewModel(queue);
+            _model = new QueueViewModel(queue);
             _model.PropertyChanged += ModelPropertyChanged;
 
             BuildTree();
+            BindingContext = _model;
         }
 
+        private const string Tag = "Children";
         private void BuildTree()
         {
             ParentLayout.BatchBegin();
@@ -46,22 +48,18 @@ namespace MyPlayer.Views
 
                 foreach (var artist in _model.Artists)
                 {
-                    var artistLayout = CreateWholeStackLayout(artist, Color.Red, 0, 6, 14);
-                    artistLayout.IsVisible = _model.SearchTextPresent(artist.Name);
+                    var artistLayout = LayoutSelector(artist);
+                    artistLayout.IsVisible = artist.SearchTextPresent;
 
+                    var childContainer = GetContainer(artistLayout);
                     foreach (var album in artist.Children)
                     {
-                        var albumLayout = CreateWholeStackLayout(album, Color.Orange, 20, 0, 13);
-                        albumLayout.IsVisible = artist.IsExpanded && _model.SearchTextPresent(album.Name); 
+                        var albumLayout = LayoutSelector(album);
+                        albumLayout.IsVisible = artist.IsExpanded && album.SearchTextPresent;
 
-                        foreach (var song in album.Children)
-                        {
-                            var songLayout = CreateWholeStackLayout(song, Color.Yellow, 60, 0, 12);
-                            songLayout.IsVisible = album.IsExpanded && _model.SearchTextPresent(song.Name);
-                            
-                            albumLayout.Children.Add(songLayout);
-                        }
-                        artistLayout.Children.Add(albumLayout);
+                        FillChildren(album, albumLayout);
+
+                        childContainer.Children.Add(albumLayout);
                     }
                     ParentLayout.Children.Add(artistLayout);
                 }
@@ -69,6 +67,20 @@ namespace MyPlayer.Views
             finally
             {
                 ParentLayout.BatchCommit();
+            }
+        }
+
+        private void FillChildren(VisualObject<IMediaBase> data, StackLayout parent)
+        {
+            if (data.IsExpanded)
+            {
+                foreach (var child in data.Children)
+                {
+                    var childLayout = LayoutSelector(child);
+                    childLayout.IsVisible = child.SearchTextPresent;
+
+                    parent.Children.Add(childLayout);
+                }
             }
         }
 
@@ -95,6 +107,9 @@ namespace MyPlayer.Views
 
             layout.Children.Add(title);
 
+            var childrenLayout = CreateChildrenStackLayout();
+            layout.Children.Add(childrenLayout);
+
             return layout;
         }
 
@@ -106,6 +121,18 @@ namespace MyPlayer.Views
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 Margin = new Thickness(0, offcet, 0, 0),
                 BindingContext = data
+            };
+            return layout;
+        }
+
+        private StackLayout CreateChildrenStackLayout()
+        {
+            var layout = new StackLayout()
+            {
+                Orientation = StackOrientation.Vertical,
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                Margin = new Thickness(0, 0, 0, 0),
+                AutomationId = Tag
             };
             return layout;
         }
@@ -249,14 +276,14 @@ namespace MyPlayer.Views
         {
             foreach (var child in parent.Children)
             {
-                if (child is Layout layout)
+                if (child is StackLayout layout)
                 {
                     if (layout.BindingContext == data)
                     {
-                        foreach (Layout child2 in layout.Children.OfType<Layout>())
-                        {
-                            child2.IsVisible = data.IsExpanded;
-                        }
+                        var childContainer = GetContainer(layout);
+                        childContainer.Children.Clear();
+
+                        FillChildren(data, childContainer);
                         return;
                     }
                     else
@@ -271,6 +298,34 @@ namespace MyPlayer.Views
         {
             await Task.Run(() => _storage.SaveQueue(_model.Queue));
             base.OnDisappearing();
+        }
+
+        private StackLayout CreateArtistStackLayout(VisualObject<IMediaBase> data)
+        {
+            return CreateWholeStackLayout(data, Color.Red, 0, 6, 14);
+        }
+        private StackLayout CreateAlbumStackLayout(VisualObject<IMediaBase> data)
+        {
+            return CreateWholeStackLayout(data, Color.Orange, 20, 0, 13);
+        }
+        private StackLayout CreateSongStackLayout(VisualObject<IMediaBase> data)
+        {
+            return CreateWholeStackLayout(data, Color.Yellow, 60, 0, 12);
+        }
+
+        private StackLayout LayoutSelector(VisualObject<IMediaBase> data)
+        {
+            return data.Data switch
+            {
+                Artist _ => CreateArtistStackLayout(data),
+                Album _ => CreateAlbumStackLayout(data),
+                _ => CreateSongStackLayout(data),
+            };
+        }
+
+        private StackLayout GetContainer(StackLayout layout)
+        {
+            return (StackLayout)layout.Children.First(child => child.AutomationId == Tag);
         }
     }
 }

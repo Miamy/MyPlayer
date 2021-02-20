@@ -17,9 +17,9 @@ namespace MyPlayer.Models.Interfaces
         bool AllSelected { get; set; }
         string SearchText { get; set; }
         bool SearchIsEmpty { get; }
+        bool SearchIsNotEmpty { get; }
 
         ICommand PlayTappedCommand { get; set; }
 
-        bool SearchTextPresent(string name);
     }
 }

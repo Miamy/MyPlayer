@@ -39,13 +39,12 @@ namespace MyPlayer.ViewModels
             set => Set(ref _isExpanded, value);
         }
 
-
-        public bool IsVisible
+        public bool SearchTextPresent
         {
             get
             {
                 return Owner.SearchIsEmpty || Name.Contains(Owner.SearchText, StringComparison.InvariantCultureIgnoreCase) || 
-                    (Data.HasChildren && Children.Any(child => child.IsVisible));
+                    (Data.HasChildren && Children.Any(child => child.SearchTextPresent));
             }
         }
 
@@ -86,7 +85,7 @@ namespace MyPlayer.ViewModels
             }
             if (e.PropertyName == "SearchText")
             {
-                RaisePropertyChanged(nameof(IsVisible));
+                RaisePropertyChanged(nameof(SearchTextPresent));
             }
         }
 
