@@ -49,30 +49,30 @@ namespace MyPlayer.CommonClasses
             }
 
             var filename = "query.json";
-            var file = Path.Combine(folder, filename);
-            if (File.Exists(file))
+            var fullFilename = Path.Combine(folder, filename);
+            if (File.Exists(fullFilename))
             {
-                File.Delete(file);
+                File.Delete(fullFilename);
             }
 
             var queueData = queue.Artists.Flatten(a => a.Children).Where(a => !a.IsSelected).ToDictionary(a => a.GetUniqueName(), a => a.IsSelected);
 
             var formatter = Formatting.Indented;
             var value = JsonConvert.SerializeObject(queueData, formatter, GetSettings());
-            File.WriteAllText(file, value);
+            File.WriteAllText(fullFilename, value);
 
 
-            var zipFile = Path.Combine(folder, "query.zip");
-            if (File.Exists(zipFile))
+            var zipFilename = Path.Combine(folder, "query.zip");
+            if (File.Exists(zipFilename))
             {
-                File.Delete(zipFile);
+                File.Delete(zipFilename);
             }
-            using (var stream = new FileStream(zipFile, FileMode.Create))
+            using (var stream = new FileStream(zipFilename, FileMode.Create))
             {
                 using var zip = new ZipArchive(stream, ZipArchiveMode.Create);
-                zip.CreateEntryFromFile(file, filename);
+                zip.CreateEntryFromFile(fullFilename, filename);
             }
-            File.Delete(file);
+            File.Delete(fullFilename);
         }
 
         public void LoadQueue(IQueue queue)
@@ -102,15 +102,15 @@ namespace MyPlayer.CommonClasses
                 File.SetAttributes(folder, attributes);
             }
 
-            var zipFile = Path.Combine(folder, "query.zip");
-            if (!File.Exists(zipFile))
+            var zipFilename = Path.Combine(folder, "query.zip");
+            if (!File.Exists(zipFilename))
             {
                 return;
             }
 
             try
             {
-                using var stream = new FileStream(zipFile, FileMode.Open);
+                using var stream = new FileStream(zipFilename, FileMode.Open);
                 using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
                 zip.ExtractToDirectory(folder, true);
             }
@@ -119,13 +119,13 @@ namespace MyPlayer.CommonClasses
             }
 
             var filename = "query.json";
-            var file = Path.Combine(folder, filename);
-            if (!File.Exists(file))
+            var fullFilename = Path.Combine(folder, filename);
+            if (!File.Exists(fullFilename))
             {
                 return;
             }
 
-            var value = File.ReadAllText(file);
+            var value = File.ReadAllText(fullFilename);
             try
             {
                 var flattened = queue.Artists.Flatten(a => a.Children);
@@ -144,7 +144,7 @@ namespace MyPlayer.CommonClasses
             }
             finally
             {
-                File.Delete(file);
+                File.Delete(fullFilename);
             }
         }
 

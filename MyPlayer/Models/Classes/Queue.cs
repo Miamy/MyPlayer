@@ -35,7 +35,15 @@ namespace MyPlayer.Models.Classes
         }
 
         [JsonProperty]
-        public ISong Current { get; set; }
+        private ISong _current;
+        public ISong Current 
+        { 
+            get => _current;
+            set
+            {
+                Set(ref _current, value);
+            }
+        }
 
         public Queue()
         {

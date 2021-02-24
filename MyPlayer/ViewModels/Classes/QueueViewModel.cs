@@ -52,37 +52,10 @@ namespace MyPlayer.ViewModels
                 _queue.LoopType = value;
                 RaisePropertyChanged();
             }
-        }
-
-
-
-        private IList<ISong> _songs;
-
-        private IList<ISong> Songs
-        {
-            get
-            {
-                if (_songs == null && Artists != null)
-                {
-                    Func<VisualObject<IMediaBase>, bool> predicate;
-                    //if (string.IsNullOrWhiteSpace(SearchText))
-                    {
-                        predicate = s => !s.Data.HasChildren && s.Data.IsSelected;
-                    }
-                    //else
-                    //{
-                    //    predicate = s => s.Data.GetType() == typeof(Song) && s.IsSelected && s.Name.Contains(SearchText, StringComparison.InvariantCultureIgnoreCase);
-                    //}
-                    _songs = Artists.Flatten(a => a.Children).Where(predicate).Select(a => (ISong)a.Data).ToList();
-                }
-                return _songs;
-            }
-        }
+        }     
 
 
         private string _searchText;
-
-
         public string SearchText
         {
             get => _searchText;
@@ -219,9 +192,6 @@ namespace MyPlayer.ViewModels
         {
             ExpandAlbums = !ExpandAlbums;
         }
-
-
-
 
         private void ClearSearchTextAction(object obj)
         {

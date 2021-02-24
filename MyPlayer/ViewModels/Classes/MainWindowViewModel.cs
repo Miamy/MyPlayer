@@ -158,13 +158,21 @@ namespace MyPlayer.ViewModels
             Settings.PropertyChanged += SettingsPropertyChanged;
 
             Queue = new Queue();
+            Queue.PropertyChanged += QueuePropertyChanged;
 
             Storage = new Storage();
             Storage.LoadQueue(Queue);
             Storage.LoadSettings(Settings);
-            //Queue.PropertyChanged += PropertyChanged;
+            
         }
 
+        private void QueuePropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName.Equals("Current"))
+            {
+                Current = Queue.Current;
+            }
+        }
 
         private void SettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {

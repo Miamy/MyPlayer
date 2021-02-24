@@ -72,7 +72,7 @@ namespace MyPlayer.Views
 
         private void FillChildren(VisualObject<IMediaBase> data, StackLayout parent)
         {
-            if (data.IsExpanded)
+            if (data.IsExpanded || _model.SearchIsNotEmpty)
             {
                 foreach (var child in data.Children)
                 {

@@ -38,7 +38,6 @@
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidDexTool>d8</AndroidDexTool>
-    <AndroidLinkTool>r8</AndroidLinkTool>
     <AndroidSupportedAbis>
     </AndroidSupportedAbis>
     <AndroidHttpClientHandlerType />
