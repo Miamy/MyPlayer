@@ -30,6 +30,7 @@ namespace MyPlayer.ViewModels
                     if (MediaPlayer?.Media != null)
                     {
                         MediaPlayer.Media.ParsedChanged -= MediaPlayerMediaParsedChanged;
+                        MediaPlayer.Media.StateChanged -= MediaPlayerMediaStateChanged;
                         MediaPlayer.Media.Dispose();
                     }
                     MediaPlayer?.Dispose();
@@ -41,6 +42,7 @@ namespace MyPlayer.ViewModels
                         MediaPlayer.Media = new Media(LibVLC, Current.Container, FromType.FromPath);
                         MediaPlayer.Media.ParsedChanged += MediaPlayerMediaParsedChanged;
                         MediaPlayer.Media.Parse();
+                        MediaPlayer.Media.StateChanged += MediaPlayerMediaStateChanged;
                     }
                 }
             }
@@ -127,7 +129,7 @@ namespace MyPlayer.ViewModels
         private IStorage Storage { get; set; }
         private ISettings Settings { get; set; }
 
-        //public bool IsPlaying => MediaPlayer.State == VLCState.;  
+        //public bool IsPlaying => MediaPlayer.Media?.State == VLCState.Playing;  
 
         private bool _isPlaying = false;
         public bool IsPlaying
@@ -328,6 +330,12 @@ namespace MyPlayer.ViewModels
             MediaPlayer.EndReached += MediaPlayerEndReached;
         }
 
+        private void MediaPlayerMediaStateChanged(object sender, MediaStateChangedEventArgs e)
+        {
+            //RaisePropertyChanged(nameof(IsPlaying));
+        }
+
+
         private void MediaPlayerEndReached(object sender, EventArgs e)
         {
             NextCommand.Execute(null);
@@ -378,7 +386,7 @@ namespace MyPlayer.ViewModels
             }
 
             MediaPlayer.Play();
-            RaisePropertyChanged(nameof(IsPlaying));
+            //RaisePropertyChanged(nameof(IsPlaying));
         }
     }
 }
