@@ -25,6 +25,7 @@ namespace MyPlayer.ViewModels
             set
             {
                 Set(ref _current, value);
+                Cover = "";
                 if (_initialized)
                 {
                     if (MediaPlayer?.Media != null)
@@ -33,7 +34,7 @@ namespace MyPlayer.ViewModels
                         MediaPlayer.Media.StateChanged -= MediaPlayerMediaStateChanged;
                         MediaPlayer.Media.Dispose();
                     }
-                    MediaPlayer?.Dispose();
+                    MediaPlayer = null;
 
                     if (Current?.Container != null)
                     {
@@ -43,6 +44,11 @@ namespace MyPlayer.ViewModels
                         MediaPlayer.Media.ParsedChanged += MediaPlayerMediaParsedChanged;
                         MediaPlayer.Media.Parse();
                         MediaPlayer.Media.StateChanged += MediaPlayerMediaStateChanged;
+
+                        if (Current.Album.Covers.Count > 0)
+                        {
+                            Cover = Current.Album.Covers[0];
+                        }
                     }
                 }
             }
@@ -123,7 +129,9 @@ namespace MyPlayer.ViewModels
         public ICommand NextCommand { get; set; }
         public ICommand PrevCommand { get; set; }
         public ICommand LoopCommand { get; set; }
-
+        public ICommand NextCoverCommand { get; set; }
+        public ICommand PreviousCoverCommand { get; set; }
+        public ICommand ShowLyricsCommand { get; set; }
 
         public IQueue Queue { get; set; }
         private IStorage Storage { get; set; }
@@ -133,8 +141,8 @@ namespace MyPlayer.ViewModels
 
         private bool _isPlaying = false;
         public bool IsPlaying
-        { 
-            get => _isPlaying; 
+        {
+            get => _isPlaying;
             set => Set(ref _isPlaying, value);
         }
         public LoopType LoopType => Queue.LoopType;
@@ -149,6 +157,25 @@ namespace MyPlayer.ViewModels
         }
 
         private bool _initialized = false;
+
+        private string _cover;
+        public string Cover
+        {
+            get => _cover;
+            set => Set(ref _cover, value);
+        }
+
+        private bool _showLyrics;
+        public bool ShowLyrics 
+        { 
+            get => _showLyrics;
+            set
+            {
+                Set(ref _showLyrics, value);
+                RaisePropertyChanged(nameof(LyricsImage));
+            }
+        }
+        public string LyricsImage => ShowLyrics ? "description_grey_36x36.png" : "description_white_36x36.png";
 
         public MainWindowViewModel()
         {
@@ -165,7 +192,7 @@ namespace MyPlayer.ViewModels
             Storage = new Storage();
             Storage.LoadQueue(Queue);
             Storage.LoadSettings(Settings);
-            
+
         }
 
         private void QueuePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -225,6 +252,44 @@ namespace MyPlayer.ViewModels
             NextCommand = new Command(NextAction, CanNext);
             PrevCommand = new Command(PrevAction, CanPrev);
             LoopCommand = new Command(LoopAction);
+            NextCoverCommand = new Command(NextCoverAction);
+            PreviousCoverCommand = new Command(PreviousCoverAction);
+            ShowLyricsCommand = new Command(ShowLyricsAction);
+        }
+
+        private void ShowLyricsAction(object obj)
+        {
+            ShowLyrics = !ShowLyrics;
+        }
+
+        private void PreviousCoverAction(object obj)
+        {
+            if (Current?.Album.Covers.Count == 0)
+            {
+                return;
+            }
+
+            var cover = Current.Album.Covers.Previous(Cover);
+            if (cover == null)
+            {
+                cover = Current.Album.Covers.Last();
+            }
+            Cover = cover;
+        }
+
+        private void NextCoverAction(object obj)
+        {
+            if (Current?.Album.Covers.Count == 0)
+            {
+                return;
+            }
+
+            var cover = Current.Album.Covers.Next(Cover);
+            if (cover == null)
+            {
+                cover = Current.Album.Covers.First();
+            }
+            Cover = cover;
         }
 
         private void LoopAction(object obj)
@@ -274,7 +339,7 @@ namespace MyPlayer.ViewModels
                 PlayCurrent(true);
             });
 
-            var page = new QueuePage(Queue, Storage);
+            var page = await QueuePage.CreateQueuePage(Queue, Storage);
             await App.Navigation.PushAsync(page, false);
         }
         private bool CanShowSettings(object arg)
@@ -338,7 +403,7 @@ namespace MyPlayer.ViewModels
 
         private void MediaPlayerEndReached(object sender, EventArgs e)
         {
-            NextCommand.Execute(null);
+            NextAction(null);
         }
 
         private void MediaPlayerStopped(object sender, EventArgs e)

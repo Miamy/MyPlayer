@@ -135,6 +135,7 @@ namespace MyPlayer.ViewModels
         public ICommand ExpandSongsCommand { get; set; }
         public ICommand PlayTappedCommand { get; set; }
 
+        
 
         public QueueViewModel(IQueue queue)
         {
@@ -154,10 +155,11 @@ namespace MyPlayer.ViewModels
             ExpandSongsCommand = new Command(ExpandSongsAction);
 
             SelectAllCommand = new Command(SelectAllAction);
-            PlayTappedCommand = new Command(PlayTappedAction);
+            PlayTappedCommand = new Command(PlayTappedAction);            
         }
 
-   
+      
+
         private async void PlayTappedAction(object obj)
         {
             if (!(obj is VisualObject<IMediaBase> data))

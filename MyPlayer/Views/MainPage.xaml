@@ -7,18 +7,16 @@
              mc:Ignorable="d" 
              x:Class="MyPlayer.MainPage"
              BackgroundColor="#181818"
+             NavigationPage.HasNavigationBar="False"
              >
 
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style TargetType="Image" BasedOn="{StaticResource ImageStyle}"/>
             <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding ShowQueueCommand}" IconImageSource="baseline_playlist_play_black_36dp.png"/>
-        <ToolbarItem Command="{Binding ShowSettingsCommand}" IconImageSource="baseline_settings_black_36dp.png"/>
     </ContentPage.ToolbarItems>
     
     <StackLayout
@@ -28,8 +26,39 @@
             x:Name="UpperLayout"
             Orientation="Horizontal"
             VerticalOptions="Start"
-            HeightRequest="40"
+            HeightRequest="40"            
             >
+
+            <Image
+                Source="{Binding LyricsImage}"
+                Style="{StaticResource UpperImageStyle}"
+                HorizontalOptions="Start"
+                >
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ShowLyricsCommand}"/>
+                </Image.GestureRecognizers>
+            </Image>
+            <Label
+                Text=" "
+                HorizontalOptions="CenterAndExpand"/>
+            <Image
+                Source="baseline_playlist_play_black_36dp.png"
+                Style="{StaticResource UpperImageStyle}"
+                HorizontalOptions="End"                
+                >
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ShowQueueCommand}"/>
+                </Image.GestureRecognizers>
+            </Image>
+            <Image
+                Source="baseline_settings_black_36dp.png"
+                Style="{StaticResource UpperImageStyle}"
+                HorizontalOptions="End"
+                >
+                <Image.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding ShowSettingsCommand}"/>
+                </Image.GestureRecognizers>
+            </Image>
         </StackLayout>
 
 
@@ -39,17 +68,27 @@
             HorizontalOptions="FillAndExpand"
             >
             <Image
-                Source="{Binding Current.Album.Cover}"
+                Source="{Binding Cover}"
                 Aspect="AspectFit"
                 VerticalOptions="FillAndExpand"
                 HorizontalOptions="FillAndExpand"
-                />
+                >
+                <Image.GestureRecognizers>
+                    <SwipeGestureRecognizer Direction="Left" Command="{Binding NextCoverCommand}"/>
+                    <SwipeGestureRecognizer Direction="Right" Command="{Binding PreviousCoverCommand}"/>
+                </Image.GestureRecognizers>
+                <Image.Triggers>
+                    <DataTrigger TargetType="Image" Binding="{Binding ShowLyrics}" Value="True">
+                        <Setter Property="Opacity" Value="0.2"/>
+                    </DataTrigger>
+                </Image.Triggers>
+            </Image>
         </StackLayout>
 
         <StackLayout
-                x:Name="TimeLayout"
+            x:Name="TimeLayout"
             Orientation="Horizontal"
-                >
+            >
             <Label
                 Text="{Binding PositionTS, StringFormat='{0:mm\\:ss}'}"
                 TextColor="Gray"
@@ -85,30 +124,30 @@
                 Orientation="Horizontal"
                 Margin="0"
                 >
-            <Label
-                x:Name="NameLabel"
-                Text="{Binding Current.Name}"
-                FontSize="Medium"
-                TextColor="Gray"
-                MinimumHeightRequest="50"
-                VerticalTextAlignment="Center"
-                VerticalOptions="Center"
-                HorizontalOptions="CenterAndExpand"
-                LineBreakMode="NoWrap"
-                />
+                <Label
+                    x:Name="NameLabel"
+                    Text="{Binding Current.Name}"
+                    FontSize="Medium"
+                    TextColor="Gray"
+                    MinimumHeightRequest="50"
+                    VerticalTextAlignment="Center"
+                    VerticalOptions="Center"
+                    HorizontalOptions="CenterAndExpand"
+                    LineBreakMode="NoWrap"
+                    />
                 <!--
-            <Label
-                x:Name="NameLabelHidden"
-                Text="{Binding Current.Name}"
-                FontSize="Medium"
-                TextColor="Gray"
-                MinimumHeightRequest="50"
-                VerticalTextAlignment="Center"
-                VerticalOptions="Center"
-                HorizontalOptions="CenterAndExpand"
-                LineBreakMode="NoWrap"
-                TranslationX="{Binding Width, Source={Reference InfoLayout}}"
-                />
+                     <Label
+                     x:Name="NameLabelHidden"
+                     Text="{Binding Current.Name}"
+                     FontSize="Medium"
+                     TextColor="Gray"
+                     MinimumHeightRequest="50"
+                     VerticalTextAlignment="Center"
+                     VerticalOptions="Center"
+                     HorizontalOptions="CenterAndExpand"
+                     LineBreakMode="NoWrap"
+                     TranslationX="{Binding Width, Source={Reference InfoLayout}}"
+                     />
                 -->
             </StackLayout>
             <StackLayout
@@ -156,6 +195,7 @@
             >
 
             <Image
+                Style="{StaticResource LowerImageStyle}"
                 >
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding LoopCommand}"/>
@@ -175,6 +215,7 @@
             </Image>
 
             <Image
+                Style="{StaticResource LowerImageStyle}"
                 Source="baseline_skip_previous_black_36dp.png"
                 >
                 <Image.GestureRecognizers>
@@ -184,6 +225,7 @@
 
             <Image
                 Source="baseline_play_arrow_black_36dp.png"
+                Style="{StaticResource LowerImageStyle}"
                 >
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding PlayCommand}"/>
@@ -201,17 +243,12 @@
             -->
             <Image
                 Source="baseline_skip_next_black_36dp.png"
+                Style="{StaticResource LowerImageStyle}"
                 >
                 <Image.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="1" Command="{Binding NextCommand}"/>
                 </Image.GestureRecognizers>
             </Image>
-            <Button
-                ImageSource="baseline_delete_black_36dp.png"
-                IsVisible="False"
-                />
-
-         
         </StackLayout>
     </StackLayout>
 

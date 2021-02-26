@@ -40,17 +40,29 @@ namespace MyPlayer.Models.Classes
         }
 
         public int Year { get; set; }
-        public string Cover { get; set; }
+        public List<string> Covers { get; set; }
 
         public Album(IArtist artist, string name, string container) : base(name, container)
         {
             Artist = artist ?? throw new ArgumentNullException("artist");
             Children = new List<IMediaBase>();
+            Covers = new List<string>();
+            FillCovers(container);
+        }
 
+        private void FillCovers(string container)
+        {
             var files = PathScanner.GetCovers(container);
             if (files.Length > 0)
             {
-                Cover = files[0];
+                Covers.Add(files[0]);
+            }
+
+            var scansFolder = Path.Combine(container, "scans");
+            if (Directory.Exists(scansFolder))
+            {
+                files = PathScanner.GetCovers(scansFolder);
+                Covers.AddRange(files);
             }
         }
 

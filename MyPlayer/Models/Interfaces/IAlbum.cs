@@ -9,7 +9,7 @@ namespace MyPlayer.Models.Interfaces
 
         int Year { get; set; }
 
-        string Cover { get; set; }
+        public List<string> Covers { get; set; }
 
         void AddSong(ISong song);
     }

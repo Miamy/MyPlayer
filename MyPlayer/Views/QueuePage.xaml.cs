@@ -18,7 +18,15 @@ namespace MyPlayer.Views
     {
         private readonly IQueueViewModel _model;
         private readonly IStorage _storage;
-        public QueuePage(IQueue queue, IStorage storage)
+
+        public static async Task<QueuePage> CreateQueuePage(IQueue queue, IStorage storage)
+        {
+            var page = new QueuePage(queue, storage);
+            await page.BuildTree();
+            return page;
+        }
+
+        private QueuePage(IQueue queue, IStorage storage)
         {
             InitializeComponent();
 
@@ -30,12 +38,11 @@ namespace MyPlayer.Views
             _model = new QueueViewModel(queue);
             _model.PropertyChanged += ModelPropertyChanged;
 
-            BuildTree();
             BindingContext = _model;
         }
 
         private const string Tag = "Children";
-        private void BuildTree()
+        private async Task BuildTree()
         {
             ParentLayout.BatchBegin();
             try
@@ -51,18 +58,10 @@ namespace MyPlayer.Views
                     var artistLayout = LayoutSelector(artist);
                     artistLayout.IsVisible = artist.SearchTextPresent;
 
-                    var childContainer = GetContainer(artistLayout);
-                    foreach (var album in artist.Children)
-                    {
-                        var albumLayout = LayoutSelector(album);
-                        albumLayout.IsVisible = artist.IsExpanded && album.SearchTextPresent;
+                    FillAlbums(artist, artistLayout);
 
-                        FillChildren(album, albumLayout);
-
-                        childContainer.Children.Add(albumLayout);
-                    }
                     ParentLayout.Children.Add(artistLayout);
-                }
+                }               
             }
             finally
             {
@@ -70,7 +69,23 @@ namespace MyPlayer.Views
             }
         }
 
-        private void FillChildren(VisualObject<IMediaBase> data, StackLayout parent)
+      
+
+        private void FillAlbums(VisualObject<IMediaBase> data, StackLayout parent)
+        {
+            var childContainer = GetContainer(parent);
+            foreach (var album in data.Children)
+            {
+                var albumLayout = LayoutSelector(album);
+                albumLayout.IsVisible = data.IsExpanded && album.SearchTextPresent;
+
+                FillSongs(album, albumLayout);
+
+                childContainer.Children.Add(albumLayout);
+            }
+        }
+
+        private void FillSongs(VisualObject<IMediaBase> data, StackLayout parent)
         {
             if (data.IsExpanded || _model.SearchIsNotEmpty)
             {
@@ -237,11 +252,11 @@ namespace MyPlayer.Views
             return label;
         }
 
-        private void ModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void ModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "ExpandAlbums" || e.PropertyName == "ExpandSongs" || e.PropertyName == "SearchText")
             {
-                BuildTree();
+                await BuildTree();
             }
             if (e.PropertyName == "AllSelected")
             {
@@ -283,7 +298,7 @@ namespace MyPlayer.Views
                         var childContainer = GetContainer(layout);
                         childContainer.Children.Clear();
 
-                        FillChildren(data, childContainer);
+                        FillSongs(data, childContainer);
                         return;
                     }
                     else
