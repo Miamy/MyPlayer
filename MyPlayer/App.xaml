@@ -7,8 +7,29 @@
              x:Class="MyPlayer.App">
 
     <Application.Resources>
-        <ResourceDictionary>      
-
+        <ResourceDictionary>
+            <Style x:Key="ImageStyle" TargetType="Image">
+                <Setter Property="BackgroundColor" Value="#181818"/>
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+                <Setter Property="HeightRequest">
+                    <Setter.Value>
+                        <OnPlatform x:TypeArguments="x:Double">
+                            <On Platform="iOS">28</On>
+                            <On Platform="Android">40</On>
+                        </OnPlatform>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="WidthRequest">
+                    <Setter.Value>
+                        <OnPlatform x:TypeArguments="x:Double">
+                            <On Platform="iOS">38</On>
+                            <On Platform="Android">58</On>
+                        </OnPlatform>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
             <Style x:Key="ButtonStyle" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="#181818"/>
                 <Setter Property="TextColor" Value="Gray"/>
