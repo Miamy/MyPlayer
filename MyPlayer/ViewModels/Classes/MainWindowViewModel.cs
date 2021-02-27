@@ -1,16 +1,20 @@
 ﻿using LibVLCSharp.Shared;
+
 using MyPlayer.CommonClasses;
 using MyPlayer.Models;
 using MyPlayer.Models.Classes;
 using MyPlayer.Models.Interfaces;
 using MyPlayer.Views;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
+
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -18,6 +22,7 @@ namespace MyPlayer.ViewModels
 {
     public class MainWindowViewModel : BaseModel
     {
+        private ILyricsFinder finder;
         private ISong _current;
         public ISong Current
         {
@@ -30,27 +35,31 @@ namespace MyPlayer.ViewModels
                 {
                     if (MediaPlayer?.Media != null)
                     {
+                        MediaPlayer.Stop();
                         MediaPlayer.Media.ParsedChanged -= MediaPlayerMediaParsedChanged;
                         MediaPlayer.Media.StateChanged -= MediaPlayerMediaStateChanged;
                         MediaPlayer.Media.Dispose();
                     }
                     MediaPlayer = null;
-
-                    if (Current?.Container != null)
-                    {
-                        CreatePlayer();
-
-                        MediaPlayer.Media = new Media(LibVLC, Current.Container, FromType.FromPath);
-                        MediaPlayer.Media.ParsedChanged += MediaPlayerMediaParsedChanged;
-                        MediaPlayer.Media.Parse();
-                        MediaPlayer.Media.StateChanged += MediaPlayerMediaStateChanged;
-
-                        if (Current.Album.Covers.Count > 0)
-                        {
-                            Cover = Current.Album.Covers[0];
-                        }
-                    }
                 }
+                if (Current == null)
+                {
+                    return;
+                }
+                if (_initialized && Current.Container != null)
+                {
+                    CreatePlayer();
+
+                    MediaPlayer.Media = new Media(LibVLC, Current.Container, FromType.FromPath);
+                    MediaPlayer.Media.ParsedChanged += MediaPlayerMediaParsedChanged;
+                    MediaPlayer.Media.Parse();
+                    MediaPlayer.Media.StateChanged += MediaPlayerMediaStateChanged;
+                }
+                if (Current.Album.Covers.Count > 0)
+                {
+                    Cover = Current.Album.Covers[0];
+                }
+                Task.Run(async () => await GetLyrics());
             }
         }
 
@@ -137,14 +146,14 @@ namespace MyPlayer.ViewModels
         private IStorage Storage { get; set; }
         private ISettings Settings { get; set; }
 
-        //public bool IsPlaying => MediaPlayer.Media?.State == VLCState.Playing;  
+        public bool IsPlaying => MediaPlayer.IsPlaying;
 
-        private bool _isPlaying = false;
+        /*private bool _isPlaying = false;
         public bool IsPlaying
         {
             get => _isPlaying;
             set => Set(ref _isPlaying, value);
-        }
+        }*/
         public LoopType LoopType => Queue.LoopType;
 
         private LibVLC LibVLC { get; set; }
@@ -166,8 +175,8 @@ namespace MyPlayer.ViewModels
         }
 
         private bool _showLyrics;
-        public bool ShowLyrics 
-        { 
+        public bool ShowLyrics
+        {
             get => _showLyrics;
             set
             {
@@ -177,6 +186,14 @@ namespace MyPlayer.ViewModels
         }
         public string LyricsImage => ShowLyrics ? "description_grey_36x36.png" : "description_white_36x36.png";
 
+        private string _lyrics;
+        public string Lyrics
+        {
+            get => _lyrics;
+            set => Set(ref _lyrics, value);
+        }
+
+        private TimeSpan lastPosition = TimeSpan.Zero;
         public MainWindowViewModel()
         {
             Initialize();
@@ -192,6 +209,8 @@ namespace MyPlayer.ViewModels
             Storage = new Storage();
             Storage.LoadQueue(Queue);
             Storage.LoadSettings(Settings);
+
+            finder = new ChartLyricsLyricsFinder();
 
         }
 
@@ -257,9 +276,19 @@ namespace MyPlayer.ViewModels
             ShowLyricsCommand = new Command(ShowLyricsAction);
         }
 
-        private void ShowLyricsAction(object obj)
+        private async void ShowLyricsAction(object obj)
         {
             ShowLyrics = !ShowLyrics;
+
+            await GetLyrics();
+        }
+
+        private async Task GetLyrics()
+        {
+            if (ShowLyrics && Current != null)
+            {
+                Lyrics = await finder.FindLyricsAsync(Current.Album.Artist.Name, Current.Name);
+            }
         }
 
         private void PreviousCoverAction(object obj)
@@ -304,8 +333,9 @@ namespace MyPlayer.ViewModels
 
         private void PrevAction(object obj)
         {
+            var oldState = IsPlaying;
             Current = Queue.Prev(Current);
-            if (IsPlaying)
+            if (oldState)
             {
                 PlayCurrent(true);
             }
@@ -318,8 +348,9 @@ namespace MyPlayer.ViewModels
 
         private void NextAction(object obj)
         {
+            var oldState = IsPlaying;
             Current = Queue.Next(Current);
-            if (IsPlaying)
+            if (oldState)
             {
                 PlayCurrent(true);
             }
@@ -364,12 +395,14 @@ namespace MyPlayer.ViewModels
             if (IsPlaying)
             {
                 MediaPlayer?.Pause();
+              //  RaisePropertyChanged(nameof(IsPlaying));
+
             }
             else
             {
                 PlayCurrent(false);
             }
-            IsPlaying = !IsPlaying;
+            //IsPlaying = !IsPlaying;
         }
         #endregion
 
@@ -397,7 +430,7 @@ namespace MyPlayer.ViewModels
 
         private void MediaPlayerMediaStateChanged(object sender, MediaStateChangedEventArgs e)
         {
-            //RaisePropertyChanged(nameof(IsPlaying));
+            RaisePropertyChanged(nameof(IsPlaying));
         }
 
 
@@ -417,7 +450,6 @@ namespace MyPlayer.ViewModels
             RaisePropertyChanged(nameof(MediaInfo));
         }
 
-        private TimeSpan lastPosition = TimeSpan.Zero;
 
         private void MediaPlayerPositionChanged(object sender, MediaPlayerPositionChangedEventArgs e)
         {

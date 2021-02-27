@@ -7,7 +7,6 @@ namespace MyPlayer.Models.Interfaces
 {
     public interface ILyricsFinder
     {
-        StringBuilder FindLyrics(string artist, string song);
-        Task<StringBuilder> FindLyricsAsync(string artist, string song);
+        Task<string> FindLyricsAsync(string artist, string song);
     }
 }

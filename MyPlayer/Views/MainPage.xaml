@@ -97,12 +97,14 @@
                         <Setter Property="IsVisible" Value="True"/>
                     </DataTrigger>
                 </StackLayout.Triggers>
-                <Label
-                    LineBreakMode="WordWrap"
-                    Text="1111111111111111111"
-                    TextColor="White"
-                    Margin="20"
-                    />
+                <ScrollView>
+                    <Label
+                        LineBreakMode="WordWrap"
+                        Text="{Binding Lyrics}"
+                        TextColor="White"
+                        Margin="20"
+                        />
+                </ScrollView>
             </StackLayout>
         </AbsoluteLayout>
 
@@ -115,6 +117,7 @@
                 TextColor="Gray"
                 FontSize="Micro"
                 HorizontalOptions="Start"
+                Margin="6,0,6,0"
                 />
 
             <Slider
@@ -131,6 +134,7 @@
                 TextColor="Gray"
                 FontSize="Micro"
                 HorizontalOptions="End"
+                Margin="6,0,6,0"
                 />
 
         </StackLayout>
@@ -190,6 +194,7 @@
                     TextColor="Gray"
                     MinimumHeightRequest="26"
                     Margin="10,0,10,0"
+                    LineBreakMode="TailTruncation"
                     />
             </StackLayout>
             <StackLayout
@@ -212,7 +217,7 @@
             Orientation="Horizontal"
             VerticalOptions="End"
             HorizontalOptions="FillAndExpand"
-            HeightRequest="50"
+            HeightRequest="40"
             >
 
             <ImageButton
