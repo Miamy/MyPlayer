@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>eqId</key>
+	<string>40307B36-9DF6-473F-8040-237FE173A9DF</string>
+	<key>numPoints</key>
+	<integer>11</integer>
+	<key>points</key>
+	<array>
+        <array>
+			<real>32.0</real>
+			<real>0.0</real>
+		</array>
+        <array>
+			<real>64.0</real>
+			<real>0.0</real>
+		</array>
+		<array>
+			<real>125.0</real>
+			<real>-2.0</real>
+		</array>
+		<array>
+			<real>250.0</real>
+			<real>1.0</real>
+		</array>
+		<array>
+			<real>500.0</real>
+			<real>2.0</real>
+		</array>
+		<array>
+			<real>1000.0</real>
+			<real>2.0</real>
+		</array>
+        <array>
+			<real>2000.0</real>
+			<real>1.0</real>
+		</array>
+		<array>
+			<real>4000.0</real>
+			<real>1.0</real>
+		</array>
+        <array>
+			<real>8000.0</real>
+			<real>0.0</real>
+		</array>
+		<array>
+			<real>16000.0</real>
+			<real>-1.0</real>
+		</array>
+        <array>
+			<real>32000.0</real>
+			<real>0.0</real>
+		</array>
+	</array>
+	<key>presetName</key>
+	<string>Vocal</string>
+    <key>displayNo</key>
+	<real>5</real>
+</dict>
+</plist>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>eqId</key>
+	<string>E5335091-83B4-40F0-ADF1-71A3ADCBCB81</string>
+	<key>numPoints</key>
+	<integer>11</integer>
+	<key>points</key>
+	<array>
+		<array>
+			<real>31.25</real>
+			<real>0.0</real>
+		</array>
+		<array>
+			<real>62.5</real>
+			<real>0.0</real>
+		</array>
+		<array>
+			<real>125</real>
+			<real>0.0</real>
+		</array>
+		<array>
+			<real>250</real>
+			<real>0.0</real>
+		</array>
+        <array>
+			<real>500</real>
+			<real>0.0</real>
+		</array>
+		<array>
+			<real>1000</real>
+			<real>0.0</real>
+		</array>
+        <array>
+			<real>2000</real>
+			<real>0.0</real>
+		</array>
+		<array>
+			<real>4000</real>
+			<real>0.0</real>
+		</array>
+        <array>
+			<real>8000</real>
+			<real>0.0</real>
+		</array>
+		<array>
+			<real>16000</real>
+			<real>0.0</real>
+		</array>
+        <array>
+			<real>32000</real>
+			<real>0.0</real>
+		</array>
+	</array>
+	<key>presetName</key>
+	<string>11 Band</string>
+    <key>displayNo</key>
+	<real>5</real>
+</dict>
+</plist>

@@ -18,8 +18,15 @@ using MyPlayer.Droid;
 
 namespace MyPlayer.Droid
 {
-    [Activity(Label = "MyPlayer", Icon = "@drawable/note", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : Xamarin.Forms.Platform.Android.FormsAppCompatActivity 
+    [Activity(Label = "MyPlayer", Icon = "@drawable/note", RoundIcon = "@drawable/round_note",
+        Theme = "@style/MainTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [IntentFilter(new[] { "android.intent.action.MAIN",
+                          "android.intent.action.MUSIC_PLAYER",
+                          "android.intent.category.LAUNCHER",
+                          "android.intent.category.APP_MUSIC",
+                          "android.intent.category.DEFAULT" })]
+
+    public class MainActivity : Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -35,7 +42,7 @@ namespace MyPlayer.Droid
             SetPermissions();
             LoadApplication(new App());
         }
-       
+
 
         #region Permissions
         private void SetPermissions()
@@ -56,7 +63,7 @@ namespace MyPlayer.Droid
             //    permission.Add(Manifest.Permission.BluetoothAdmin);
             //    permission.Add(Manifest.Permission.BluetoothPrivileged);
             //}
-       
+
             if (permission.Count > 0)
                 ActivityCompat.RequestPermissions(this, permission.ToArray(), 2);
 
@@ -72,6 +79,12 @@ namespace MyPlayer.Droid
         #endregion
 
 
-      
+
     }
 }
+
+/*
+AbsMusicPlayerService	onStartCommand(intent(Intent { act=com.onkyo.jp.musicplayer.MusicPlayerService.ACTION_SKIP_BACK cmp=com.onkyo.jp.musicplayer/.service.dap.DapMusicPlayerService (has extras) })= com.onkyo.jp.musicplayer.MusicPlayerService.ACTION_SKIP_BACK,flags = 0, id = 11)
+AbsMusicPlayerService	onStartCommand(intent(Intent { act=com.onkyo.jp.musicplayer.MusicPlayerService.ACTION_PAUSE cmp=com.onkyo.jp.musicplayer/.service.dap.DapMusicPlayerService (has extras) })= com.onkyo.jp.musicplayer.MusicPlayerService.ACTION_PAUSE,flags = 0, id = 9)
+AbsMusicPlayerService	onStartCommand(intent(Intent { act=com.onkyo.jp.musicplayer.MusicPlayerService.ACTION_PLAY_TOGGLE cmp=com.onkyo.jp.musicplayer/.service.dap.DapMusicPlayerService (has extras) })= com.onkyo.jp.musicplayer.MusicPlayerService.ACTION_PLAY_TOGGLE,flags = 0, id = 8)
+*/

@@ -146,7 +146,7 @@ namespace MyPlayer.ViewModels
         private IStorage Storage { get; set; }
         private ISettings Settings { get; set; }
 
-        public bool IsPlaying => MediaPlayer.IsPlaying;
+        public bool IsPlaying => MediaPlayer != null && MediaPlayer.IsPlaying;
 
         /*private bool _isPlaying = false;
         public bool IsPlaying
@@ -395,17 +395,31 @@ namespace MyPlayer.ViewModels
             if (IsPlaying)
             {
                 MediaPlayer?.Pause();
-              //  RaisePropertyChanged(nameof(IsPlaying));
-
             }
             else
             {
                 PlayCurrent(false);
             }
-            //IsPlaying = !IsPlaying;
         }
         #endregion
 
+        private void PlayCurrent(bool resetPosition)
+        {
+            if (Current?.Container == null)
+            {
+                return;
+            }
+            if (!File.Exists(Current.Container))
+            {
+                return;
+            }
+            if (resetPosition)
+            {
+                Position = 0;
+            }
+
+            MediaPlayer.Play();
+        }
 
         private void Initialize()
         {
@@ -428,6 +442,7 @@ namespace MyPlayer.ViewModels
             MediaPlayer.EndReached += MediaPlayerEndReached;
         }
 
+        #region Media events
         private void MediaPlayerMediaStateChanged(object sender, MediaStateChangedEventArgs e)
         {
             RaisePropertyChanged(nameof(IsPlaying));
@@ -466,24 +481,8 @@ namespace MyPlayer.ViewModels
         {
 
         }
+        #endregion
 
-        private void PlayCurrent(bool resetPosition)
-        {
-            if (Current?.Container == null)
-            {
-                return;
-            }
-            if (!File.Exists(Current.Container))
-            {
-                return;
-            }
-            if (resetPosition)
-            {
-                Position = 0;
-            }
-
-            MediaPlayer.Play();
-            //RaisePropertyChanged(nameof(IsPlaying));
-        }
+  
     }
 }
