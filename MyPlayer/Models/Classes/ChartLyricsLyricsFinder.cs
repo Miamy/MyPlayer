@@ -31,22 +31,21 @@ namespace MyPlayer.Models.Classes
             var uri = new Uri(string.Format(SearchAddress, artist.Trim(), song.Trim()));
             var request = (HttpWebRequest)WebRequest.Create(uri);
 
-            using (var response = await request.GetResponseAsync())
-            using (var stream = response.GetResponseStream())
-            using (var reader = new StreamReader(stream))
-            {
-                var data = await reader.ReadToEndAsync();
-                var xml = XDocument.Parse(data);
+            using var response = await request.GetResponseAsync();
+            using var stream = response.GetResponseStream();
+            using var reader = new StreamReader(stream);
+            
+            var data = await reader.ReadToEndAsync();
+            var xml = XDocument.Parse(data);
 
-                try
-                {
-                    var lyrics = xml.Root.Elements().Where(e => e.Name.LocalName == "Lyric").First().Value;
-                    return lyrics;
-                }
-                catch (Exception e)
-                {
-                    return "";
-                }
+            try
+            {
+                var lyrics = xml.Root.Elements().Where(e => e.Name.LocalName == "Lyric").First().Value;
+                return lyrics;
+            }
+            catch (Exception e)
+            {
+                return "";
             }
         }
     }
