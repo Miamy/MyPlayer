@@ -19,13 +19,13 @@ using MyPlayer.Droid;
 namespace MyPlayer.Droid
 {
     [Activity(Label = "MyPlayer", Icon = "@drawable/note", RoundIcon = "@drawable/round_note",
-        Theme = "@style/MainTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+        Theme = "@style/MainTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, MainLauncher = true)]
     [IntentFilter(new[] { "android.intent.action.MAIN",
                           "android.intent.action.MUSIC_PLAYER",
                           "android.intent.category.LAUNCHER",
                           "android.intent.category.APP_MUSIC",
                           "android.intent.category.DEFAULT" })]
-
+    
     public class MainActivity : Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)

@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="129" android:versionName="0.9.3" package="net.miamy.myplayer" android:installLocation="auto">
-	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="28" />
-	<application android:label="MyPlayer" android:requestLegacyExternalStorage="true" android:icon="@drawable/note"></application>
+	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="29" />
+	<application android:label="MyPlayer" android:requestLegacyExternalStorage="true">
+    <service
+          android:name="myplayer.service.MusicService"
+          android:enabled="true" />
+  </application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.BLUETOOTH" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

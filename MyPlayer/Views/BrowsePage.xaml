@@ -16,32 +16,17 @@
             <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}"/>
         </ResourceDictionary>
     </ContentPage.Resources>
-
+    
+    <ContentPage.ToolbarItems> 
+        <ToolbarItem 
+            Command="{Binding SelectFolderCommand}" 
+            Text="Select"/>
+    </ContentPage.ToolbarItems>
 
     <ContentPage.Content>
         <StackLayout
             Orientation="Vertical"
-            >
-
-            <!--Title-->
-            <StackLayout
-                Orientation="Horizontal"
-                >
-                <Label 
-                    Text="{Binding SelectedItem.Name}"
-                    VerticalOptions="CenterAndExpand" 
-                    HorizontalOptions="StartAndExpand" 
-                    FontSize="Small"
-                    TextColor="White"
-                    />
-                <Button
-                    Text="Select"
-                    FontSize="Small"
-                    WidthRequest="80"
-                    HorizontalOptions="End"
-                    Command="{Binding SelectFolderCommand}"
-                    />
-            </StackLayout>
+            >        
 
             <!--Toolbar-->
             <StackLayout
